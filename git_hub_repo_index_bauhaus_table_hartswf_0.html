@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <title>GitHub Repo Index — Bauhaus Table</title>
+  <style>
+    :root{
+      --bg:#f5f3ef;          /* cream paper */
+      --ink:#111111;         /* deep black */
+      --muted:#5a5a5a;       /* mid gray */
+      --grid:#cfcfcf;        /* hairline grid */
+      --accent:#e52521;      /* Bauhaus red */
+      --accent2:#0055ff;     /* Bauhaus blue */
+      --accent3:#f2c300;     /* Bauhaus yellow */
+      --ok:#146b2e;
+      --warn:#9d3a00;
+      --error:#b00020;
+      --radius:18px;
+      --pane: 14px;
+      --shadow: 0 6px 0 var(--ink), 0 0 0 3px var(--ink);
+    }
+
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font: 16px/1.4 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    }
+
+    /* Header / Controls */
+    header{
+      position:sticky; top:0; z-index:10;
+      background:linear-gradient(180deg, rgba(245,243,239,0.95), rgba(245,243,239,0.85));
+      backdrop-filter:saturate(1.1) blur(6px);
+      border-bottom:4px solid var(--ink);
+    }
+    .bar{
+      display:grid; gap:10px; align-items:center;
+      grid-template-columns: 1fr; padding: 14px 14px 12px;
+    }
+    @media (min-width:720px){
+      .bar{ grid-template-columns: 220px 1fr auto auto; }
+    }
+
+    .title{
+      font-weight:900; letter-spacing:.5px; text-transform:uppercase;
+      display:flex; align-items:center; gap:10px;
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700;
+      background:var(--accent3); color:var(--ink); padding:4px 8px; border:3px solid var(--ink); border-radius:999px;
+    }
+
+    .controls{ display:flex; gap:10px; flex-wrap:wrap; }
+    .controls input[type="text"]{
+      width:100%; max-width:520px; appearance:none;
+      border:3px solid var(--ink); border-radius:999px; padding:12px 16px; background:#fff;
+      font-weight:700; outline:none;
+    }
+    .controls input[type="text"]:focus{ box-shadow:0 0 0 3px var(--accent2) inset; }
+
+    .chip{
+      display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border:3px solid var(--ink);
+      border-radius:999px; background:#fff; font-weight:800; cursor:pointer; user-select:none;
+    }
+    .chip input{ accent-color:var(--accent); width:18px; height:18px; }
+
+    .userRow{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .userRow input{
+      width:200px; border:3px solid var(--ink); border-radius:12px; padding:10px 12px; background:#fff; font-weight:700;
+    }
+    .btn{
+      appearance:none; border:3px solid var(--ink); background:var(--accent); color:#fff; font-weight:900; text-transform:uppercase;
+      padding:10px 14px; border-radius:12px; cursor:pointer; box-shadow:var(--shadow); transform:translateY(0);
+    }
+    .btn:active{ transform:translateY(3px); box-shadow:0 3px 0 var(--ink), 0 0 0 3px var(--ink); }
+
+    /* Summary strip */
+    .summary{ display:flex; gap:12px; flex-wrap:wrap; padding:0 14px 12px; font-weight:800; color:var(--muted); }
+    .summary strong{ color:var(--ink); }
+
+    /* Grid of repo cards – Bauhaus periodic-table vibe */
+    main{ padding: 14px; }
+    .grid{
+      display:grid; gap:14px;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+
+    .card{
+      position:relative; background:#fff; border:4px solid var(--ink); border-radius:var(--radius);
+      box-shadow: 0 0 0 6px #fff inset; padding: var(--pane); cursor:pointer; transition:transform .08s ease;
+      display:grid; grid-template-rows:auto 1fr auto; min-height:180px;
+    }
+    .card:focus-within, .card:hover{ outline:none; transform: translateY(-2px); }
+
+    .swatch{
+      position:absolute; width:18px; height:18px; border:4px solid var(--ink); border-radius:4px; top:-10px; right:-10px; background:var(--accent);
+      box-shadow: 6px 6px 0 var(--ink);
+    }
+    .swatch.blue{ background:var(--accent2); }
+    .swatch.yellow{ background:var(--accent3); }
+
+    .name{
+      display:flex; align-items:flex-start; gap:8px;
+      font-weight:900; text-transform:uppercase; line-height:1.1; word-break:break-word; margin-bottom:6px;
+      font-size: clamp(16px, 3.6vw, 20px);
+    }
+    .meta{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:6px; }
+    .pill{
+      border:3px solid var(--ink); border-radius:999px; padding:4px 8px; font-size:12px; font-weight:900; background:#fff;
+    }
+    .pill.ok{ background:#e7f5eb; border-color:var(--ok); }
+    .pill.warn{ background:#fff3e6; border-color:var(--warn); }
+
+    .desc{ color:var(--muted); font-weight:600; font-size:13px; min-height:40px; }
+
+    .actions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .a{
+      display:inline-flex; align-items:center; gap:6px; text-decoration:none; font-weight:900;
+      border:3px solid var(--ink); border-radius:12px; padding:8px 10px;
+    }
+    .a.repo{ background:var(--accent2); color:#fff; }
+    .a.page{ background:var(--accent3); color:var(--ink); }
+    .a.home{ background:#fff; }
+
+    /* Empty / status */
+    .state{ text-align:center; color:var(--muted); padding:40px 12px; font-weight:800; }
+
+    /* Utilities */
+    .sr-only{ position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+
+    @media (prefers-reduced-motion: reduce){
+      *{ animation:none !important; transition:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bar" role="region" aria-label="Controls">
+      <div class="title">
+        <div class="badge" title="Bauhaus Index">◼︎ INDEX</div>
+        <div>GitHub Repo Index</div>
+      </div>
+
+      <div class="controls">
+        <input id="search" type="text" placeholder="🔎 Search name or description…" aria-label="Search repositories" />
+        <label class="chip" for="pagesOnly"><input id="pagesOnly" type="checkbox" /> Pages only</label>
+        <label class="chip" for="forksToo"><input id="forksToo" type="checkbox" checked /> Include forks</label>
+      </div>
+
+      <div class="userRow">
+        <input id="user" type="text" value="hartswf0" aria-label="GitHub username"/>
+        <button id="load" class="btn" aria-label="Load repositories">Fetch</button>
+      </div>
+
+      <div class="summary" id="summary">Ready.</div>
+    </div>
+  </header>
+
+  <main>
+    <div id="grid" class="grid" role="list"></div>
+    <div id="status" class="state" hidden>Loading…</div>
+  </main>
+
+  <script>
+  (function(){
+    const el = {
+      grid: document.getElementById('grid'),
+      status: document.getElementById('status'),
+      search: document.getElementById('search'),
+      pagesOnly: document.getElementById('pagesOnly'),
+      forksToo: document.getElementById('forksToo'),
+      user: document.getElementById('user'),
+      load: document.getElementById('load'),
+      summary: document.getElementById('summary'),
+    };
+
+    const state = {
+      user: (new URL(location.href).searchParams.get('user')) || el.user.value.trim() || 'hartswf0',
+      repos: [],
+      view: [],
+      query: '',
+      pagesOnly: false,
+      forksToo: true,
+      sortKey: 'updated',
+      sortDir: 'desc'
+    };
+
+    const fmt = {
+      sizeKB: kb => {
+        const mb = kb/1024; if (mb >= 1) return `${mb.toFixed(mb<10?1:0)} MB`; return `${Math.round(kb)} KB`;
+      },
+      date: iso => new Date(iso).toLocaleDateString(undefined, {year:'numeric', month:'short', day:'2-digit'}),
+      type: r => r.archived ? 'Archived' : (r.fork ? 'Fork' : 'Public'),
+      swatch: i => (i%3===0? '': (i%3===1? 'blue' : 'yellow')),
+    };
+
+    function isValidUrl(u){ try{ new URL(u); return true; } catch{ return false; } }
+
+    function computePagesLinks(r, user){
+      const links = [];
+      if (r.homepage && r.homepage.trim()) links.push({label:'Homepage', url:r.homepage.trim(), kind:'home'});
+      if (r.has_pages){
+        const base = `${user}.github.io`;
+        const isUserSite = r.name.toLowerCase() === `${user.toLowerCase()}.github.io`;
+        const url = isUserSite ? `https://${base}/` : `https://${base}/${encodeURIComponent(r.name)}/`;
+        links.push({label:'Pages', url, kind:'page'});
+      }
+      return links.filter(l=>isValidUrl(l.url));
+    }
+
+    function rowToCard(r, i){
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.tabIndex = 0; // a11y focusable
+      card.setAttribute('role','listitem');
+      card.setAttribute('aria-label', `Repository ${r.full_name}`);
+
+      const sw = document.createElement('div');
+      sw.className = `swatch ${fmt.swatch(i)}`;
+      card.appendChild(sw);
+
+      const name = document.createElement('div');
+      name.className = 'name';
+      name.textContent = r.name;
+      card.appendChild(name);
+
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+
+      const type = document.createElement('span');
+      type.className = `pill ${r.archived? 'warn':''}`;
+      type.textContent = fmt.type(r);
+      meta.appendChild(type);
+
+      if (r.language){
+        const lang = document.createElement('span');
+        lang.className = 'pill';
+        lang.textContent = r.language;
+        meta.appendChild(lang);
+      }
+
+      const size = document.createElement('span');
+      size.className = 'pill';
+      size.textContent = fmt.sizeKB(r.size);
+      meta.appendChild(size);
+
+      const updated = document.createElement('span');
+      updated.className = 'pill';
+      updated.textContent = fmt.date(r.updated_at);
+      meta.appendChild(updated);
+
+      card.appendChild(meta);
+
+      const desc = document.createElement('div');
+      desc.className = 'desc';
+      desc.textContent = r.description || '—';
+      card.appendChild(desc);
+
+      const actions = document.createElement('div');
+      actions.className = 'actions';
+
+      const repoA = document.createElement('a');
+      repoA.href = r.html_url; repoA.target = '_blank'; repoA.rel='noopener';
+      repoA.className = 'a repo'; repoA.textContent = 'Repo ↗'; repoA.setAttribute('aria-label', `Open ${r.name} on GitHub`);
+      actions.appendChild(repoA);
+
+      const links = computePagesLinks(r, state.user);
+      links.forEach(l => {
+        const a = document.createElement('a');
+        a.href = l.url; a.target = '_blank'; a.rel='noopener';
+        a.className = 'a ' + (l.kind==='page' ? 'page' : 'home');
+        a.textContent = (l.kind==='page'?'Page':'Home') + ' ↗';
+        a.setAttribute('aria-label', `${l.label} for ${r.name}`);
+        actions.appendChild(a);
+      });
+
+      card.appendChild(actions);
+
+      // Whole-card click opens repo (but not when clicking action links)
+      card.addEventListener('click', (e)=>{
+        const isLink = e.target.closest('a');
+        if (!isLink){ window.open(r.html_url, '_blank'); }
+      });
+
+      return card;
+    }
+
+    function applyFilters(){
+      const q = state.query.trim().toLowerCase();
+      state.view = state.repos.filter(r => {
+        if (!state.forksToo && r.fork) return false;
+        if (state.pagesOnly){
+          const hasHome = !!(r.homepage && r.homepage.trim());
+          if (!r.has_pages && !hasHome) return false;
+        }
+        if (!q) return true;
+        const hay = `${r.name}\n${r.description||''}`.toLowerCase();
+        return hay.includes(q);
+      });
+
+      // sort
+      const dir = state.sortDir === 'asc' ? 1 : -1;
+      state.view.sort((a,b)=>{
+        const K = state.sortKey;
+        let va, vb;
+        switch(K){
+          case 'name': va=a.name.toLowerCase(); vb=b.name.toLowerCase(); return va<vb? -1*dir : va>vb? 1*dir : 0;
+          case 'size': va=a.size; vb=b.size; return (va - vb)*dir;
+          case 'updated': default: va=new Date(a.updated_at).getTime(); vb=new Date(b.updated_at).getTime(); return (va - vb)*dir;
+        }
+      });
+
+      render();
+    }
+
+    function render(){
+      el.grid.replaceChildren();
+      if (!state.view.length){ el.status.hidden=false; el.status.textContent = 'No repositories match your filters.'; return; }
+      el.status.hidden=true;
+      state.view.forEach((r,i)=> el.grid.appendChild(rowToCard(r,i)) );
+
+      // Summary
+      const total = state.repos.length;
+      const forks = state.repos.filter(r=>r.fork).length;
+      const withPages = state.repos.filter(r=>r.has_pages || (r.homepage && r.homepage.trim())).length;
+      el.summary.innerHTML = `User <strong>${state.user}</strong> • Showing <strong>${state.view.length}</strong> of ${total} repos • Pages: <strong>${withPages}</strong> • Forks: ${forks}`;
+    }
+
+    async function fetchAllRepos(user){
+      const opts = { headers: { 'Accept':'application/vnd.github+json' } };
+      let page = 1; let all = [];
+      while(true){
+        const url = `https://api.github.com/users/${encodeURIComponent(user)}/repos?per_page=100&page=${page}&type=owner&sort=updated`;
+        const res = await fetch(url, opts);
+        if (!res.ok){
+          const msg = res.status === 404 ? 'User not found' : `GitHub error ${res.status}`;
+          throw new Error(msg);
+        }
+        const data = await res.json();
+        all = all.concat(data);
+        const link = res.headers.get('Link');
+        if (link && /rel="next"/.test(link)) { page++; } else { break; }
+      }
+      return all;
+    }
+
+    async function load(){
+      try{
+        el.status.hidden=false; el.status.textContent = 'Loading…';
+        el.grid.replaceChildren();
+        state.user = el.user.value.trim() || 'hartswf0';
+        const repos = await fetchAllRepos(state.user);
+        // keep only public repos returned; normalize fields
+        state.repos = repos.map(r=>({
+          id:r.id, name:r.name, full_name:r.full_name, html_url:r.html_url,
+          description:r.description, language:r.language, size:r.size,
+          fork:r.fork, archived:r.archived, updated_at:r.updated_at,
+          has_pages:r.has_pages, homepage:r.homepage
+        }));
+        state.query = el.search.value || '';
+        state.pagesOnly = el.pagesOnly.checked;
+        state.forksToo = el.forksToo.checked;
+        state.sortKey = 'updated'; state.sortDir = 'desc';
+        applyFilters();
+        // Update URL param for bookmarking
+        const u = new URL(location.href); u.searchParams.set('user', state.user); history.replaceState({}, '', u);
+      }catch(err){
+        console.error(err);
+        el.grid.replaceChildren();
+        el.status.hidden=false; el.status.textContent = `⚠️ ${err.message}`;
+      }
+    }
+
+    // Events
+    el.load.addEventListener('click', load);
+    el.user.addEventListener('keydown', e=>{ if(e.key==='Enter') load(); });
+    el.search.addEventListener('input', e=>{ state.query = e.target.value; applyFilters(); });
+    el.pagesOnly.addEventListener('change', e=>{ state.pagesOnly = e.target.checked; applyFilters(); });
+    el.forksToo.addEventListener('change', e=>{ state.forksToo = e.target.checked; applyFilters(); });
+
+    // Simple sort toggles with keyboard shortcuts
+    window.addEventListener('keydown', (e)=>{
+      if (e.target.matches('input, textarea')) return;
+      if (e.key.toLowerCase()==='n'){ state.sortKey='name'; state.sortDir = state.sortKey==='name' && state.sortDir==='asc' ? 'desc':'asc'; applyFilters(); }
+      if (e.key.toLowerCase()==='u'){ state.sortKey='updated'; state.sortDir='desc'; applyFilters(); }
+      if (e.key.toLowerCase()==='s'){ state.sortKey='size'; state.sortDir = state.sortKey==='size' && state.sortDir==='asc' ? 'desc':'asc'; applyFilters(); }
+    });
+
+    // Initial
+    el.user.value = state.user;
+    load();
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>GitHub Thematic Rings — hartswf0 Repository Explorer</title>
+  <style>
+    :root{
+      --bg:#0a0a0a;
+      --text:#f5f3ef;
+      --accent:#ff6b35;
+      --accent2:#f7931e;
+      --accent3:#fdc500;
+      --muted:#888;
+    }
+
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+    html,body{height:100%;overflow:hidden}
+    body{
+      background:radial-gradient(circle at center, #1a1a1a, var(--bg));
+      color:var(--text);
+      font: 14px/1.4 ui-monospace, 'Courier New', monospace;
+    }
+
+    /* Header */
+    header{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      z-index:100;
+      background:rgba(10,10,10,0.95);
+      backdrop-filter:blur(10px);
+      padding:16px 20px;
+      border-bottom:2px solid var(--accent);
+    }
+
+    .header-content{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+
+    h1{
+      font-size:clamp(16px, 4vw, 22px);
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .badge{
+      background:var(--accent);
+      color:#000;
+      padding:4px 10px;
+      border-radius:4px;
+      font-size:11px;
+      font-weight:900;
+    }
+
+    .controls{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .btn{
+      background:transparent;
+      border:2px solid var(--accent);
+      color:var(--accent);
+      padding:6px 12px;
+      border-radius:4px;
+      font-weight:700;
+      cursor:pointer;
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+      transition:all .2s;
+    }
+    .btn:hover{
+      background:var(--accent);
+      color:#000;
+      transform:translateY(-2px);
+    }
+    .btn.active{
+      background:var(--accent);
+      color:#000;
+    }
+
+    /* Canvas container */
+    #canvas-container{
+      position:absolute;
+      top:80px;
+      left:0;
+      right:0;
+      bottom:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+
+    canvas{
+      cursor:grab;
+      max-width:100%;
+      max-height:100%;
+    }
+    canvas:active{
+      cursor:grabbing;
+    }
+
+    /* Legend */
+    #legend{
+      position:fixed;
+      top:90px;
+      left:10px;
+      background:rgba(20,20,20,0.95);
+      backdrop-filter:blur(10px);
+      border:2px solid var(--accent);
+      padding:12px;
+      border-radius:8px;
+      z-index:90;
+      max-width:220px;
+      max-height:calc(100vh - 100px);
+      overflow-y:auto;
+    }
+
+    .legend-title{
+      font-weight:900;
+      margin:0 0 10px;
+      color:var(--accent);
+      text-transform:uppercase;
+      font-size:11px;
+      letter-spacing:0.5px;
+    }
+
+    .legend-item{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin:6px 0;
+      font-size:10px;
+      padding:4px;
+      border-radius:4px;
+      cursor:pointer;
+      transition:background .2s;
+    }
+    .legend-item:hover{
+      background:rgba(255,107,53,0.2);
+    }
+
+    .legend-color{
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      border:2px solid #fff;
+      flex-shrink:0;
+    }
+
+    .legend-label{
+      flex:1;
+      line-height:1.2;
+    }
+
+    .legend-count{
+      color:var(--muted);
+      font-size:9px;
+    }
+
+    /* Info panel */
+    #info-panel{
+      position:fixed;
+      top:80px;
+      right:-420px;
+      width:400px;
+      max-height:calc(100vh - 80px);
+      background:rgba(20,20,20,0.98);
+      backdrop-filter:blur(10px);
+      border-left:2px solid var(--accent);
+      padding:20px;
+      overflow-y:auto;
+      transition:right .3s ease;
+      z-index:90;
+    }
+    #info-panel.open{
+      right:0;
+    }
+
+    .close-btn{
+      float:right;
+      background:none;
+      border:none;
+      color:var(--accent);
+      font-size:24px;
+      cursor:pointer;
+      padding:0;
+      line-height:1;
+    }
+
+    .info-title{
+      font-size:18px;
+      font-weight:900;
+      margin:0 0 8px;
+      color:var(--accent);
+      word-break:break-word;
+    }
+
+    .info-meta{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin:10px 0;
+      font-size:11px;
+    }
+
+    .info-meta span{
+      background:rgba(255,107,53,0.2);
+      border:1px solid var(--accent);
+      padding:3px 8px;
+      border-radius:4px;
+    }
+
+    .info-desc{
+      color:var(--muted);
+      margin:10px 0;
+      line-height:1.5;
+      font-size:12px;
+    }
+
+    .info-link{
+      display:inline-block;
+      color:var(--accent);
+      text-decoration:none;
+      border:2px solid var(--accent);
+      padding:6px 12px;
+      border-radius:4px;
+      margin:6px 6px 6px 0;
+      font-weight:700;
+      font-size:11px;
+      transition:all .2s;
+    }
+    .info-link:hover{
+      background:var(--accent);
+      color:#000;
+    }
+
+    /* Loading */
+    #loading{
+      position:fixed;
+      top:50%;
+      left:50%;
+      transform:translate(-50%, -50%);
+      text-align:center;
+      font-size:16px;
+      font-weight:900;
+      color:var(--accent);
+      z-index:200;
+    }
+
+    .spinner{
+      border:4px solid rgba(255,107,53,0.2);
+      border-top:4px solid var(--accent);
+      border-radius:50%;
+      width:60px;
+      height:60px;
+      animation:spin 1s linear infinite;
+      margin:0 auto 20px;
+    }
+
+    @keyframes spin{
+      0%{ transform:rotate(0deg); }
+      100%{ transform:rotate(360deg); }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar{width:8px;height:8px}
+    ::-webkit-scrollbar-track{background:rgba(255,255,255,0.05)}
+    ::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px}
+
+    @media(max-width:768px){
+      #info-panel{
+        width:100%;
+        right:-100%;
+      }
+      #legend{
+        max-width:180px;
+        font-size:9px;
+      }
+      .legend-item{
+        font-size:9px;
+      }
+      h1{
+        font-size:14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <h1>
+        <span class="badge">🌊</span>
+        Thematic Repository Rings
+      </h1>
+      <div class="controls">
+        <button class="btn" id="animate-btn">▶️ Animate</button>
+        <button class="btn active" id="legend-btn">📋 Themes</button>
+        <span style="color:var(--muted);font-size:10px;">@hartswf0 · 245 repos</span>
+      </div>
+    </div>
+  </header>
+
+  <div id="canvas-container">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div id="legend">
+    <div class="legend-title">Thematic Rings</div>
+    <div id="legend-items"></div>
+  </div>
+
+  <div id="info-panel">
+    <button class="close-btn" id="close-info">×</button>
+    <div id="info-content"></div>
+  </div>
+
+  <div id="loading">
+    <div class="spinner"></div>
+    <div>Analyzing themes...</div>
+  </div>
+
+  <script>
+    let data = null;
+    let canvas, ctx;
+    let centerX, centerY;
+    let rotation = 0;
+    let animating = false;
+    let hoveredRing = null;
+
+    // Canvas setup
+    function initCanvas(){
+      canvas = document.getElementById('canvas');
+      ctx = canvas.getContext('2d');
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+    }
+
+    function resizeCanvas(){
+      const container = document.getElementById('canvas-container');
+      const size = Math.min(container.clientWidth, container.clientHeight) - 40;
+      canvas.width = size;
+      canvas.height = size;
+      centerX = canvas.width / 2;
+      centerY = canvas.height / 2;
+      if(data) draw();
+    }
+
+    // Load data
+    async function loadData(){
+      try{
+        const response = await fetch('github-thematic-index.json');
+        data = await response.json();
+        document.getElementById('loading').style.display = 'none';
+        updateLegend();
+        draw();
+      }catch(err){
+        console.error('Failed to load data:', err);
+        document.getElementById('loading').innerHTML = 
+          '<div class="spinner"></div><div>⚠️ Failed to load github-thematic-index.json<br><br>Run: python3 analyze-themes.py</div>';
+      }
+    }
+
+    function updateLegend(){
+      const container = document.getElementById('legend-items');
+      container.innerHTML = '';
+      
+      data.theme_rings.forEach((ring, idx) => {
+        const item = document.createElement('div');
+        item.className = 'legend-item';
+        item.innerHTML = `
+          <div class="legend-color" style="background:${ring.color}"></div>
+          <div class="legend-label">
+            <div>${ring.theme_name}</div>
+            <div class="legend-count">${ring.repo_count} repos</div>
+          </div>
+        `;
+        item.addEventListener('mouseenter', () => {
+          hoveredRing = idx;
+          draw();
+        });
+        item.addEventListener('mouseleave', () => {
+          hoveredRing = null;
+          draw();
+        });
+        container.appendChild(item);
+      });
+    }
+
+    // Draw thematic rings
+    function draw(){
+      if(!data) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      const scale = Math.min(canvas.width, canvas.height) / 1400;
+      
+      // Draw rings from outside to inside
+      data.theme_rings.slice().reverse().forEach((ring, idx) => {
+        const actualIdx = data.theme_rings.length - 1 - idx;
+        const isHovered = hoveredRing === actualIdx;
+        const radiusEnd = ring.radius_end * scale;
+        const radiusStart = ring.radius_start * scale;
+        const repoCount = ring.repos.length;
+        
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(rotation);
+        
+        // Draw segmented ring
+        const angleStep = (Math.PI * 2) / Math.max(repoCount, 8);
+        
+        ring.repos.forEach((repo, repoIdx) => {
+          const startAngle = angleStep * repoIdx;
+          const endAngle = angleStep * (repoIdx + 1);
+          
+          // Gradient for depth
+          const opacity = isHovered ? '90' : '60';
+          const gradient = ctx.createRadialGradient(0, 0, radiusStart, 0, 0, radiusEnd);
+          gradient.addColorStop(0, ring.color + '20');
+          gradient.addColorStop(0.5, ring.color + opacity);
+          gradient.addColorStop(1, ring.color + '20');
+          
+          ctx.beginPath();
+          ctx.arc(0, 0, radiusEnd, startAngle, endAngle);
+          ctx.arc(0, 0, radiusStart, endAngle, startAngle, true);
+          ctx.closePath();
+          ctx.fillStyle = gradient;
+          ctx.fill();
+          
+          // Border
+          ctx.strokeStyle = ring.color + (isHovered ? 'ff' : '80');
+          ctx.lineWidth = isHovered ? 2 : 1;
+          ctx.stroke();
+          
+          // Store repo position for hit detection
+          repo._angle = (startAngle + endAngle) / 2;
+          repo._radius = (radiusStart + radiusEnd) / 2;
+          repo._ring = ring;
+          repo._ringIdx = actualIdx;
+        });
+        
+        // Ring label
+        if(isHovered || repoCount > 5){
+          ctx.save();
+          ctx.rotate(-rotation);
+          ctx.font = `bold ${Math.max(10, 11 * scale)}px monospace`;
+          ctx.fillStyle = '#fff';
+          ctx.textAlign = 'center';
+          ctx.shadowColor = 'rgba(0,0,0,0.8)';
+          ctx.shadowBlur = 4;
+          const labelY = -(radiusEnd + 8);
+          ctx.fillText(ring.theme_name, 0, labelY);
+          ctx.shadowBlur = 0;
+          ctx.restore();
+        }
+        
+        ctx.restore();
+      });
+      
+      // Center circle
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 50, 0, Math.PI * 2);
+      const centerGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 50);
+      centerGradient.addColorStop(0, '#ff6b35');
+      centerGradient.addColorStop(1, '#c1440a');
+      ctx.fillStyle = centerGradient;
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      
+      ctx.fillStyle = '#000';
+      ctx.font = 'bold 16px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('@hartswf0', centerX, centerY - 6);
+      ctx.font = 'bold 12px monospace';
+      ctx.fillText('245 repos', centerX, centerY + 8);
+    }
+
+    // Animation
+    function animate(){
+      if(!animating) return;
+      rotation += 0.003;
+      draw();
+      requestAnimationFrame(animate);
+    }
+
+    // Mouse interaction
+    canvas.addEventListener('click', (e) => {
+      if(!data) return;
+      
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left - centerX;
+      const y = e.clientY - rect.top - centerY;
+      const dist = Math.sqrt(x*x + y*y);
+      const angle = Math.atan2(y, x) - rotation;
+      
+      // Find clicked repo
+      for(const ring of data.theme_rings){
+        for(const repo of ring.repos){
+          const scale = Math.min(canvas.width, canvas.height) / 1400;
+          const radiusEnd = ring.radius_end * scale;
+          const radiusStart = ring.radius_start * scale;
+          
+          if(dist >= radiusStart && dist <= radiusEnd){
+            let angleDiff = Math.abs(angle - repo._angle);
+            if(angleDiff > Math.PI) angleDiff = Math.PI * 2 - angleDiff;
+            
+            const angleStep = (Math.PI * 2) / Math.max(ring.repos.length, 8);
+            if(angleDiff < angleStep / 2){
+              showRepoInfo(repo, ring);
+              return;
+            }
+          }
+        }
+      }
+    });
+
+    function showRepoInfo(repo, ring){
+      const panel = document.getElementById('info-panel');
+      const content = document.getElementById('info-content');
+      
+      content.innerHTML = `
+        <h2 class="info-title">${repo.name}</h2>
+        <div class="info-meta">
+          <span style="background:${ring.color}40;border-color:${ring.color}">${ring.theme_name}</span>
+          ${repo.language ? `<span>📝 ${repo.language}</span>` : ''}
+          <span>⭐ ${repo.stars}</span>
+          <span>🔱 ${repo.forks}</span>
+          <span>💾 ${(repo.size_kb/1024).toFixed(1)} MB</span>
+        </div>
+        <div class="info-desc">
+          ${repo.description || '<em>No description</em>'}
+        </div>
+        <div style="margin-top:16px;">
+          <a href="${repo.html_url}" target="_blank" class="info-link">
+            View on GitHub ↗
+          </a>
+          ${repo.homepage ? `<a href="${repo.homepage}" target="_blank" class="info-link">Homepage ↗</a>` : ''}
+          ${repo.has_pages ? `<a href="https://hartswf0.github.io/${repo.name}/" target="_blank" class="info-link">Pages ↗</a>` : ''}
+        </div>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid #333;">
+          <strong style="color:${ring.color}">Theme Keywords:</strong><br>
+          <div style="margin-top:8px;">
+            ${ring.keywords.map(k => `<span style="background:#333;padding:3px 8px;border-radius:4px;display:inline-block;margin:3px 3px 0 0;font-size:10px;">${k}</span>`).join('')}
+          </div>
+        </div>
+        <div style="margin-top:12px;font-size:11px;color:#888;">
+          Created: ${new Date(repo.created_at).toLocaleDateString()}<br>
+          Updated: ${new Date(repo.updated_at).toLocaleDateString()}
+        </div>
+      `;
+      
+      panel.classList.add('open');
+    }
+
+    // Event listeners
+    document.getElementById('close-info').addEventListener('click', () => {
+      document.getElementById('info-panel').classList.remove('open');
+    });
+
+    document.getElementById('animate-btn').addEventListener('click', (e) => {
+      animating = !animating;
+      e.target.textContent = animating ? '⏸ Pause' : '▶️ Animate';
+      e.target.classList.toggle('active');
+      if(animating) animate();
+    });
+
+    document.getElementById('legend-btn').addEventListener('click', (e) => {
+      const legend = document.getElementById('legend');
+      const isVisible = legend.style.display !== 'none';
+      legend.style.display = isVisible ? 'none' : 'block';
+      e.target.classList.toggle('active');
+    });
+
+    // Drag to rotate
+    let isDragging = false;
+    let lastX = 0;
+
+    canvas.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      lastX = e.clientX;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if(!isDragging) return;
+      const deltaX = e.clientX - lastX;
+      rotation += deltaX * 0.01;
+      lastX = e.clientX;
+      if(!animating) draw();
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    // Mouse move for hover
+    canvas.addEventListener('mousemove', (e) => {
+      if(isDragging || !data) return;
+      
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left - centerX;
+      const y = e.clientY - rect.top - centerY;
+      const dist = Math.sqrt(x*x + y*y);
+      
+      let foundRing = null;
+      for(let i = 0; i < data.theme_rings.length; i++){
+        const ring = data.theme_rings[i];
+        const scale = Math.min(canvas.width, canvas.height) / 1400;
+        const radiusEnd = ring.radius_end * scale;
+        const radiusStart = ring.radius_start * scale;
+        
+        if(dist >= radiusStart && dist <= radiusEnd){
+          foundRing = i;
+          break;
+        }
+      }
+      
+      if(foundRing !== hoveredRing){
+        hoveredRing = foundRing;
+        draw();
+      }
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      if(hoveredRing !== null){
+        hoveredRing = null;
+        draw();
+      }
+    });
+
+    // Initialize
+    initCanvas();
+    loadData();
+  </script>
+</body>
+</html>

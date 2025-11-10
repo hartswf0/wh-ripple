@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orange Repos — GitHub Grove</title>
+  <style>
+    :root {
+      --bg: #FFE15D;          /* citrus yellow */
+      --orange: #FF6A00;      /* bold orange */
+      --seg-inner: #F99F2A;   /* segment glow */
+      --seg-dot: #FF6A00;     /* interactive dots */
+      --border: #000;         /* deep black */
+      --muted: #5a5a5a;       /* mid gray */
+      --accent2: #0055ff;     /* Bauhaus blue for links */
+      --accent3: #e52521;     /* Bauhaus red for buttons */
+      --warn: #9d3a00;        /* warning color */
+      --ok: #146b2e;          /* success color */
+      --radius: 18px;
+      --pane: 14px;
+      --shadow: 0 6px 0 var(--border), 0 0 0 3px var(--border);
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'JetBrains Mono', 'Space Grotesk', monospace;
+      background: var(--bg);
+      color: var(--border);
+      overflow-x: hidden;
+      cursor: crosshair;
+    }
+
+    /* Intro Overlay */
+    .intro {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 1000;
+      background: var(--bg);
+      padding: 2rem;
+      border-radius: 20px;
+      border: 2px solid var(--border);
+      max-width: 450px;
+      transition: all 0.5s ease;
+    }
+    .intro.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(0.8);
+    }
+    .intro h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      font-weight: 900;
+    }
+    .intro p {
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+    .intro button {
+      background: var(--orange);
+      border: 2px solid var(--border);
+      padding: 0.5rem 1.5rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 800;
+      transition: all 0.3s ease;
+    }
+    .intro button:hover {
+      transform: scale(1.05);
+      box-shadow: 4px 4px 0 var(--border);
+    }
+
+    /* Header / Controls */
+    header {
+      position: sticky; top: 0; z-index: 10;
+      background: linear-gradient(180deg, rgba(255, 225, 93, 0.95), rgba(255, 225, 93, 0.85));
+      backdrop-filter: saturate(1.1) blur(6px);
+      border-bottom: 4px solid var(--border);
+    }
+    .bar {
+      display: grid; gap: 10px; align-items: center;
+      grid-template-columns: 1fr; padding: 14px 14px 12px;
+    }
+    @media (min-width: 720px) {
+      .bar { grid-template-columns: 220px 1fr auto auto; }
+    }
+
+    .title {
+      font-weight: 900; letter-spacing: .5px; text-transform: uppercase;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700;
+      background: var(--orange); color: var(--border); padding: 4px 8px; border: 3px solid var(--border); border-radius: 999px;
+    }
+
+    .controls {
+      display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .controls input[type="text"] {
+      width: 100%; max-width: 520px; appearance: none;
+      border: 3px solid var(--border); border-radius: 999px; padding: 12px 16px; background: #fff;
+      font-weight: 700; outline: none; font-family: inherit;
+    }
+    .controls input[type="text"]:focus {
+      box-shadow: 0 0 0 3px var(--accent2) inset;
+    }
+
+    .chip {
+      display: inline-flex; align-items: center; gap: 8px; padding: 10px 12px; border: 3px solid var(--border);
+      border-radius: 999px; background: #fff; font-weight: 800; cursor: pointer; user-select: none;
+    }
+    .chip input { accent-color: var(--orange); width: 18px; height: 18px; }
+
+    .userRow {
+      display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    }
+    .userRow input {
+      width: 200px; border: 3px solid var(--border); border-radius: 12px; padding: 10px 12px; background: #fff; font-weight: 700; font-family: inherit;
+    }
+    .btn {
+      appearance: none; border: 3px solid var(--border); background: var(--orange); color: #fff; font-weight: 900; text-transform: uppercase;
+      padding: 10px 14px; border-radius: 12px; cursor: pointer; box-shadow: var(--shadow); transform: translateY(0);
+    }
+    .btn:active { transform: translateY(3px); box-shadow: 0 3px 0 var(--border), 0 0 0 3px var(--border); }
+
+    .summary {
+      display: flex; gap: 12px; flex-wrap: wrap; padding: 0 14px 12px; font-weight: 800; color: var(--muted);
+    }
+    .summary strong { color: var(--border); }
+
+    /* Grid of Oranges */
+    main { padding: 14px; }
+    .grove {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+      padding: 6rem 2rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    @media (max-width: 768px) {
+      .grove {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        padding-top: 5rem;
+      }
+    }
+
+    .orange {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: 0 auto;
+      cursor: crosshair;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    @media (max-width: 768px) {
+      .orange { width: 150px; height: 150px; }
+    }
+
+    .orange:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 0 rgba(0,0,0,0.1);
+    }
+
+    .shadow {
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 20px;
+      background: rgba(0,0,0,0.1);
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      z-index: 0;
+    }
+    .orange:hover .shadow {
+      transform: translateX(-50%) scale(1.1);
+    }
+
+    .orange-svg {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    .whole-orange-group {
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+    .orange:hover .whole-orange-group {
+      opacity: 0;
+    }
+
+    .whole-orange-body {
+      fill: var(--orange);
+      stroke: var(--border);
+      stroke-width: 2;
+    }
+
+    .sliced-orange-group {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .orange:hover .sliced-orange-group {
+      opacity: 1;
+    }
+
+    .sliced-orange-body {
+      fill: var(--seg-inner);
+      stroke: var(--border);
+      stroke-width: 2;
+    }
+
+    .slice-line {
+      stroke: var(--border);
+      stroke-width: 2;
+    }
+
+    .interactive-segments {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      width: 0;
+      height: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .orange:hover .interactive-segments {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .segment-dot {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: var(--seg-dot);
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+      font-weight: 800;
+    }
+    @media (max-width: 768px) {
+      .segment-dot {
+        width: 40px;
+        height: 40px;
+        font-size: 0.6rem;
+      }
+    }
+
+    .segment-dot.hidden {
+      display: none;
+    }
+
+    .segment-dot:hover {
+      transform: scale(1.1);
+      background: var(--seg-inner);
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+    }
+
+    .project-label {
+      position: absolute;
+      bottom: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      text-align: center;
+      width: 100%;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+    @media (max-width: 768px) {
+      .project-label {
+        font-size: 0.7rem;
+        bottom: -30px;
+      }
+    }
+
+    .state {
+      text-align: center;
+      color: var(--muted);
+      padding: 40px 12px;
+      font-weight: 800;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 225, 93, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.5s ease;
+      z-index: 1000;
+    }
+    .modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-content {
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      transform: scale(0.8);
+      transition: all 0.5s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal.active .modal-content {
+      transform: scale(1);
+    }
+    @media (max-width: 768px) {
+      .modal-content {
+        padding: 1rem;
+        max-width: 90vw;
+      }
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--orange);
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+      font-weight: 900;
+    }
+    .close-btn:hover {
+      transform: rotate(90deg);
+    }
+
+    .modal h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      font-weight: 900;
+    }
+    @media (max-width: 768px) {
+      .modal h3 {
+        font-size: 1.2rem;
+      }
+    }
+
+    .modal h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.8rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--orange);
+    }
+
+    .modal p, .modal li {
+      line-height: 1.6;
+      margin-bottom: 0.8rem;
+      font-weight: 600;
+    }
+
+    .modal pre {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      overflow-x: auto;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .modal a {
+      color: var(--accent2);
+      font-weight: 800;
+    }
+
+    .modal-navigation {
+      display: flex;
+      justify-content: center;
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(0,0,0,0.1);
+      flex-shrink: 0;
+    }
+
+    .modal-nav-dot {
+      width: 12px;
+      height: 12px;
+      background: var(--seg-dot);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      margin: 0 5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .modal-nav-dot.active {
+      background: var(--orange);
+      border: 2px solid var(--border);
+      transform: scale(1.2);
+      box-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+    }
+
+    .modal-nav-dot:hover:not(.active) {
+      transform: scale(1.1);
+      background: var(--seg-inner);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+
+    .sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  </style>
+<base target="_blank">
+</head>
+<body>
+  <div class="intro" id="intro">
+    <h1>Orange Repos</h1>
+    <p>A citrus-coded grove for GitHub repositories. Hover to reveal segments, click to explore.</p>
+    <button id="introBtn">Recompose</button>
+  </div>
+
+  <header>
+    <div class="bar" role="region" aria-label="Controls">
+      <div class="title">
+        <div class="badge" title="GitHub Grove">◼︎ GROVE</div>
+        <div>GitHub Oranges</div>
+      </div>
+
+      <div class="controls">
+        <input id="search" type="text" placeholder="🔎 Search repos…" aria-label="Search repositories" />
+        <label class="chip" for="pagesOnly"><input id="pagesOnly" type="checkbox" /> Pages only</label>
+        <label class="chip" for="forksToo"><input id="forksToo" type="checkbox" checked /> Include forks</label>
+      </div>
+
+      <div class="userRow">
+        <input id="user" type="text" value="hartswf0" aria-label="GitHub username"/>
+        <button id="load" class="btn" aria-label="Load repositories">Fetch</button>
+      </div>
+
+      <div class="summary" id="summary">Ready.</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="grove" id="grove" role="list"></div>
+    <div id="status" class="state" hidden>Loading…</div>
+  </main>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal()">×</button>
+      <h3 id="modal-title"></h3>
+      <div id="modal-body"></div>
+      <div class="modal-navigation" id="modal-navigation-dots"></div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    const el = {
+      grove: document.getElementById('grove'),
+      status: document.getElementById('status'),
+      search: document.getElementById('search'),
+      pagesOnly: document.getElementById('pagesOnly'),
+      forksToo: document.getElementById('forksToo'),
+      user: document.getElementById('user'),
+      load: document.getElementById('load'),
+      summary: document.getElementById('summary'),
+      modal: document.getElementById('modal'),
+      modalTitle: document.getElementById('modal-title'),
+      modalBody: document.getElementById('modal-body'),
+      modalNav: document.getElementById('modal-navigation-dots'),
+      intro: document.getElementById('intro'),
+      introBtn: document.getElementById('introBtn'),
+    };
+
+    const state = {
+      user: (new URL(location.href).searchParams.get('user')) || el.user.value.trim() || 'hartswf0',
+      repos: [],
+      view: [],
+      query: '',
+      pagesOnly: false,
+      forksToo: true,
+      sortKey: 'updated',
+      sortDir: 'desc',
+      currentProject: null,
+      currentSegmentIndex: 0,
+    };
+
+    const fmt = {
+      sizeKB: kb => {
+        const mb = kb/1024; if (mb >= 1) return `${mb.toFixed(mb<10?1:0)} MB`; return `${Math.round(kb)} KB`;
+      },
+      date: iso => iso ? new Date(iso).toLocaleDateString(undefined, {year:'numeric', month:'short', day:'2-digit'}) : 'Unknown',
+      type: r => r.archived ? 'Archived' : (r.fork ? 'Fork' : 'Public'),
+      swatch: i => (i%3===0? '': (i%3===1? 'blue' : 'yellow')),
+    };
+
+    function isValidUrl(u){ try{ new URL(u); return true; } catch{ return false; } }
+
+    function computeLinks(r, user){
+      const links = [];
+      if (r.homepage && r.homepage.trim()) {
+        links.push({label: 'Homepage', url: r.homepage.trim(), kind: 'home'});
+      }
+      if (r.has_pages){
+        const base = `${user}.github.io`;
+        const isUserSite = r.name.toLowerCase() === `${user.toLowerCase()}.github.io`;
+        const url = isUserSite ? `https://${base}/` : `https://${base}/${encodeURIComponent(r.name)}/`;
+        links.push({label: 'Pages', url, kind: 'page'});
+      }
+      links.push({label: 'Repo', url: r.html_url, kind: 'repo'});
+      return links.filter(l=>isValidUrl(l.url));
+    }
+
+    function createProjectFromRepo(r) {
+      const segments = [];
+      // Segment 01: Description
+      segments.push({
+        id: "01",
+        type: "text",
+        content: r.description || "No description provided.",
+      });
+      // Segment 02: Language
+      segments.push({
+        id: "02",
+        type: "text",
+        content: `Language: ${r.language || "None"}`,
+      });
+      // Segment 03: Size & Stats
+      segments.push({
+        id: "03",
+        type: "code",
+        content: `Size: ${fmt.sizeKB(r.size)}\nStars: ${r.stargazers_count || 0}\nForks: ${r.forks_count || 0}`,
+      });
+      // Segment 04: Updated
+      segments.push({
+        id: "04",
+        type: "text",
+        content: `Last updated: ${fmt.date(r.updated_at)}`,
+      });
+      // Segment 05: Links
+      const links = computeLinks(r, state.user);
+      const linksText = links.map(l => `• ${l.label}: ${l.url}`).join('\n');
+      segments.push({
+        id: "05",
+        type: "code",
+        content: linksText || "No links available.",
+      });
+      // Segment 06: Status & Topics
+      const status = fmt.type(r);
+      const topics = r.topics && r.topics.length > 0 ? `\nTopics: ${r.topics.join(', ')}` : '';
+      segments.push({
+        id: "06",
+        type: "text",
+        content: `Status: ${status}${topics}`,
+      });
+      return {
+        id: r.id,
+        title: r.name,
+        segments: segments,
+        repoData: r,
+      };
+    }
+
+    function createOrange(project) {
+      const orange = document.createElement('div');
+      orange.className = 'orange';
+      orange.dataset.projectId = project.id;
+      orange.setAttribute('role', 'listitem');
+      orange.setAttribute('aria-label', `Repository ${project.title}`);
+
+      // Generate slice lines for 6 segments
+      let sliceLinesSvg = '';
+      const numSlices = 6;
+      const innerRadius = 20;
+      const outerRadius = 80;
+      sliceLinesSvg += `<circle cx="100" cy="100" r="${innerRadius}" fill="var(--orange)" stroke="var(--border)" stroke-width="2"/>`;
+      for (let i = 0; i < numSlices; i++) {
+        const angle = i * (360 / numSlices) * Math.PI / 180;
+        const x1 = 100 + innerRadius * Math.cos(angle);
+        const y1 = 100 + innerRadius * Math.sin(angle);
+        const x2 = 100 + outerRadius * Math.cos(angle);
+        const y2 = 100 + outerRadius * Math.sin(angle);
+        sliceLinesSvg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="slice-line"/>`;
+      }
+
+      // Generate interactive dots
+      let interactiveDotsHtml = '';
+      const totalPositions = 6;
+      for (let i = 0; i < totalPositions; i++) {
+        const segmentData = project.segments[i];
+        const isHiddenClass = segmentData ? '' : 'hidden';
+        const segmentId = segmentData ? segmentData.id : '';
+        interactiveDotsHtml += `
+          <div class="segment-dot ${isHiddenClass}" data-segment="${segmentId}" data-index="${i}" data-project-id="${project.id}">
+            ${segmentId}
+          </div>
+        `;
+      }
+
+      orange.innerHTML = `
+        <div class="shadow"></div>
+        <svg class="orange-svg" viewBox="0 0 200 200">
+          <g class="whole-orange-group">
+            <circle cx="100" cy="100" r="80" class="whole-orange-body"/>
+          </g>
+          <g class="sliced-orange-group">
+            <circle cx="100" cy="100" r="80" class="sliced-orange-body"/>
+            ${sliceLinesSvg}
+          </g>
+        </svg>
+        <div class="interactive-segments">
+          ${interactiveDotsHtml}
+        </div>
+        <div class="project-label">${project.title}</div>
+      `;
+
+      // Add event listeners to dots
+      orange.querySelectorAll('.segment-dot').forEach(dot => {
+        dot.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const projectId = parseInt(dot.dataset.projectId);
+          const segmentIndex = parseInt(dot.dataset.index);
+          openSegment(projectId, segmentIndex);
+        });
+      });
+
+      return orange;
+    }
+
+    function arrangeSegmentsRadially() {
+      const containers = document.querySelectorAll('.interactive-segments');
+      containers.forEach(container => {
+        const segments = container.querySelectorAll('.segment-dot');
+        const positioningRadius = container.closest('.orange').offsetWidth * 0.6 / 2;
+        segments.forEach((seg, index) => {
+          const angleStep = (2 * Math.PI) / 6;
+          const angle = (index * angleStep) + (angleStep / 2) - (Math.PI / 2);
+          const x = Math.cos(angle) * positioningRadius;
+          const y = Math.sin(angle) * positioningRadius;
+          seg.style.left = `calc(50% + ${x}px)`;
+          seg.style.top = `calc(50% + ${y}px)`;
+          seg.style.transform = 'translate(-50%, -50%)';
+        });
+      });
+    }
+
+    function openSegment(projectId, segmentIndex) {
+      const repo = state.view.find(r => r.id === projectId);
+      if (!repo || !repo.segments?.[segmentIndex]) {
+        // Fallback: if repo not found in view, try to find in original repos and create project
+        const originalRepo = state.repos.find(r => r.id === projectId);
+        if (!originalRepo) return;
+        const project = createProjectFromRepo(originalRepo);
+        if (!project.segments[segmentIndex]) return;
+        state.currentProject = project;
+      } else {
+        state.currentProject = repo;
+      }
+      
+      state.currentSegmentIndex = segmentIndex;
+      const project = state.currentProject;
+      const segment = project.segments[segmentIndex];
+
+      el.modalTitle.textContent = `PROJECT ${String(project.repoData.id).padStart(2, '0')} — ${project.title}`;
+      
+      let content = '';
+      switch(segment.type) {
+        case 'text':
+          content = `<p>${segment.content.replace(/\n/g, '</p><p>')}</p>`;
+          break;
+        case 'code':
+          content = `<pre><code>${segment.content}</code></pre>`;
+          break;
+        case 'image':
+          content = `<img src="${segment.content}" alt="Segment ${segment.id}">`;
+          break;
+      }
+
+      el.modalBody.innerHTML = `
+        <h4>SEGMENT ${segment.id}</h4>
+        ${content}
+      `;
+
+      // Render navigation dots
+      el.modalNav.innerHTML = '';
+      project.segments.forEach((seg, i) => {
+        const dot = document.createElement('span');
+        dot.className = 'modal-nav-dot';
+        if (i === segmentIndex) dot.classList.add('active');
+        dot.onclick = () => openSegment(projectId, i);
+        el.modalNav.appendChild(dot);
+      });
+
+      el.modal.classList.add('active');
+      playClickSound();
+    }
+
+    function closeModal() {
+      el.modal.classList.remove('active');
+      state.currentProject = null;
+      state.currentSegmentIndex = 0;
+    }
+
+    function closeIntro() {
+      el.intro.classList.add('hidden');
+    }
+
+    function playClickSound() {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
+      gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+      oscillator.start(audioCtx.currentTime);
+      oscillator.stop(audioCtx.currentTime + 0.3);
+    }
+
+    function applyFilters() {
+      const q = state.query.trim().toLowerCase();
+      state.view = state.repos.filter(r => {
+        if (!state.forksToo && r.fork) return false;
+        if (state.pagesOnly) {
+          const hasHome = !!(r.homepage && r.homepage.trim());
+          if (!r.has_pages && !hasHome) return false;
+        }
+        if (!q) return true;
+        const hay = `${r.name}\n${r.description||''}\n${r.language||''}\n${r.topics?.join(' ')||''}`.toLowerCase();
+        return hay.includes(q);
+      });
+
+      const dir = state.sortDir === 'asc' ? 1 : -1;
+      state.view.sort((a,b) => {
+        const K = state.sortKey;
+        let va, vb;
+        switch(K){
+          case 'name': 
+            va = a.name.toLowerCase(); 
+            vb = b.name.toLowerCase(); 
+            return va < vb ? -1*dir : va > vb ? 1*dir : 0;
+          case 'size': 
+            va = a.size; 
+            vb = b.size; 
+            return (va - vb)*dir;
+          case 'updated': 
+          default: 
+            va = new Date(a.updated_at).getTime(); 
+            vb = new Date(b.updated_at).getTime(); 
+            return (va - vb)*dir;
+        }
+      });
+
+      render();
+    }
+
+    function render() {
+      el.grove.replaceChildren();
+      if (!state.view.length) {
+        el.status.hidden = false;
+        el.status.textContent = 'No repositories match your filters.';
+        el.summary.innerHTML = `User <strong>${state.user}</strong> • No results.`;
+        return;
+      }
+      el.status.hidden = true;
+
+      const projectData = state.view.map(r => createProjectFromRepo(r));
+      projectData.forEach(p => el.grove.appendChild(createOrange(p)));
+      arrangeSegmentsRadially();
+
+      // Summary
+      const total = state.repos.length;
+      const forks = state.repos.filter(r => r.fork).length;
+      const withPages = state.repos.filter(r => r.has_pages || (r.homepage && r.homepage.trim())).length;
+      el.summary.innerHTML = `User <strong>${state.user}</strong> • Showing <strong>${state.view.length}</strong> of ${total} repos • Pages: <strong>${withPages}</strong> • Forks: ${forks}`;
+    }
+
+    async function fetchAllRepos(user){
+      const opts = { headers: { 'Accept':'application/vnd.github+json' } };
+      let page = 1; let all = [];
+      while(true){
+        const url = `https://api.github.com/users/${encodeURIComponent(user)}/repos?per_page=100&page=${page}&type=owner&sort=updated`;
+        const res = await fetch(url, opts);
+        if (!res.ok){
+          const msg = res.status === 404 ? 'User not found' : `GitHub error ${res.status}`;
+          throw new Error(msg);
+        }
+        const data = await res.json();
+        all = all.concat(data);
+        const link = res.headers.get('Link');
+        if (link && /rel="next"/.test(link)) { page++; } else { break; }
+      }
+      return all;
+    }
+
+    async function load(){
+      try{
+        el.status.hidden = false;
+        el.status.textContent = 'Loading…';
+        el.grove.replaceChildren();
+        state.user = el.user.value.trim() || 'hartswf0';
+        const repos = await fetchAllRepos(state.user);
+        state.repos = repos.map(r => ({
+          id: r.id,
+          name: r.name,
+          full_name: r.full_name,
+          html_url: r.html_url,
+          description: r.description,
+          language: r.language,
+          size: r.size,
+          fork: r.fork,
+          archived: r.archived,
+          updated_at: r.updated_at,
+          has_pages: r.has_pages,
+          homepage: r.homepage,
+          stargazers_count: r.stargazers_count || 0,
+          forks_count: r.forks_count || 0,
+          topics: r.topics || [],
+        }));
+        state.query = el.search.value || '';
+        state.pagesOnly = el.pagesOnly.checked;
+        state.forksToo = el.forksToo.checked;
+        state.sortKey = 'updated';
+        state.sortDir = 'desc';
+        applyFilters();
+        const u = new URL(location.href); u.searchParams.set('user', state.user); history.replaceState({}, '', u);
+      }catch(err){
+        console.error(err);
+        el.grove.replaceChildren();
+        el.status.hidden = false;
+        el.status.textContent = `⚠️ ${err.message}`;
+        el.summary.innerHTML = `⚠️ Error fetching repos.`;
+      }
+    }
+
+    // Events
+    el.load.addEventListener('click', load);
+    el.user.addEventListener('keydown', e => { if(e.key === 'Enter') load(); });
+    el.search.addEventListener('input', e => { state.query = e.target.value; applyFilters(); });
+    el.pagesOnly.addEventListener('change', e => { state.pagesOnly = e.target.checked; applyFilters(); });
+    el.forksToo.addEventListener('change', e => { state.forksToo = e.target.checked; applyFilters(); });
+    el.introBtn.addEventListener('click', closeIntro);
+
+    // Sort keyboard shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.target.matches('input, textarea')) return;
+      if (e.key.toLowerCase() === 'n') { state.sortKey = 'name'; state.sortDir = state.sortKey === 'name' && state.sortDir === 'asc' ? 'desc' : 'asc'; applyFilters(); }
+      if (e.key.toLowerCase() === 'u') { state.sortKey = 'updated'; state.sortDir = 'desc'; applyFilters(); }
+      if (e.key.toLowerCase() === 's') { state.sortKey = 'size'; state.sortDir = state.sortKey === 'size' && state.sortDir === 'asc' ? 'desc' : 'asc'; applyFilters(); }
+    });
+
+    // Modal events
+    el.modal.addEventListener('click', e => { if (e.target === el.modal) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // Make functions global for HTML onclick handlers
+    window.closeModal = closeModal;
+
+    // Initial load
+    el.user.value = state.user;
+    load();
+  })();
+  </script>
+</body>
+</html>

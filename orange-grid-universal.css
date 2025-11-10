@@ -1,0 +1,159 @@
+/* 🍊 ORANGE GRID UNIVERSAL THEME */
+/* Apply to all HTML files for consistency */
+
+:root {
+  --bg: #0a0a0a;
+  --text: #e0e0e0;
+  --muted: #666;
+  --accent: #FF6B35;
+  --card-bg: rgba(255, 255, 255, 0.02);
+  --border: rgba(255, 107, 53, 0.2);
+  --hover: rgba(255, 107, 53, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.6 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Header */
+header {
+  background: rgba(10, 10, 10, 0.98);
+  backdrop-filter: blur(20px);
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+h1 {
+  margin: 0 0 10px;
+  font-size: clamp(24px, 5vw, 48px);
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), #FFA500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.home-link {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 24px;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: all 0.2s;
+}
+
+.home-link:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Circular Elements */
+.circle {
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 107, 53, 0.2), rgba(255, 107, 53, 0.05));
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.circle:hover {
+  background: radial-gradient(circle at 30% 30%, rgba(255, 107, 53, 0.4), rgba(255, 107, 53, 0.15));
+  border-color: var(--accent);
+  transform: scale(1.05);
+  box-shadow: 0 10px 40px rgba(255, 107, 53, 0.3);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  border: none;
+  border-radius: 50%;
+  min-width: 60px;
+  min-height: 60px;
+  padding: 15px;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 107, 53, 0.2), rgba(255, 107, 53, 0.05));
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 20px;
+  border: 1px solid var(--border);
+}
+
+.btn:hover {
+  background: radial-gradient(circle at 30% 30%, rgba(255, 107, 53, 0.4), rgba(255, 107, 53, 0.15));
+  border-color: var(--accent);
+  transform: scale(1.1);
+  box-shadow: 0 5px 20px rgba(255, 107, 53, 0.3);
+}
+
+.btn.primary {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+}
+
+.btn.primary:hover {
+  background: #FFA500;
+}
+
+/* Cards */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  background: var(--hover);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+/* Links */
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 40px 20px;
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--text);
+  margin-top: 80px;
+  border-top: 1px solid var(--border);
+}
+
+footer a {
+  color: var(--accent);
+  font-weight: 700;
+}

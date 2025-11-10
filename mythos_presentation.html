@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watson Hartsoe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .terminal {
+            border: 2px solid #0f0;
+            max-width: 1100px;
+            width: 100%;
+            padding: 0;
+            background: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .header {
+            border-bottom: 2px solid #0f0;
+            padding: 1.5rem 2rem;
+            background: rgba(0, 255, 0, 0.05);
+        }
+
+        .title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .section {
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+            font-size: 1.1rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            padding: 1.5rem 0;
+            font-size: 1rem;
+        }
+
+        .stat {
+            background: rgba(0, 255, 0, 0.1);
+            padding: 0.8rem 1rem;
+            border: 1px solid #0f0;
+        }
+
+        .stat-label {
+            opacity: 0.7;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .footer {
+            border-top: 2px solid #0f0;
+            padding: 1.5rem 2rem;
+            background: rgba(0, 255, 0, 0.05);
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        a {
+            color: #0f0;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        a:hover {
+            border-bottom-color: #0f0;
+        }
+
+        .cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="header">
+            <div class="title">WATSON HARTSOE  |  Slopwright</div>
+            <div class="subtitle">Mining AI garbage for usable story parts</div>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                I'm a slopwright—I mine AI garbage for usable story parts.<br>
+                It's messy: 12 tries gets me 3 good scenes.
+            </div>
+
+            <div class="section">
+                Those 3 blocks saved me half a day on my last film.<br>
+                Right now it's just me sorting, but I'm building tools<br>
+                so other people can sort faster.
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-label">Conversion rate</div>
+                    <div class="stat-value">12 drafts → 3 scenes</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Time saved</div>
+                    <div class="stat-value">4.5 hours per project</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Current tooling</div>
+                    <div class="stat-value">127 LEGOS blocks built</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Collaborators</div>
+                    <div class="stat-value">Looking for the first ones</div>
+                </div>
+            </div>
+
+            <div class="section">
+                We'll see if anyone wants to.<span class="cursor">█</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <a href="https://hartswf0.github.io" target="_blank">hartswf0.github.io</a>
+            <span>|</span>
+            <a href="mailto:watson.hartsoe@gatech.edu">watson.hartsoe@gatech.edu</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <title>GitHub Repo Index — Bauhaus Table + Playlists</title>
+  <style>
+    :root{
+      --bg:#f5f3ef;          /* cream paper */
+      --ink:#111111;         /* deep black */
+      --muted:#5a5a5a;       /* mid gray */
+      --grid:#cfcfcf;        /* hairline grid */
+      --accent:#e52521;      /* Bauhaus red */
+      --accent2:#0055ff;     /* Bauhaus blue */
+      --accent3:#f2c300;     /* Bauhaus yellow */
+      --ok:#146b2e;
+      --warn:#9d3a00;
+      --error:#b00020;
+      --radius:18px;
+      --pane: 14px;
+      --shadow: 0 6px 0 var(--ink), 0 0 0 3px var(--ink);
+    }
+
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font: 16px/1.4 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    }
+
+    /* Header / Controls */
+    header{
+      position:sticky; top:0; z-index:50;
+      background:linear-gradient(180deg, rgba(245,243,239,0.95), rgba(245,243,239,0.85));
+      backdrop-filter:saturate(1.1) blur(6px);
+      border-bottom:4px solid var(--ink);
+    }
+    .bar{ display:grid; gap:10px; align-items:center;
+      grid-template-columns: 1fr; padding: 14px 14px 12px; }
+    @media (min-width:900px){ .bar{ grid-template-columns: 260px 1fr auto auto; } }
+
+    .title{ font-weight:900; letter-spacing:.5px; text-transform:uppercase; display:flex; align-items:center; gap:10px; }
+    .badge{ display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; background:var(--accent3); color:var(--ink); padding:4px 8px; border:3px solid var(--ink); border-radius:999px; }
+
+    .controls{ display:flex; gap:10px; flex-wrap:wrap; }
+    .controls input[type="text"]{ width:100%; max-width:520px; appearance:none; border:3px solid var(--ink); border-radius:999px; padding:12px 16px; background:#fff; font-weight:700; outline:none; }
+    .controls input[type="text"]:focus{ box-shadow:0 0 0 3px var(--accent2) inset; }
+
+    .chip{ display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border:3px solid var(--ink); border-radius:999px; background:#fff; font-weight:800; cursor:pointer; user-select:none; }
+    .chip input{ accent-color:var(--accent); width:18px; height:18px; }
+
+    .userRow{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .userRow input{ width:200px; border:3px solid var(--ink); border-radius:12px; padding:10px 12px; background:#fff; font-weight:700; }
+    .btn{ appearance:none; border:3px solid var(--ink); background:var(--accent); color:#fff; font-weight:900; text-transform:uppercase; padding:10px 14px; border-radius:12px; cursor:pointer; box-shadow:var(--shadow); transform:translateY(0); }
+    .btn.secondary{ background:#fff; color:var(--ink); }
+    .btn:active{ transform:translateY(3px); box-shadow:0 3px 0 var(--ink), 0 0 0 3px var(--ink); }
+
+    /* Summary strip */
+    .summary{ display:flex; gap:12px; flex-wrap:wrap; padding:0 14px 12px; font-weight:800; color:var(--muted); }
+    .summary strong{ color:var(--ink); }
+
+    /* Main layout */
+    main{ padding: 14px; display:grid; gap:14px; grid-template-columns: 1fr; }
+    @media (min-width:1200px){ main{ grid-template-columns: 3fr 1fr; } }
+
+    /* Grid of repo cards – Bauhaus periodic-table vibe */
+    .grid{ display:grid; gap:14px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+
+    .card{ position:relative; background:#fff; border:4px solid var(--ink); border-radius:var(--radius); box-shadow: 0 0 0 6px #fff inset; padding: var(--pane); transition:transform .08s ease; display:grid; grid-template-rows:auto auto 1fr auto auto; min-height:220px; }
+    .card:hover{ transform: translateY(-2px); }
+
+    .selectRow{ display:flex; align-items:center; gap:10px; }
+    .selectRow input[type="checkbox"]{ width:20px; height:20px; accent-color:var(--accent); }
+
+    .swatch{ position:absolute; width:18px; height:18px; border:4px solid var(--ink); border-radius:4px; top:-10px; right:-10px; background:var(--accent); box-shadow: 6px 6px 0 var(--ink); }
+    .swatch.blue{ background:var(--accent2); } .swatch.yellow{ background:var(--accent3); }
+
+    .name{ display:flex; align-items:flex-start; gap:8px; font-weight:900; text-transform:uppercase; line-height:1.1; word-break:break-word; margin:6px 0; font-size: clamp(16px, 3.6vw, 20px); }
+    .meta{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:6px; }
+    .pill{ border:3px solid var(--ink); border-radius:999px; padding:4px 8px; font-size:12px; font-weight:900; background:#fff; }
+    .pill.ok{ background:#e7f5eb; border-color:var(--ok); } .pill.warn{ background:#fff3e6; border-color:var(--warn); }
+
+    .desc{ color:var(--muted); font-weight:600; font-size:13px; min-height:40px; }
+
+    .tags{ display:flex; gap:6px; flex-wrap:wrap; margin:6px 0; }
+    .tag{ background:#fff; border:2px dashed var(--ink); border-radius:999px; padding:2px 8px; font-size:12px; font-weight:800; }
+    .tag button{ border:none; background:none; cursor:pointer; font-weight:900; margin-left:6px; }
+
+    .timeline{ margin:6px 0; height:10px; border:3px solid var(--ink); border-radius:999px; background:repeating-linear-gradient(90deg, #eee 0 8px, #fff 8px 16px); position:relative; }
+    .bar{ position:absolute; top:-3px; bottom:-3px; left:0; border-radius:999px; background:linear-gradient(90deg, var(--accent2), var(--accent3)); border:3px solid var(--ink); }
+    .ticks{ display:flex; justify-content:space-between; font-size:10px; color:var(--muted); margin-top:4px; }
+
+    .actions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+    .a{ display:inline-flex; align-items:center; gap:6px; text-decoration:none; font-weight:900; border:3px solid var(--ink); border-radius:12px; padding:8px 10px; }
+    .a.repo{ background:var(--accent2); color:#fff; } .a.page{ background:var(--accent3); color:var(--ink); } .a.home{ background:#fff; } .a.details{ background:#fff; }
+
+    /* Details drawer inside card */
+    .details{ margin-top:8px; border:3px dashed var(--ink); border-radius:14px; padding:10px; background:#fafafa; display:none; }
+    .details.open{ display:block; }
+    .detailGrid{ display:grid; grid-template-columns: 1fr; gap:8px; }
+    @media(min-width:700px){ .detailGrid{ grid-template-columns: 1fr 1fr; } }
+    .kv{ font-size:13px; }
+
+    /* Right rail: playlists & preview wall */
+    .rail{ position:sticky; top:88px; align-self:start; display:grid; gap:14px; }
+    .panel{ background:#fff; border:4px solid var(--ink); border-radius:18px; padding:12px; box-shadow:0 0 0 6px #fff inset; }
+    .panel h3{ margin:0 0 8px; font-size:14px; text-transform:uppercase; letter-spacing:.5px; }
+
+    .playlistList{ display:grid; gap:10px; }
+    .playlist{ border:3px solid var(--ink); border-radius:14px; padding:8px; background:#fff; }
+    .playlist header{ display:flex; justify-content:space-between; align-items:center; border:none; padding:0; background:none; position:relative; top:auto; }
+    .playlist .items{ display:grid; gap:6px; margin-top:8px; max-height:260px; overflow:auto; }
+    .plItem{ display:flex; justify-content:space-between; align-items:center; gap:6px; border:2px dashed var(--ink); border-radius:12px; padding:4px 6px; font-size:12px; }
+    .plItem .row{ display:flex; gap:6px; align-items:center; }
+    .plItem button{ border:2px solid var(--ink); border-radius:8px; background:#fff; padding:2px 6px; font-weight:900; cursor:pointer; }
+
+    /* Preview wall */
+    .wallControls{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .wall{ display:grid; gap:8px; grid-template-columns: repeat(auto-fill, minmax(var(--tile, 240px), 1fr)); }
+    .thumb{ position:relative; border:3px solid var(--ink); border-radius:12px; overflow:hidden; background:#fff; }
+    .thumb iframe{ width:100%; height:180px; border:0; background:#fff; }
+    .thumb footer{ padding:6px; font-size:12px; font-weight:800; display:flex; justify-content:space-between; align-items:center; }
+
+    /* Bottom sheet for bulk actions on mobile */
+    .sheet{ position:fixed; left:0; right:0; bottom:0; z-index:60; display:none; }
+    .sheet.open{ display:block; }
+    .sheet .wrap{ margin:10px; background:#fff; border:4px solid var(--ink); border-radius:18px; padding:10px; box-shadow:0 0 0 6px #fff inset; }
+    .sheet .row{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+
+    /* Empty / status */
+    .state{ text-align:center; color:var(--muted); padding:40px 12px; font-weight:800; }
+    .sr-only{ position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+
+    @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bar" role="region" aria-label="Controls">
+      <div class="title">
+        <div class="badge" title="Bauhaus Index">◼︎ INDEX</div>
+        <div>GitHub Repo Index</div>
+      </div>
+
+      <div class="controls">
+        <input id="search" type="text" placeholder="🔎 Search name, description, tags…" aria-label="Search repositories" />
+        <label class="chip" for="pagesOnly"><input id="pagesOnly" type="checkbox" /> Pages only</label>
+        <label class="chip" for="forksToo"><input id="forksToo" type="checkbox" checked /> Include forks</label>
+        <label class="chip" for="tagFilter">Tag filter <input id="tagFilter" type="text" placeholder="#tag" style="min-width:120px"></label>
+      </div>
+
+      <div class="userRow">
+        <input id="user" type="text" value="hartswf0" aria-label="GitHub username"/>
+        <button id="load" class="btn" aria-label="Load repositories">Fetch</button>
+        <button id="openPlaylists" class="btn secondary" aria-label="Open playlists">Playlists</button>
+        <button id="toggleWall" class="btn secondary" aria-label="Toggle preview wall">Preview Wall</button>
+        <button id="exportView" class="btn secondary" aria-label="Export current view">Export</button>
+        <input id="importInput" type="file" accept="application/json" hidden />
+        <button id="importBtn" class="btn secondary" aria-label="Import playlists">Import</button>
+      </div>
+
+      <div class="summary" id="summary">Ready.</div>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <div id="grid" class="grid" role="list"></div>
+      <div id="status" class="state" hidden>Loading…</div>
+    </section>
+
+    <aside class="rail">
+      <div class="panel" id="playlistsPanel">
+        <h3>Playlists</h3>
+        <div class="row" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <input id="plName" placeholder="New playlist name" style="flex:1; border:3px solid var(--ink); border-radius:12px; padding:8px;">
+          <button id="plCreate" class="btn">Create</button>
+        </div>
+        <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+          <button id="plAddSel" class="btn secondary">Add Selected</button>
+          <button id="plClearSel" class="btn secondary">Clear Selected</button>
+        </div>
+        <div class="playlistList" id="playlistList" style="margin-top:10px;"></div>
+      </div>
+
+      <div class="panel" id="wallPanel">
+        <h3>Preview Wall</h3>
+        <div class="wallControls">
+          <label class="chip">Tile <input id="tileRange" type="range" min="180" max="420" value="240"></label>
+          <select id="wallSource" style="border:3px solid var(--ink); border-radius:12px; padding:6px 8px; font-weight:800;">
+            <option value="selected">Selected</option>
+            <option value="playlist">Active playlist</option>
+            <option value="view">Current view</option>
+          </select>
+        </div>
+        <div class="wall" id="wall" style="--tile:240px; margin-top:8px;"></div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Mobile bottom sheet for bulk actions -->
+  <div class="sheet" id="sheet">
+    <div class="wrap">
+      <div class="row">
+        <div id="selCount">0 selected</div>
+        <button id="sheetAdd" class="btn">Add to Playlist</button>
+        <button id="sheetClear" class="btn secondary">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Optional inline test panel (opens when URL hash is #test) -->
+  <div class="panel" id="testPanel" style="position:fixed; right:10px; bottom:10px; width:min(480px, 92vw); max-height:50vh; overflow:auto; display:none; z-index:99;">
+    <h3>Self‑Tests</h3>
+    <div id="testResults" style="font-family:monospace; font-size:12px; white-space:pre-wrap"></div>
+  </div>
+
+  <script>
+  (function(){
+    const el = {
+      grid: document.getElementById('grid'),
+      status: document.getElementById('status'),
+      search: document.getElementById('search'),
+      pagesOnly: document.getElementById('pagesOnly'),
+      forksToo: document.getElementById('forksToo'),
+      tagFilter: document.getElementById('tagFilter'),
+      user: document.getElementById('user'),
+      load: document.getElementById('load'),
+      summary: document.getElementById('summary'),
+      // playlists
+      plName: document.getElementById('plName'),
+      plCreate: document.getElementById('plCreate'),
+      plAddSel: document.getElementById('plAddSel'),
+      plClearSel: document.getElementById('plClearSel'),
+      playlistList: document.getElementById('playlistList'),
+      openPlaylists: document.getElementById('openPlaylists'),
+      // wall
+      toggleWall: document.getElementById('toggleWall'),
+      wall: document.getElementById('wall'),
+      wallPanel: document.getElementById('wallPanel'),
+      wallSource: document.getElementById('wallSource'),
+      tileRange: document.getElementById('tileRange'),
+      // export/import
+      exportView: document.getElementById('exportView'),
+      importBtn: document.getElementById('importBtn'),
+      importInput: document.getElementById('importInput'),
+      // mobile sheet
+      sheet: document.getElementById('sheet'),
+      selCount: document.getElementById('selCount'),
+      sheetAdd: document.getElementById('sheetAdd'),
+      sheetClear: document.getElementById('sheetClear'),
+      // tests
+      testPanel: document.getElementById('testPanel'),
+      testResults: document.getElementById('testResults'),
+    };
+
+    const STORAGE_KEYS = {
+      playlists: (user)=> `repoIndex_playlists_${user}`,
+      tags: (user)=> `repoIndex_tags_${user}`,
+    };
+
+    const state = {
+      user: (new URL(location.href).searchParams.get('user')) || el.user.value.trim() || 'hartswf0',
+      repos: [],
+      view: [],
+      query: '',
+      pagesOnly: false,
+      forksToo: true,
+      sortKey: 'updated',
+      sortDir: 'desc',
+      selected: new Set(),
+      tags: {}, // {full_name: ["tag", ...]}
+      playlists: [], // [{id, name, items: [full_name], created_at}]
+      activePlaylistId: null,
+      timeMin: null,
+      timeMax: null,
+    };
+
+    const fmt = {
+      sizeKB: kb => { const mb = kb/1024; if (mb >= 1) return `${mb.toFixed(mb<10?1:0)} MB`; return `${Math.round(kb)} KB`; },
+      date: iso => new Date(iso).toLocaleDateString(undefined, {year:'numeric', month:'short', day:'2-digit'}),
+      type: r => r.archived ? 'Archived' : (r.fork ? 'Fork' : 'Public'),
+      num: n => n>=1000 ? `${(n/1000).toFixed(1)}k` : `${n}`,
+      swatch: i => (i%3===0? '': (i%3===1? 'blue' : 'yellow')),
+    };
+
+    function isValidUrl(u){
+      try{ const x = new URL(u); return x.protocol === 'http:' || x.protocol === 'https:'; }
+      catch{ return false; }
+    }
+
+    function computePagesLinks(r, user){
+      const links = [];
+      if (r.homepage && r.homepage.trim()) links.push({label:'Homepage', url:r.homepage.trim(), kind:'home'});
+      if (r.has_pages){
+        const base = `${user}.github.io`;
+        const isUserSite = r.name.toLowerCase() === `${user.toLowerCase()}.github.io`;
+        const url = isUserSite ? `https://${base}/` : `https://${base}/${encodeURIComponent(r.name)}/`;
+        links.push({label:'Pages', url, kind:'page'});
+      }
+      return links.filter(l=>isValidUrl(l.url));
+    }
+
+    function loadLocal(){
+      try{
+        state.tags = JSON.parse(localStorage.getItem(STORAGE_KEYS.tags(state.user))||'{}');
+        state.playlists = JSON.parse(localStorage.getItem(STORAGE_KEYS.playlists(state.user))||'[]');
+      }catch{ state.tags = {}; state.playlists = []; }
+    }
+
+    function saveLocal(){
+      localStorage.setItem(STORAGE_KEYS.tags(state.user), JSON.stringify(state.tags));
+      localStorage.setItem(STORAGE_KEYS.playlists(state.user), JSON.stringify(state.playlists));
+    }
+
+    function addTag(full, tag){
+      tag = tag.trim().replace(/^#/, ''); if (!tag) return;
+      state.tags[full] = Array.from(new Set([...(state.tags[full]||[]), tag]));
+      saveLocal();
+      applyFilters();
+    }
+    function removeTag(full, tag){
+      state.tags[full] = (state.tags[full]||[]).filter(t=>t!==tag);
+      saveLocal();
+      applyFilters();
+    }
+
+    function createPlaylist(name){
+      const id = `pl_${Date.now().toString(36)}`;
+      state.playlists.push({id, name:name||'Untitled', items:[], created_at: new Date().toISOString()});
+      state.activePlaylistId = id;
+      saveLocal();
+      renderPlaylists();
+    }
+    function addSelectedToActive(){
+      const pl = state.playlists.find(p=>p.id===state.activePlaylistId) || state.playlists[0];
+      if (!pl) return;
+      state.selected.forEach(full=>{ if (!pl.items.includes(full)) pl.items.push(full); });
+      saveLocal();
+      renderPlaylists();
+    }
+
+    // --- CSV helpers (fixed newline bug) ---
+    function buildCSV(rows){
+      const esc = (s)=> '"'+String(s).replace(/"/g,'""')+'"';
+      const header = ['name','full_name','type','language','size_kb','stars','forks','issues','license','updated','created','pushed','homepage','pages'].join(',');
+      const lines = rows.map(r=>[
+        r.name, r.full_name, fmt.type(r), r.language||'', r.size, r.stargazers_count, r.forks_count, r.open_issues_count, (r.license&&r.license.spdx_id)||'', r.updated_at, r.created_at, r.pushed_at, r.homepage||'', (r.has_pages?1:0)
+      ].map(esc).join(','));
+      return [header, ...lines].join('\n'); // ✅ proper newline
+    }
+    function exportJSON(obj, name){
+      const blob = new Blob([JSON.stringify(obj, null, 2)], {type:'application/json'});
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+    }
+    function exportCSV(rows, name){
+      const csv = buildCSV(rows);
+      const blob = new Blob([csv], {type:'text/csv'});
+      const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+    }
+
+    function cardTags(full){ return state.tags[full]||[]; }
+
+    // utility: safe first line of a text (fix for commit split) ---
+    function firstLine(s){
+      if (typeof s !== 'string') return '';
+      const idx = s.indexOf('\n');
+      return idx === -1 ? s : s.slice(0, idx);
+    }
+
+    function rowToCard(r, i){
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.setAttribute('role','listitem');
+      card.setAttribute('aria-label', `Repository ${r.full_name}`);
+
+      const sw = document.createElement('div'); sw.className = `swatch ${fmt.swatch(i)}`; card.appendChild(sw);
+
+      const selectRow = document.createElement('div'); selectRow.className='selectRow';
+      const cb = document.createElement('input'); cb.type='checkbox'; cb.checked = state.selected.has(r.full_name);
+      cb.addEventListener('change', ()=>{ if(cb.checked) state.selected.add(r.full_name); else state.selected.delete(r.full_name); updateSheet(); });
+      const label = document.createElement('div'); label.className='name'; label.textContent = r.name;
+      selectRow.append(cb, label);
+      card.appendChild(selectRow);
+
+      const meta = document.createElement('div'); meta.className = 'meta';
+      const pills = [
+        {t: fmt.type(r), cls: r.archived?'pill warn':'pill'},
+        {t: r.language||'', cls:'pill'},
+        {t: fmt.sizeKB(r.size), cls:'pill'},
+        {t: `★ ${fmt.num(r.stargazers_count)}`, cls:'pill'},
+        {t: `⑂ ${fmt.num(r.forks_count)}`, cls:'pill'},
+        {t: `! ${fmt.num(r.open_issues_count)}`, cls:'pill'},
+        {t: r.license && r.license.spdx_id ? r.license.spdx_id : '', cls:'pill'}
+      ];
+      pills.forEach(p=>{ if(p.t){ const s=document.createElement('span'); s.className=p.cls; s.textContent=p.t; meta.appendChild(s);} });
+      card.appendChild(meta);
+
+      const desc = document.createElement('div'); desc.className = 'desc'; desc.textContent = r.description || '—'; card.appendChild(desc);
+
+      // tags row
+      const tags = document.createElement('div'); tags.className='tags';
+      cardTags(r.full_name).forEach(t=>{ const chip=document.createElement('span'); chip.className='tag'; chip.textContent = `#${t}`; const x=document.createElement('button'); x.textContent='×'; x.title='remove'; x.addEventListener('click', ()=>{ removeTag(r.full_name, t); }); chip.appendChild(x); tags.appendChild(chip); });
+      const add = document.createElement('input'); add.placeholder='add #tag'; add.style.border='2px dashed var(--ink)'; add.style.borderRadius='10px'; add.style.padding='4px 8px'; add.style.fontWeight='800';
+      add.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ addTag(r.full_name, add.value); add.value=''; }});
+      tags.appendChild(add); card.appendChild(tags);
+
+      // timeline bar
+      const barWrap = document.createElement('div'); barWrap.className='timeline';
+      const bar = document.createElement('div'); bar.className='bar';
+      const [startPct, endPct] = spanPercents(r.created_at, r.pushed_at);
+      bar.style.left = startPct+'%'; bar.style.width = (endPct-startPct)+'%'; barWrap.appendChild(bar);
+      const ticks = document.createElement('div'); ticks.className='ticks'; ticks.innerHTML = `<span>${fmt.date(r.created_at)}</span><span>${fmt.date(r.pushed_at)}</span>`;
+      card.append(barWrap, ticks);
+
+      // actions
+      const actions = document.createElement('div'); actions.className = 'actions';
+      const repoA = document.createElement('a'); repoA.href = r.html_url; repoA.target = '_blank'; repoA.rel='noopener'; repoA.className = 'a repo'; repoA.textContent = 'Repo ↗'; actions.appendChild(repoA);
+      const links = computePagesLinks(r, state.user);
+      links.forEach(l => { const a = document.createElement('a'); a.href = l.url; a.target = '_blank'; a.rel='noopener'; a.className = 'a ' + (l.kind==='page' ? 'page' : 'home'); a.textContent = (l.kind==='page'?'Page':'Home') + ' ↗'; actions.appendChild(a); });
+      const detailsBtn = document.createElement('button'); detailsBtn.className='a details'; detailsBtn.textContent='Details'; detailsBtn.addEventListener('click', ()=>toggleDetails(card, r)); actions.appendChild(detailsBtn);
+      card.appendChild(actions);
+
+      return card;
+    }
+
+    function spanPercents(startISO, endISO){
+      const min = state.timeMin ? new Date(state.timeMin).getTime() : 0;
+      const max = state.timeMax ? new Date(state.timeMax).getTime() : 1;
+      const s = new Date(startISO).getTime();
+      const e = new Date(endISO).getTime();
+      const pct = (t)=> Math.max(0, Math.min(100, 100*(t-min)/(max-min||1)));
+      return [pct(s), pct(e)];
+    }
+
+    // Details drawer: lazy fetch topics + root contents + latest commits (lightweight)
+    async function toggleDetails(card, repo){
+      let panel = card.querySelector('.details');
+      if(panel){ panel.classList.toggle('open'); return; }
+      panel = document.createElement('div'); panel.className='details open';
+      panel.innerHTML = `<div class="kv"><strong>${repo.full_name}</strong></div><div class="kv">Default branch: <strong>${repo.default_branch||'main'}</strong></div>`;
+
+      const grid = document.createElement('div'); grid.className='detailGrid';
+      const left = document.createElement('div'); const right = document.createElement('div');
+      grid.append(left,right); panel.appendChild(grid); card.appendChild(panel);
+
+      // Topics
+      try{
+        const res = await fetch(`https://api.github.com/repos/${repo.full_name}/topics`, { headers:{ 'Accept':'application/vnd.github+json' }});
+        if(res.ok){ const t = await res.json(); const tags = (t.names||[]).map(x=>`<span class="tag">#${x}</span>`).join(' ');
+          left.innerHTML += `<div class="kv"><strong>Topics:</strong> ${tags||'—'}</div>`; }
+      }catch{}
+      // Root contents (bricks)
+      try{
+        const res = await fetch(`https://api.github.com/repos/${repo.full_name}/contents`);
+        if(res.ok){ const items = await res.json(); const bricks = items.filter(x=>x.type==='dir'||x.type==='file').slice(0,18).map(x=>`<div class="plItem"><div class="row">${x.type==='dir'?'📁':'📄'} <strong>${x.name}</strong></div><div class="row"><a class="a home" target="_blank" rel="noopener" href="${x.html_url}">Open ↗</a></div></div>`).join('');
+          right.innerHTML += `<div class="kv"><strong>Bricks:</strong></div><div class="items">${bricks||'—'}</div>`; }
+      }catch{}
+      // Latest commits (tiny peek)
+      try{
+        const res = await fetch(`https://api.github.com/repos/${repo.full_name}/commits?per_page=5`);
+        if(res.ok){ const commits = await res.json(); const list = commits.map(c=>`<div class="plItem"><div class="row">🧱 ${firstLine(c.commit.message).slice(0,80)}</div><div class="row">${fmt.date(c.commit.author.date)}</div></div>`).join('');
+          left.innerHTML += `<div class="kv"><strong>Recent commits:</strong></div><div class="items">${list||'—'}</div>`; }
+      }catch{}
+
+      // Inline preview (iframe) if pages/home exists
+      const links = computePagesLinks(repo, state.user);
+      if(links.length){ const url = links[0].url; const frame = document.createElement('iframe'); frame.loading='lazy'; frame.style.width='100%'; frame.style.height='240px'; frame.style.border='3px solid var(--ink)'; frame.src = url; panel.appendChild(frame); }
+    }
+
+    function applyFilters(){
+      const q = state.query.trim().toLowerCase();
+      const tagQ = (el.tagFilter.value||'').trim().replace(/^#/, '').toLowerCase();
+
+      state.view = state.repos.filter(r => {
+        if (!state.forksToo && r.fork) return false;
+        if (state.pagesOnly){ const hasHome = !!(r.homepage && r.homepage.trim()); if (!r.has_pages && !hasHome) return false; }
+        if (tagQ){ const t = (state.tags[r.full_name]||[]).map(x=>x.toLowerCase()); if(!t.includes(tagQ)) return false; }
+        if (!q) return true;
+        const hay = `${r.name}\n${r.description||''}`.toLowerCase();
+        return hay.includes(q);
+      });
+
+      // sort
+      const dir = state.sortDir === 'asc' ? 1 : -1;
+      state.view.sort((a,b)=>{
+        const K = state.sortKey;
+        let va, vb;
+        switch(K){
+          case 'name': va=a.name.toLowerCase(); vb=b.name.toLowerCase(); return va<vb? -1*dir : va>vb? 1*dir : 0;
+          case 'size': va=a.size; vb=b.size; return (va - vb)*dir;
+          case 'stars': va=a.stargazers_count; vb=b.stargazers_count; return (va - vb)*dir;
+          case 'updated': default: va=new Date(a.updated_at).getTime(); vb=new Date(b.updated_at).getTime(); return (va - vb)*dir;
+        }
+      });
+
+      render();
+    }
+
+    function render(){
+      // timeline bounds
+      if(state.repos.length){
+        state.timeMin = state.repos.reduce((m,r)=> !m||r.created_at<m? r.created_at:m, null);
+        state.timeMax = state.repos.reduce((m,r)=> !m||r.pushed_at>m? r.pushed_at:m, null);
+      }
+
+      el.grid.replaceChildren();
+      if (!state.view.length){ el.status.hidden=false; el.status.textContent = 'No repositories match your filters.'; return; }
+      el.status.hidden=true;
+      state.view.forEach((r,i)=> el.grid.appendChild(rowToCard(r,i)) );
+
+      // Summary
+      const total = state.repos.length;
+      const forks = state.repos.filter(r=>r.fork).length;
+      const withPages = state.repos.filter(r=>r.has_pages || (r.homepage && r.homepage.trim())).length;
+      const sel = state.selected.size;
+      el.summary.innerHTML = `User <strong>${state.user}</strong> • Showing <strong>${state.view.length}</strong> of ${total} repos • Pages: <strong>${withPages}</strong> • Forks: ${forks} • Selected: ${sel}`;
+
+      updateSheet();
+      renderWall();
+    }
+
+    async function fetchAllRepos(user){
+      const opts = { headers: { 'Accept':'application/vnd.github+json' } };
+      let page = 1; let all = [];
+      while(true){
+        const url = `https://api.github.com/users/${encodeURIComponent(user)}/repos?per_page=100&page=${page}&type=owner&sort=updated`;
+        const res = await fetch(url, opts);
+        if (!res.ok){ const msg = res.status === 404 ? 'User not found' : `GitHub error ${res.status}`; throw new Error(msg); }
+        const data = await res.json(); all = all.concat(data);
+        const link = res.headers.get('Link'); if (link && /rel="next"/.test(link)) { page++; } else { break; }
+      }
+      return all;
+    }
+
+    async function load(){
+      try{
+        el.status.hidden=false; el.status.textContent = 'Loading…'; el.grid.replaceChildren();
+        state.user = el.user.value.trim() || 'hartswf0';
+        loadLocal();
+        const repos = await fetchAllRepos(state.user);
+        state.repos = repos.map(r=>({
+          id:r.id, name:r.name, full_name:r.full_name, html_url:r.html_url,
+          description:r.description, language:r.language, size:r.size,
+          fork:r.fork, archived:r.archived, updated_at:r.updated_at,
+          created_at:r.created_at, pushed_at:r.pushed_at,
+          stargazers_count:r.stargazers_count, forks_count:r.forks_count, open_issues_count:r.open_issues_count,
+          has_pages:r.has_pages, homepage:r.homepage, license:r.license, default_branch:r.default_branch
+        }));
+        state.query = el.search.value || '';
+        state.pagesOnly = el.pagesOnly.checked;
+        state.forksToo = el.forksToo.checked;
+        state.sortKey = 'updated'; state.sortDir = 'desc';
+        applyFilters();
+        const u = new URL(location.href); u.searchParams.set('user', state.user); history.replaceState({}, '', u);
+      }catch(err){ console.error(err); el.grid.replaceChildren(); el.status.hidden=false; el.status.textContent = `⚠️ ${err.message}`; }
+    }
+
+    function updateSheet(){
+      const n = state.selected.size; el.selCount.textContent = `${n} selected`;
+      if(n>0){ el.sheet.classList.add('open'); } else { el.sheet.classList.remove('open'); }
+    }
+
+    function renderPlaylists(){
+      el.playlistList.replaceChildren();
+      state.playlists.forEach(pl=>{
+        const p = document.createElement('div'); p.className='playlist';
+        const h = document.createElement('header');
+        const title = document.createElement('div'); title.style.fontWeight='900'; title.textContent = `${pl.name} (${pl.items.length})`;
+        if(pl.id===state.activePlaylistId){ title.textContent = '▶ ' + title.textContent; }
+        const ctr = document.createElement('div');
+        const act = (txt,fn)=>{ const b=document.createElement('button'); b.className='btn secondary'; b.textContent=txt; b.addEventListener('click', fn); return b; };
+        ctr.append(
+          act('Activate', ()=>{ state.activePlaylistId = pl.id; renderPlaylists(); renderWall(); }),
+          act('Export', ()=>{ const rows = pl.items.map(full=> state.repos.find(r=>r.full_name===full)).filter(Boolean); exportJSON({playlist:pl, repos:rows}, `${pl.name}.json`); }),
+          act('CSV', ()=>{ const rows = pl.items.map(full=> state.repos.find(r=>r.full_name===full)).filter(Boolean); exportCSV(rows, `${pl.name}.csv`); }),
+          act('Delete', ()=>{ state.playlists = state.playlists.filter(x=>x.id!==pl.id); saveLocal(); renderPlaylists(); })
+        );
+        h.append(title, ctr); p.appendChild(h);
+
+        const list = document.createElement('div'); list.className='items';
+        pl.items.forEach((full, idx)=>{
+          const r = state.repos.find(x=>x.full_name===full); if(!r) return;
+          const it = document.createElement('div'); it.className='plItem';
+          const row = document.createElement('div'); row.className='row'; row.innerHTML = `🧱 <strong>${r.name}</strong>`;
+          const ctr2 = document.createElement('div'); ctr2.className='row';
+          const btn = (txt,fn)=>{ const b=document.createElement('button'); b.textContent=txt; b.addEventListener('click', fn); return b; };
+          ctr2.append(
+            btn('↑', ()=>{ if(idx>0){ const t=pl.items[idx-1]; pl.items[idx-1]=pl.items[idx]; pl.items[idx]=t; saveLocal(); renderPlaylists(); } }),
+            btn('↓', ()=>{ if(idx<pl.items.length-1){ const t=pl.items[idx+1]; pl.items[idx+1]=pl.items[idx]; pl.items[idx]=t; saveLocal(); renderPlaylists(); } }),
+            btn('−', ()=>{ pl.items.splice(idx,1); saveLocal(); renderPlaylists(); })
+          );
+          it.append(row, ctr2); list.appendChild(it);
+        });
+        p.appendChild(list); el.playlistList.appendChild(p);
+      });
+    }
+
+    function wallRepos(){
+      const src = el.wallSource.value;
+      if(src==='selected'){
+        return Array.from(state.selected).map(full=> state.repos.find(r=>r.full_name===full)).filter(Boolean);
+      }else if(src==='playlist'){
+        const pl = state.playlists.find(p=>p.id===state.activePlaylistId) || state.playlists[0];
+        if(!pl) return [];
+        return pl.items.map(full=> state.repos.find(r=>r.full_name===full)).filter(Boolean);
+      }else{ // view
+        return state.view;
+      }
+    }
+
+    function renderWall(){
+      el.wall.style.setProperty('--tile', el.tileRange.value+'px');
+      const repos = wallRepos();
+      el.wall.replaceChildren();
+      repos.forEach(r=>{
+        const links = computePagesLinks(r, state.user);
+        if(!links.length) return; // only show if previewable
+        const t = document.createElement('div'); t.className='thumb';
+        const f = document.createElement('iframe'); f.loading='lazy'; f.src = links[0].url; t.appendChild(f);
+        const ft = document.createElement('footer');
+        const left = document.createElement('div'); left.textContent = r.name;
+        const right = document.createElement('div'); right.innerHTML = `<a class="a page" target="_blank" rel="noopener" href="${links[0].url}">Open ↗</a>`;
+        ft.append(left, right); t.appendChild(ft);
+        el.wall.appendChild(t);
+      });
+    }
+
+    // Events
+    el.load.addEventListener('click', load);
+    el.user.addEventListener('keydown', e=>{ if(e.key==='Enter') load(); });
+    el.search.addEventListener('input', e=>{ state.query = e.target.value; applyFilters(); });
+    el.pagesOnly.addEventListener('change', e=>{ state.pagesOnly = e.target.checked; applyFilters(); });
+    el.forksToo.addEventListener('change', e=>{ state.forksToo = e.target.checked; applyFilters(); });
+    el.tagFilter.addEventListener('input', ()=>applyFilters());
+
+    // Sorting shortcuts
+    window.addEventListener('keydown', (e)=>{
+      if (e.target.matches('input, textarea')) return;
+      if (e.key.toLowerCase()==='n'){ state.sortKey='name'; state.sortDir = state.sortKey==='name' && state.sortDir==='asc' ? 'desc':'asc'; applyFilters(); }
+      if (e.key.toLowerCase()==='u'){ state.sortKey='updated'; state.sortDir='desc'; applyFilters(); }
+      if (e.key.toLowerCase()==='s'){ state.sortKey='size'; state.sortDir = state.sortKey==='size' && state.sortDir==='asc' ? 'desc':'asc'; applyFilters(); }
+      if (e.key.toLowerCase()==='*'){ state.sortKey='stars'; state.sortDir = state.sortKey==='stars' && state.sortDir==='asc' ? 'desc':'asc'; applyFilters(); }
+    });
+
+    // Playlists UI
+    el.plCreate.addEventListener('click', ()=>{ createPlaylist(el.plName.value.trim()); el.plName.value=''; });
+    el.plAddSel.addEventListener('click', addSelectedToActive);
+    el.plClearSel.addEventListener('click', ()=>{ state.selected.clear(); updateSheet(); render(); });
+    el.openPlaylists.addEventListener('click', ()=>{ document.getElementById('playlistsPanel').scrollIntoView({behavior:'smooth'}); });
+
+    // Wall UI
+    el.toggleWall.addEventListener('click', ()=>{ document.getElementById('wallPanel').scrollIntoView({behavior:'smooth'}); });
+    el.wallSource.addEventListener('change', renderWall);
+    el.tileRange.addEventListener('input', renderWall);
+
+    // Export / Import
+    el.exportView.addEventListener('click', ()=>{
+      const rows = state.view; exportJSON({user:state.user, timestamp:new Date().toISOString(), repos:rows}, `${state.user}-view.json`);
+    });
+    el.importBtn.addEventListener('click', ()=> el.importInput.click());
+    el.importInput.addEventListener('change', async ()=>{
+      const f = el.importInput.files[0]; if(!f) return; const text = await f.text();
+      try{ const data = JSON.parse(text); if(data.playlist){ state.playlists.push(data.playlist); saveLocal(); renderPlaylists(); }
+            else if(Array.isArray(data.repos)){ /* reserved for future */ }
+      }catch(e){ alert('Invalid JSON'); }
+      el.importInput.value='';
+    });
+
+    // Mobile sheet actions
+    el.sheetAdd.addEventListener('click', addSelectedToActive);
+    el.sheetClear.addEventListener('click', ()=>{ state.selected.clear(); updateSheet(); render(); });
+
+    // ---------- Self-tests (run with #test) ----------
+    function runTests(){
+      const results = [];
+      const ok = (name, cond)=> results.push((cond? '✅':'❌')+' '+name+(cond?'':' — failed'));
+      // 1) CSV newline correctness
+      const csv = buildCSV([{name:'a', full_name:'u/a', language:'JS', size:1, stargazers_count:0, forks_count:0, open_issues_count:0, license:null, updated_at:'2025-01-01', created_at:'2025-01-01', pushed_at:'2025-01-02', has_pages:false, homepage:''}]);
+      ok('CSV contains \n separators', csv.includes('\n'));
+      ok('CSV has 2 lines (header + 1)', csv.split('\n').length===2);
+
+      // 2) firstLine utility
+      ok('firstLine("a\\nb") === "a"', firstLine('a\nb')==='a');
+      ok('firstLine("solo") === "solo"', firstLine('solo')==='solo');
+
+      // 3) computePagesLinks
+      const linkTests = computePagesLinks({name:'hartswf0.github.io', has_pages:true, homepage:''}, 'hartswf0');
+      ok('User site pages URL ends with /', linkTests.some(l=>/https:\/\/hartswf0\.github\.io\/$/.test(l.url)));
+
+      // 4) isValidUrl rejects javascript: scheme
+      ok('Reject javascript: URL', !isValidUrl('javascript:alert(1)'));
+
+      el.testResults.textContent = results.join('\n');
+      el.testPanel.style.display = 'block';
+      console.log('[Self-tests]', results);
+    }
+
+    // Initial
+    el.user.value = state.user;
+    load();
+
+    if (location.hash === '#test') runTests();
+  })();
+  </script>
+</body>
+</html>

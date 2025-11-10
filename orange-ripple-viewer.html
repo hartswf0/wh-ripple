@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Repository Ripples — hartswf0</title>
+  <style>
+    :root{
+      --bg:#0a0a0a;
+      --text:#f5f3ef;
+      --accent:#ff6b35;
+      --muted:#888;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;overflow:hidden}
+    body{
+      background:radial-gradient(ellipse at center, #1a1a1a 0%, #0a0a0a 100%);
+      color:var(--text);
+      font:14px/1.5 -apple-system, sans-serif;
+    }
+
+    header{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      z-index:100;
+      background:rgba(10,10,10,0.95);
+      backdrop-filter:blur(20px);
+      border-bottom:1px solid rgba(255,107,53,0.2);
+      padding:15px 25px;
+    }
+
+    .header-grid{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      max-width:1600px;
+      margin:0 auto;
+    }
+
+    h1{
+      font-size:18px;
+      font-weight:600;
+      letter-spacing:-0.5px;
+    }
+
+    .controls{
+      display:flex;
+      gap:15px;
+      align-items:center;
+      font-size:13px;
+    }
+
+    .btn{
+      background:transparent;
+      border:1px solid var(--accent);
+      color:var(--accent);
+      padding:6px 14px;
+      border-radius:6px;
+      cursor:pointer;
+      font-size:12px;
+      font-weight:600;
+      transition:all 0.2s;
+    }
+    .btn:hover{
+      background:var(--accent);
+      color:#000;
+    }
+
+    #canvas-container{
+      position:absolute;
+      top:70px;
+      left:0;
+      right:0;
+      bottom:0;
+    }
+
+    canvas{
+      display:block;
+      width:100%;
+      height:100%;
+      cursor:grab;
+    }
+    canvas:active{cursor:grabbing}
+
+    #info{
+      position:fixed;
+      top:50%;
+      left:50%;
+      transform:translate(-50%, -50%);
+      background:rgba(26,26,26,0.98);
+      backdrop-filter:blur(20px);
+      border:1px solid rgba(255,107,53,0.3);
+      border-radius:12px;
+      padding:30px;
+      max-width:500px;
+      width:90%;
+      max-height:80vh;
+      overflow-y:auto;
+      z-index:200;
+      display:none;
+    }
+
+    #info.open{display:block}
+
+    .info-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:start;
+      margin-bottom:20px;
+    }
+
+    .info-title{
+      font-size:22px;
+      font-weight:600;
+      color:var(--accent);
+      line-height:1.2;
+      flex:1;
+    }
+
+    .close{
+      background:none;
+      border:none;
+      color:var(--muted);
+      font-size:28px;
+      cursor:pointer;
+      line-height:1;
+      padding:0 0 0 15px;
+    }
+    .close:hover{color:var(--accent)}
+
+    .info-meta{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin:15px 0;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .info-desc{
+      margin:15px 0;
+      line-height:1.6;
+    }
+
+    .info-links{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:20px;
+    }
+
+    .link{
+      display:inline-block;
+      padding:8px 16px;
+      background:var(--accent);
+      color:#000;
+      text-decoration:none;
+      border-radius:6px;
+      font-weight:600;
+      font-size:12px;
+      transition:transform 0.2s;
+    }
+    .link:hover{transform:translateY(-2px)}
+
+    #loading{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:var(--bg);
+      z-index:300;
+    }
+    #loading.hidden{display:none}
+
+    .spinner{
+      width:50px;
+      height:50px;
+      border:3px solid rgba(255,107,53,0.2);
+      border-top-color:var(--accent);
+      border-radius:50%;
+      animation:spin 0.8s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    ::-webkit-scrollbar{width:8px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:rgba(255,107,53,0.3);border-radius:4px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-grid">
+      <h1>Repository Ripples</h1>
+      <div class="controls">
+        <span style="color:var(--muted)">@hartswf0</span>
+        <span style="color:var(--muted)"><strong id="count" style="color:var(--accent)">245</strong> repos</span>
+        <button class="btn" id="shuffle">Shuffle</button>
+      </div>
+    </div>
+  </header>
+
+  <div id="canvas-container">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div id="info">
+    <div class="info-header">
+      <h2 class="info-title" id="info-title"></h2>
+      <button class="close" id="close">&times;</button>
+    </div>
+    <div id="info-content"></div>
+  </div>
+
+  <div id="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <script>
+    let data = null;
+    let canvas, ctx;
+    let repos = []; // Each repo as a circle
+    let ripples = [];
+    let hoveredRepo = null;
+    let isDragging = false;
+    let dragStart = {x: 0, y: 0};
+    let offset = {x: 0, y: 0};
+    let zoom = 1;
+
+    class Ripple{
+      constructor(x, y, color){
+        this.x = x;
+        this.y = y;
+        this.radius = 0;
+        this.maxRadius = 100;
+        this.color = color;
+        this.opacity = 1;
+        this.speed = 2;
+      }
+      
+      update(){
+        this.radius += this.speed;
+        this.opacity = 1 - (this.radius / this.maxRadius);
+        return this.radius < this.maxRadius;
+      }
+      
+      draw(ctx){
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.strokeStyle = this.color + Math.floor(this.opacity * 255).toString(16).padStart(2, '0');
+        ctx.lineWidth = 3;
+        ctx.stroke();
+      }
+    }
+
+    class Repo{
+      constructor(data, x, y, radius, color){
+        this.data = data;
+        this.x = x;
+        this.y = y;
+        this.targetX = x;
+        this.targetY = y;
+        this.radius = radius;
+        this.baseRadius = radius;
+        this.color = color;
+        this.pulse = 0;
+        this.hovered = false;
+      }
+      
+      update(){
+        // Smooth movement
+        this.x += (this.targetX - this.x) * 0.1;
+        this.y += (this.targetY - this.y) * 0.1;
+        
+        // Pulse animation
+        this.pulse += 0.05;
+        if(this.hovered){
+          this.radius = this.baseRadius + Math.sin(this.pulse) * 3;
+        } else {
+          this.radius = this.baseRadius + Math.sin(this.pulse) * 1;
+        }
+      }
+      
+      draw(ctx){
+        // Shadow/glow
+        ctx.save();
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = this.hovered ? 20 : 10;
+        
+        // Main circle
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        
+        // Gradient fill
+        const grad = ctx.createRadialGradient(
+          this.x - this.radius * 0.3, 
+          this.y - this.radius * 0.3, 
+          0,
+          this.x, 
+          this.y, 
+          this.radius
+        );
+        grad.addColorStop(0, this.color + 'ff');
+        grad.addColorStop(0.7, this.color + 'cc');
+        grad.addColorStop(1, this.color + '88');
+        
+        ctx.fillStyle = grad;
+        ctx.fill();
+        
+        // Shine/highlight
+        ctx.beginPath();
+        ctx.arc(
+          this.x - this.radius * 0.3, 
+          this.y - this.radius * 0.3, 
+          this.radius * 0.3, 
+          0, 
+          Math.PI * 2
+        );
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.fill();
+        
+        ctx.restore();
+        
+        // Name on hover
+        if(this.hovered){
+          ctx.font = '600 11px -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillStyle = '#fff';
+          ctx.shadowColor = 'rgba(0,0,0,0.8)';
+          ctx.shadowBlur = 4;
+          
+          const name = this.data.name.length > 20 
+            ? this.data.name.substring(0, 18) + '...' 
+            : this.data.name;
+          ctx.fillText(name, this.x, this.y + this.radius + 15);
+        }
+      }
+      
+      contains(x, y){
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return dx * dx + dy * dy <= this.radius * this.radius;
+      }
+    }
+
+    function init(){
+      canvas = document.getElementById('canvas');
+      ctx = canvas.getContext('2d');
+      resize();
+      window.addEventListener('resize', resize);
+      setupEvents();
+      loadData();
+    }
+
+    function resize(){
+      canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+      canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    }
+
+    async function loadData(){
+      try{
+        const response = await fetch('github-thematic-index.json');
+        data = await response.json();
+        document.getElementById('count').textContent = data.summary.total_repos;
+        createRepos();
+        document.getElementById('loading').classList.add('hidden');
+        animate();
+      }catch(err){
+        console.error('Failed to load:', err);
+        document.getElementById('loading').innerHTML = 
+          '<div style="color:#888">Failed to load<br><small>Run: python3 analyze-themes.py</small></div>';
+      }
+    }
+
+    function createRepos(){
+      repos = [];
+      const w = canvas.offsetWidth;
+      const h = canvas.offsetHeight;
+      const padding = 80;
+      
+      // Cluster repos by theme in organic layout
+      data.theme_rings.forEach((theme, themeIdx) => {
+        const themeCount = theme.repos.length;
+        const color = theme.color;
+        
+        // Theme cluster position
+        const angle = (themeIdx / data.theme_rings.length) * Math.PI * 2;
+        const distance = Math.min(w, h) * 0.25;
+        const clusterX = w/2 + Math.cos(angle) * distance;
+        const clusterY = h/2 + Math.sin(angle) * distance;
+        
+        // Arrange repos in cluster
+        theme.repos.forEach((repoData, repoIdx) => {
+          // Size based on stars or just vary
+          const baseSize = 12 + Math.random() * 8;
+          
+          // Spiral/organic placement within cluster
+          const localAngle = (repoIdx / themeCount) * Math.PI * 2 * 3;
+          const localDist = (repoIdx % 5) * 25 + Math.random() * 20;
+          
+          const x = clusterX + Math.cos(localAngle) * localDist;
+          const y = clusterY + Math.sin(localAngle) * localDist;
+          
+          repos.push(new Repo(repoData, x, y, baseSize, color));
+        });
+      });
+    }
+
+    function animate(){
+      const w = canvas.offsetWidth;
+      const h = canvas.offsetHeight;
+      
+      ctx.clearRect(0, 0, w, h);
+      
+      // Update and draw ripples
+      ripples = ripples.filter(r => {
+        r.update();
+        r.draw(ctx);
+        return r.radius < r.maxRadius;
+      });
+      
+      // Update and draw repos
+      repos.forEach(repo => {
+        repo.update();
+        repo.draw(ctx);
+      });
+      
+      requestAnimationFrame(animate);
+    }
+
+    function setupEvents(){
+      // Close info
+      document.getElementById('close').addEventListener('click', () => {
+        document.getElementById('info').classList.remove('open');
+      });
+
+      // Shuffle
+      document.getElementById('shuffle').addEventListener('click', () => {
+        createRepos();
+      });
+
+      // Mouse events
+      canvas.addEventListener('mousedown', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        isDragging = true;
+        dragStart = {x, y};
+      });
+
+      canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        if(isDragging){
+          const dx = x - dragStart.x;
+          const dy = y - dragStart.y;
+          
+          repos.forEach(repo => {
+            repo.targetX += dx;
+            repo.targetY += dy;
+          });
+          
+          dragStart = {x, y};
+        } else {
+          // Hover detection
+          let found = false;
+          repos.forEach(repo => {
+            if(repo.contains(x, y)){
+              repo.hovered = true;
+              hoveredRepo = repo;
+              found = true;
+            } else {
+              repo.hovered = false;
+            }
+          });
+          if(!found) hoveredRepo = null;
+        }
+      });
+
+      canvas.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+
+      canvas.addEventListener('click', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        repos.forEach(repo => {
+          if(repo.contains(x, y)){
+            // Create ripple
+            ripples.push(new Ripple(repo.x, repo.y, repo.color));
+            showInfo(repo.data, repo.color);
+          }
+        });
+      });
+
+      // Prevent context menu
+      canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+    }
+
+    function showInfo(repo, color){
+      document.getElementById('info-title').textContent = repo.name;
+      document.getElementById('info-content').innerHTML = `
+        <div class="info-meta">
+          ${repo.language ? `<span>${repo.language}</span>` : ''}
+          <span style="color:${color}">${repo.stars} stars</span>
+          <span>${repo.forks} forks</span>
+          <span>${(repo.size_kb/1024).toFixed(1)} MB</span>
+        </div>
+        <div class="info-desc">${repo.description || 'No description'}</div>
+        <div class="info-links">
+          <a href="${repo.html_url}" target="_blank" class="link">GitHub</a>
+          ${repo.homepage ? `<a href="${repo.homepage}" target="_blank" class="link">Website</a>` : ''}
+          ${repo.has_pages ? `<a href="https://hartswf0.github.io/${repo.name}/" target="_blank" class="link">Pages</a>` : ''}
+        </div>
+        <div style="margin-top:15px;padding-top:15px;border-top:1px solid rgba(255,255,255,0.1);font-size:11px;color:var(--muted)">
+          Updated ${new Date(repo.updated_at).toLocaleDateString()}
+        </div>
+      `;
+      document.getElementById('info').classList.add('open');
+    }
+
+    init();
+  </script>
+</body>
+</html>

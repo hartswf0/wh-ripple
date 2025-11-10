@@ -1,0 +1,134 @@
+{
+  "project": "WH_RIPPLE Repository Index",
+  "generated": "2025-11-09",
+  "root_path": "/Users/gaia/WH_RIPPLE",
+  "repository": "hartswf0/potters-wheel",
+  "total_files": 7,
+  "sections": {
+    "github_indices": {
+      "description": "Bauhaus-styled GitHub repository index pages",
+      "files": [
+        {
+          "id": "github-index-v3",
+          "name": "git_hub_repo_index_bauhaus_table_hartswf_0 (2).html",
+          "path": "git_hub_repo_index_bauhaus_table_hartswf_0 (2).html",
+          "size_bytes": 39123,
+          "description": "Latest version with enhanced playlist system, preview wall, and export functionality",
+          "features": [
+            "Bauhaus design system",
+            "GitHub API integration",
+            "Playlist management",
+            "Preview wall with iframes",
+            "CSV/JSON export",
+            "Tag filtering",
+            "Timeline visualization"
+          ],
+          "url": "file:///Users/gaia/WH_RIPPLE/git_hub_repo_index_bauhaus_table_hartswf_0%20(2).html"
+        },
+        {
+          "id": "github-index-v2",
+          "name": "git_hub_repo_index_bauhaus_table_hartswf_0 (1).html",
+          "path": "git_hub_repo_index_bauhaus_table_hartswf_0 (1).html",
+          "size_bytes": 36877,
+          "description": "Second iteration with improved filtering",
+          "url": "file:///Users/gaia/WH_RIPPLE/git_hub_repo_index_bauhaus_table_hartswf_0%20(1).html"
+        },
+        {
+          "id": "github-index-v1",
+          "name": "git_hub_repo_index_bauhaus_table_hartswf_0.html",
+          "path": "git_hub_repo_index_bauhaus_table_hartswf_0.html",
+          "size_bytes": 15855,
+          "description": "Original version",
+          "url": "file:///Users/gaia/WH_RIPPLE/git_hub_repo_index_bauhaus_table_hartswf_0.html"
+        }
+      ]
+    },
+    "kimi_lego": {
+      "description": "KIMI K2 LEGO visualization and interaction system",
+      "files": [
+        {
+          "id": "kimi-lego",
+          "name": "kimi-k2-lego-FIXED.html",
+          "path": "kimi-k2-lego-FIXED.html",
+          "size_bytes": 48321,
+          "description": "LEGO-style spatial thinking visualization system",
+          "features": [
+            "Spatial entity grid",
+            "Observer system",
+            "Multi-channel support",
+            "3D visualization"
+          ],
+          "url": "file:///Users/gaia/WH_RIPPLE/kimi-k2-lego-FIXED.html"
+        }
+      ]
+    },
+    "presentations": {
+      "description": "Presentation and narrative visualization pages",
+      "files": [
+        {
+          "id": "mythos-presentation",
+          "name": "mythos_presentation.html",
+          "path": "mythos_presentation.html",
+          "size_bytes": 4605,
+          "description": "Mythos narrative presentation system",
+          "url": "file:///Users/gaia/WH_RIPPLE/mythos_presentation.html"
+        }
+      ]
+    },
+    "wh_pages": {
+      "description": "WH series documentation pages",
+      "files": [
+        {
+          "id": "wh0",
+          "name": "wh0.html",
+          "path": "wh0.html",
+          "size_bytes": 28567,
+          "description": "WH page 0",
+          "url": "file:///Users/gaia/WH_RIPPLE/wh0.html"
+        },
+        {
+          "id": "wh1",
+          "name": "wh1.html",
+          "path": "wh1.html",
+          "size_bytes": 28567,
+          "description": "WH page 1",
+          "url": "file:///Users/gaia/WH_RIPPLE/wh1.html"
+        }
+      ]
+    }
+  },
+  "sitemap_tree": {
+    "/": {
+      "github_indices": [
+        "git_hub_repo_index_bauhaus_table_hartswf_0 (2).html",
+        "git_hub_repo_index_bauhaus_table_hartswf_0 (1).html",
+        "git_hub_repo_index_bauhaus_table_hartswf_0.html"
+      ],
+      "kimi_lego": [
+        "kimi-k2-lego-FIXED.html"
+      ],
+      "presentations": [
+        "mythos_presentation.html"
+      ],
+      "wh_pages": [
+        "wh0.html",
+        "wh1.html"
+      ]
+    }
+  },
+  "quick_links": {
+    "latest_github_index": "git_hub_repo_index_bauhaus_table_hartswf_0 (2).html",
+    "kimi_lego_system": "kimi-k2-lego-FIXED.html",
+    "mythos": "mythos_presentation.html",
+    "wh_series": [
+      "wh0.html",
+      "wh1.html"
+    ]
+  },
+  "metadata": {
+    "total_html_files": 7,
+    "total_size_kb": 201.9,
+    "categories": 4,
+    "primary_theme": "Bauhaus modernist design with spatial visualization systems"
+  }
+}

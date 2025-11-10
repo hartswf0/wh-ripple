@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Repository Explorer — hartswf0</title>
+  <style>
+    :root{
+      --bg:#0a0a0a;
+      --text:#f5f3ef;
+      --accent:#ff6b35;
+      --muted:#888;
+      --panel:#1a1a1a;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;overflow:hidden}
+    body{
+      background:var(--bg);
+      color:var(--text);
+      font:14px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    }
+
+    /* Clean header */
+    header{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      z-index:100;
+      background:rgba(10,10,10,0.98);
+      backdrop-filter:blur(20px);
+      border-bottom:1px solid rgba(255,107,53,0.3);
+      padding:20px 30px;
+    }
+
+    .header-grid{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:20px;
+      align-items:center;
+      max-width:1600px;
+      margin:0 auto;
+    }
+
+    h1{
+      font-size:20px;
+      font-weight:600;
+      letter-spacing:-0.5px;
+    }
+
+    .stats{
+      display:flex;
+      gap:30px;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .stat strong{
+      color:var(--accent);
+      font-weight:600;
+    }
+
+    /* Canvas */
+    #canvas-container{
+      position:absolute;
+      top:80px;
+      left:0;
+      right:0;
+      bottom:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    canvas{
+      cursor:grab;
+      max-width:100%;
+      max-height:100%;
+    }
+    canvas:active{cursor:grabbing}
+
+    /* Side panel */
+    #panel{
+      position:fixed;
+      top:80px;
+      left:0;
+      bottom:0;
+      width:280px;
+      background:rgba(26,26,26,0.98);
+      backdrop-filter:blur(20px);
+      border-right:1px solid rgba(255,107,53,0.2);
+      overflow-y:auto;
+      padding:20px;
+      transform:translateX(-100%);
+      transition:transform 0.3s ease;
+    }
+
+    #panel.open{
+      transform:translateX(0);
+    }
+
+    #toggle-panel{
+      position:fixed;
+      top:100px;
+      left:10px;
+      z-index:101;
+      background:var(--accent);
+      color:#000;
+      border:none;
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      cursor:pointer;
+      font-size:18px;
+      font-weight:700;
+      box-shadow:0 4px 12px rgba(255,107,53,0.4);
+      transition:all 0.2s;
+    }
+
+    #toggle-panel:hover{
+      transform:scale(1.1);
+      box-shadow:0 6px 16px rgba(255,107,53,0.6);
+    }
+
+    .panel-title{
+      font-size:11px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      color:var(--muted);
+      margin-bottom:15px;
+    }
+
+    .theme-item{
+      padding:10px 0;
+      border-bottom:1px solid rgba(255,255,255,0.05);
+      cursor:pointer;
+      transition:all 0.2s;
+    }
+
+    .theme-item:hover{
+      padding-left:10px;
+      color:var(--accent);
+    }
+
+    .theme-name{
+      font-size:13px;
+      font-weight:600;
+      margin-bottom:4px;
+    }
+
+    .theme-count{
+      font-size:11px;
+      color:var(--muted);
+    }
+
+    .theme-color{
+      display:inline-block;
+      width:12px;
+      height:12px;
+      border-radius:50%;
+      margin-right:8px;
+      vertical-align:middle;
+    }
+
+    /* Info modal */
+    #info{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      bottom:0;
+      background:rgba(0,0,0,0.8);
+      backdrop-filter:blur(10px);
+      z-index:200;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+
+    #info.open{display:flex}
+
+    .info-card{
+      background:var(--panel);
+      border:1px solid rgba(255,107,53,0.3);
+      border-radius:12px;
+      padding:30px;
+      max-width:600px;
+      width:100%;
+      max-height:80vh;
+      overflow-y:auto;
+    }
+
+    .info-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:start;
+      margin-bottom:20px;
+    }
+
+    .info-title{
+      font-size:24px;
+      font-weight:600;
+      color:var(--accent);
+      line-height:1.2;
+    }
+
+    .close{
+      background:none;
+      border:none;
+      color:var(--muted);
+      font-size:32px;
+      cursor:pointer;
+      line-height:1;
+      padding:0;
+      transition:color 0.2s;
+    }
+
+    .close:hover{color:var(--accent)}
+
+    .info-meta{
+      display:flex;
+      gap:15px;
+      flex-wrap:wrap;
+      margin:15px 0;
+      font-size:13px;
+    }
+
+    .meta-item{
+      color:var(--muted);
+    }
+
+    .meta-item strong{
+      color:var(--text);
+    }
+
+    .info-desc{
+      margin:20px 0;
+      line-height:1.7;
+      color:var(--muted);
+    }
+
+    .info-links{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:20px;
+    }
+
+    .link-btn{
+      display:inline-block;
+      padding:10px 20px;
+      background:var(--accent);
+      color:#000;
+      text-decoration:none;
+      border-radius:6px;
+      font-weight:600;
+      font-size:13px;
+      transition:all 0.2s;
+    }
+
+    .link-btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 4px 12px rgba(255,107,53,0.4);
+    }
+
+    .link-btn.secondary{
+      background:transparent;
+      border:1px solid var(--accent);
+      color:var(--accent);
+    }
+
+    /* Loading */
+    #loading{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:var(--bg);
+      z-index:300;
+    }
+
+    #loading.hidden{display:none}
+
+    .spinner{
+      width:50px;
+      height:50px;
+      border:3px solid rgba(255,107,53,0.2);
+      border-top-color:var(--accent);
+      border-radius:50%;
+      animation:spin 0.8s linear infinite;
+    }
+
+    @keyframes spin{
+      to{transform:rotate(360deg)}
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar{width:8px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:rgba(255,107,53,0.3);border-radius:4px}
+    ::-webkit-scrollbar-thumb:hover{background:rgba(255,107,53,0.5)}
+
+    @media(max-width:768px){
+      #panel{width:100%;max-width:300px}
+      .stats{gap:15px;font-size:12px}
+      h1{font-size:16px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-grid">
+      <h1>Repository Explorer</h1>
+      <div class="stats">
+        <div class="stat"><strong id="repo-count">0</strong> repos</div>
+        <div class="stat"><strong id="theme-count">0</strong> themes</div>
+        <div class="stat">@hartswf0</div>
+      </div>
+    </div>
+  </header>
+
+  <button id="toggle-panel">≡</button>
+
+  <div id="panel">
+    <div class="panel-title">Themes</div>
+    <div id="theme-list"></div>
+  </div>
+
+  <div id="canvas-container">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div id="info">
+    <div class="info-card">
+      <div class="info-header">
+        <h2 class="info-title" id="info-title"></h2>
+        <button class="close" id="close-info">&times;</button>
+      </div>
+      <div id="info-content"></div>
+    </div>
+  </div>
+
+  <div id="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <script>
+    let data = null;
+    let canvas, ctx;
+    let centerX, centerY;
+    let rotation = 0;
+    let animating = true;
+    let hoveredRing = null;
+    let ripples = [];
+
+    // Canvas setup
+    function init(){
+      canvas = document.getElementById('canvas');
+      ctx = canvas.getContext('2d');
+      resize();
+      window.addEventListener('resize', resize);
+      setupEvents();
+      loadData();
+    }
+
+    function resize(){
+      const container = document.getElementById('canvas-container');
+      const size = Math.min(container.clientWidth, container.clientHeight) * 0.9;
+      canvas.width = size;
+      canvas.height = size;
+      centerX = canvas.width / 2;
+      centerY = canvas.height / 2;
+      if(data) draw();
+    }
+
+    // Load data
+    async function loadData(){
+      try{
+        const response = await fetch('github-thematic-index.json');
+        data = await response.json();
+        
+        document.getElementById('repo-count').textContent = data.summary.total_repos;
+        document.getElementById('theme-count').textContent = data.theme_rings.length;
+        
+        renderThemeList();
+        document.getElementById('loading').classList.add('hidden');
+        animate();
+      }catch(err){
+        console.error('Failed to load data:', err);
+        document.getElementById('loading').innerHTML = 
+          '<div style="text-align:center;color:#888">Failed to load data<br><br><small>Run: python3 analyze-themes.py</small></div>';
+      }
+    }
+
+    function renderThemeList(){
+      const list = document.getElementById('theme-list');
+      list.innerHTML = '';
+      
+      data.theme_rings.forEach((ring, idx) => {
+        const item = document.createElement('div');
+        item.className = 'theme-item';
+        item.innerHTML = `
+          <div class="theme-name">
+            <span class="theme-color" style="background:${ring.color}"></span>
+            ${ring.theme_name}
+          </div>
+          <div class="theme-count">${ring.repo_count} repositories</div>
+        `;
+        item.addEventListener('mouseenter', () => {
+          hoveredRing = idx;
+        });
+        item.addEventListener('mouseleave', () => {
+          hoveredRing = null;
+        });
+        item.addEventListener('click', () => {
+          // Rotate to center this ring
+          const targetRotation = (idx / data.theme_rings.length) * Math.PI * 2;
+          rotation = targetRotation;
+        });
+        list.appendChild(item);
+      });
+    }
+
+    // Animation
+    function animate(){
+      if(animating){
+        rotation += 0.001;
+      }
+      
+      // Update ripples
+      ripples = ripples.filter(r => {
+        r.radius += r.speed;
+        r.opacity -= 0.02;
+        return r.opacity > 0;
+      });
+      
+      draw();
+      requestAnimationFrame(animate);
+    }
+
+    // Draw
+    function draw(){
+      if(!data) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      const scale = Math.min(canvas.width, canvas.height) / 1400;
+      
+      // Draw rings
+      data.theme_rings.slice().reverse().forEach((ring, reverseIdx) => {
+        const idx = data.theme_rings.length - 1 - reverseIdx;
+        const isHovered = hoveredRing === idx;
+        const radiusEnd = ring.radius_end * scale;
+        const radiusStart = ring.radius_start * scale;
+        const repos = ring.repos;
+        
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(rotation);
+        
+        // Draw repo segments
+        const angleStep = (Math.PI * 2) / Math.max(repos.length, 8);
+        
+        repos.forEach((repo, repoIdx) => {
+          const startAngle = angleStep * repoIdx;
+          const endAngle = angleStep * (repoIdx + 1);
+          
+          // Gradient fill
+          const gradient = ctx.createRadialGradient(0, 0, radiusStart, 0, 0, radiusEnd);
+          const opacity = isHovered ? 0.8 : 0.4;
+          gradient.addColorStop(0, ring.color + '00');
+          gradient.addColorStop(0.5, ring.color + Math.floor(opacity * 255).toString(16).padStart(2, '0'));
+          gradient.addColorStop(1, ring.color + '00');
+          
+          ctx.beginPath();
+          ctx.arc(0, 0, radiusEnd, startAngle, endAngle);
+          ctx.arc(0, 0, radiusStart, endAngle, startAngle, true);
+          ctx.closePath();
+          ctx.fillStyle = gradient;
+          ctx.fill();
+          
+          // Subtle border
+          ctx.strokeStyle = ring.color + (isHovered ? '60' : '20');
+          ctx.lineWidth = isHovered ? 1.5 : 0.5;
+          ctx.stroke();
+          
+          // Store for hit detection
+          repo._angle = (startAngle + endAngle) / 2;
+          repo._radius = (radiusStart + radiusEnd) / 2;
+          repo._ringIdx = idx;
+        });
+        
+        // Ring label (if hovered)
+        if(isHovered){
+          ctx.save();
+          ctx.rotate(-rotation);
+          ctx.font = `600 ${Math.max(11, 12 * scale)}px -apple-system, sans-serif`;
+          ctx.fillStyle = ring.color;
+          ctx.textAlign = 'center';
+          ctx.shadowColor = 'rgba(0,0,0,0.8)';
+          ctx.shadowBlur = 8;
+          ctx.fillText(ring.theme_name, 0, -(radiusEnd + 12));
+          ctx.restore();
+        }
+        
+        ctx.restore();
+      });
+      
+      // Draw ripples
+      ripples.forEach(ripple => {
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, ripple.radius, 0, Math.PI * 2);
+        ctx.strokeStyle = ripple.color + Math.floor(ripple.opacity * 255).toString(16).padStart(2, '0');
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+      
+      // Center
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 60, 0, Math.PI * 2);
+      const centerGrad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 60);
+      centerGrad.addColorStop(0, '#ff6b35');
+      centerGrad.addColorStop(1, '#c1440a');
+      ctx.fillStyle = centerGrad;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      
+      ctx.fillStyle = '#000';
+      ctx.font = '600 16px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('hartswf0', centerX, centerY);
+    }
+
+    // Create ripple effect
+    function createRipple(color){
+      ripples.push({
+        radius: 60,
+        speed: 3,
+        opacity: 0.6,
+        color: color || '#ff6b35'
+      });
+    }
+
+    // Events
+    function setupEvents(){
+      // Toggle panel
+      document.getElementById('toggle-panel').addEventListener('click', () => {
+        document.getElementById('panel').classList.toggle('open');
+      });
+
+      // Close info
+      document.getElementById('close-info').addEventListener('click', () => {
+        document.getElementById('info').classList.remove('open');
+      });
+
+      // Click repo
+      canvas.addEventListener('click', (e) => {
+        if(!data) return;
+        
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left - centerX;
+        const y = e.clientY - rect.top - centerY;
+        const dist = Math.sqrt(x*x + y*y);
+        const angle = Math.atan2(y, x) - rotation;
+        
+        // Check if clicked on repo
+        for(const ring of data.theme_rings){
+          for(const repo of ring.repos){
+            const scale = Math.min(canvas.width, canvas.height) / 1400;
+            const radiusEnd = ring.radius_end * scale;
+            const radiusStart = ring.radius_start * scale;
+            
+            if(dist >= radiusStart && dist <= radiusEnd){
+              let angleDiff = Math.abs(angle - repo._angle);
+              if(angleDiff > Math.PI) angleDiff = Math.PI * 2 - angleDiff;
+              
+              const angleStep = (Math.PI * 2) / Math.max(ring.repos.length, 8);
+              if(angleDiff < angleStep / 2){
+                showInfo(repo, ring);
+                createRipple(ring.color);
+                return;
+              }
+            }
+          }
+        }
+      });
+
+      // Drag
+      let isDragging = false;
+      let lastX = 0;
+
+      canvas.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        lastX = e.clientX;
+        animating = false;
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if(!isDragging) return;
+        const delta = e.clientX - lastX;
+        rotation += delta * 0.01;
+        lastX = e.clientX;
+      });
+
+      window.addEventListener('mouseup', () => {
+        isDragging = false;
+        setTimeout(() => {animating = true}, 1000);
+      });
+
+      // Hover detection
+      canvas.addEventListener('mousemove', (e) => {
+        if(!data || isDragging) return;
+        
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left - centerX;
+        const y = e.clientY - rect.top - centerY;
+        const dist = Math.sqrt(x*x + y*y);
+        
+        let found = null;
+        for(let i = 0; i < data.theme_rings.length; i++){
+          const ring = data.theme_rings[i];
+          const scale = Math.min(canvas.width, canvas.height) / 1400;
+          if(dist >= ring.radius_start * scale && dist <= ring.radius_end * scale){
+            found = i;
+            break;
+          }
+        }
+        
+        if(found !== hoveredRing){
+          hoveredRing = found;
+        }
+      });
+    }
+
+    function showInfo(repo, ring){
+      const modal = document.getElementById('info');
+      const content = document.getElementById('info-content');
+      
+      document.getElementById('info-title').textContent = repo.name;
+      
+      content.innerHTML = `
+        <div class="info-meta">
+          <div class="meta-item" style="color:${ring.color}"><strong>${ring.theme_name}</strong></div>
+          ${repo.language ? `<div class="meta-item">${repo.language}</div>` : ''}
+          <div class="meta-item"><strong>${repo.stars}</strong> stars</div>
+          <div class="meta-item"><strong>${repo.forks}</strong> forks</div>
+          <div class="meta-item"><strong>${(repo.size_kb/1024).toFixed(1)}</strong> MB</div>
+        </div>
+        <div class="info-desc">
+          ${repo.description || 'No description available'}
+        </div>
+        <div class="info-links">
+          <a href="${repo.html_url}" target="_blank" class="link-btn">View on GitHub</a>
+          ${repo.homepage ? `<a href="${repo.homepage}" target="_blank" class="link-btn secondary">Homepage</a>` : ''}
+          ${repo.has_pages ? `<a href="https://hartswf0.github.io/${repo.name}/" target="_blank" class="link-btn secondary">GitHub Pages</a>` : ''}
+        </div>
+        <div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1);font-size:12px;color:var(--muted)">
+          Updated ${new Date(repo.updated_at).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}
+        </div>
+      `;
+      
+      modal.classList.add('open');
+    }
+
+    // Start
+    init();
+  </script>
+</body>
+</html>

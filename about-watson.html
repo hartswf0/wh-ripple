@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watson Hartsoe • Forensic Slopwright</title>
+  <style>
+    :root {
+      --accent: #FF6B35;
+      --bg: #0a0a0a;
+      --text: #e0e0e0;
+      --muted: #666;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 40px 20px;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 72px);
+      font-weight: 800;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--accent), #FFA500);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero .subtitle {
+      font-size: clamp(18px, 3vw, 28px);
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 30px;
+    }
+
+    .hero .thesis {
+      font-size: clamp(14px, 2vw, 18px);
+      line-height: 1.8;
+      margin-bottom: 40px;
+      opacity: 0.9;
+    }
+
+    .hero .cta {
+      display: inline-flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .hero .cta a {
+      padding: 12px 30px;
+      background: var(--accent);
+      color: #000;
+      text-decoration: none;
+      border-radius: 25px;
+      font-weight: 700;
+      transition: all 0.3s;
+    }
+
+    .hero .cta a:hover {
+      background: #FFA500;
+      transform: scale(1.05);
+    }
+
+    .hero .cta a.secondary {
+      background: transparent;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+    }
+
+    .hero .cta a.secondary:hover {
+      background: rgba(255, 107, 53, 0.1);
+    }
+
+    /* Background Orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.3;
+      animation: float 20s infinite;
+    }
+
+    .orb-1 {
+      width: 400px;
+      height: 400px;
+      background: var(--accent);
+      top: 10%;
+      left: -10%;
+      animation-delay: 0s;
+    }
+
+    .orb-2 {
+      width: 300px;
+      height: 300px;
+      background: #FFA500;
+      bottom: 20%;
+      right: -5%;
+      animation-delay: 7s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(50px, -50px) scale(1.1); }
+      66% { transform: translate(-30px, 30px) scale(0.9); }
+    }
+
+
+    /* Project Constellation */
+    .constellation {
+      padding: 100px 20px;
+      background: linear-gradient(180deg, var(--bg) 0%, #0f0a08 100%);
+    }
+
+    .constellation h2 {
+      text-align: center;
+      font-size: clamp(28px, 4vw, 42px);
+      margin-bottom: 60px;
+      color: var(--accent);
+    }
+
+    .project-families {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .family {
+      margin-bottom: 80px;
+    }
+
+    .family-header {
+      margin-bottom: 25px;
+    }
+
+    .family-header h3 {
+      font-size: clamp(20px, 3vw, 28px);
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .family-header .claim {
+      font-size: 13px;
+      opacity: 0.7;
+      line-height: 1.5;
+    }
+
+    .project-bubbles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .bubble {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 110px;
+      height: 110px;
+      background: rgba(255, 107, 53, 0.15);
+      border: 1px solid rgba(255, 107, 53, 0.3);
+      border-radius: 50%;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .bubble:hover {
+      transform: scale(1.1);
+      background: rgba(255, 107, 53, 0.25);
+      border-color: var(--accent);
+    }
+
+    .bubble-name {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .bubble-count {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: rgba(0, 0, 0, 0.8);
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 10px;
+    }
+
+    /* Deflated Claims */
+    .deflation {
+      padding: 100px 20px;
+      background: rgba(255, 107, 53, 0.02);
+    }
+
+    .deflation h2 {
+      text-align: center;
+      font-size: clamp(28px, 4vw, 42px);
+      margin-bottom: 50px;
+      color: var(--accent);
+    }
+
+    .claims-slider {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .claim-card {
+      background: rgba(255, 107, 53, 0.05);
+      border-left: 3px solid var(--accent);
+      padding: 20px 30px;
+      margin-bottom: 20px;
+    }
+
+    .claim-card .version {
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      opacity: 0.8;
+    }
+
+    .claim-card .text {
+      font-size: 15px;
+      line-height: 1.7;
+      opacity: 0.9;
+    }
+
+    /* Stats Bar */
+    .stats {
+      padding: 60px 20px;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .stats-grid {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+      text-align: center;
+    }
+
+    .stat-item {
+      padding: 20px;
+    }
+
+    .stat-number {
+      font-size: clamp(36px, 6vw, 56px);
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      opacity: 0.7;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Footer CTA */
+    .footer-cta {
+      padding: 100px 20px;
+      text-align: center;
+    }
+
+    .footer-cta h2 {
+      font-size: clamp(28px, 5vw, 48px);
+      margin-bottom: 30px;
+    }
+
+    .footer-cta .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
+    .footer-cta .links a {
+      padding: 15px 35px;
+      background: transparent;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      text-decoration: none;
+      border-radius: 30px;
+      font-weight: 700;
+      transition: all 0.3s;
+    }
+
+    .footer-cta .links a:hover {
+      background: var(--accent);
+      color: #000;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .practice-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .bubble {
+        min-width: 100px;
+        height: 100px;
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    
+    <div class="hero-content">
+      <div style="margin-bottom:20px;">
+        <a href="index.html" style="color:var(--accent);text-decoration:none;font-size:32px;" title="Home">🏺</a>
+      </div>
+      <h1>Watson Hartsoe</h1>
+      <div class="subtitle">Forensic Slopwright</div>
+      <p class="thesis">
+        245 repos. 3 users. Sorting algorithmic slop into reusable blocks. 
+        Every AI output becomes either a component with traceable lineage or documented waste.
+      </p>
+      <div class="cta">
+        <a href="orange-grid-viewer.html">Browse the Grid</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Project Families -->
+  <section class="constellation">
+    <h2>Four Families</h2>
+
+    <div class="project-families">
+      <!-- Family 1 -->
+      <div class="family">
+        <div class="family-header">
+          <h3>Media as Operator</h3>
+          <p class="claim">McLuhan's tetrad mapped to a gamepad. Play theory, don't read it.</p>
+        </div>
+        <div class="project-bubbles">
+          <a href="https://github.com/hartswf0/tetrad-gamepad" class="bubble" target="_blank">
+            <span class="bubble-name">tetrad-gamepad</span>
+            <span class="bubble-count">3</span>
+          </a>
+          <a href="https://hartswf0.github.io/ecology-of-media/" class="bubble" target="_blank">
+            <span class="bubble-name">ecology-of-media</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Family 2 -->
+      <div class="family">
+        <div class="family-header">
+          <h3>Centauric Cognition</h3>
+          <p class="claim">Prompting as spatial sculpting. Tactile, not textual.</p>
+        </div>
+        <div class="project-bubbles">
+          <a href="https://github.com/hartswf0/latent-sculptor" class="bubble" target="_blank">
+            <span class="bubble-name">latent-sculptor</span>
+            <span class="bubble-count">1</span>
+          </a>
+          <a href="https://hartswf0.github.io/epir/" class="bubble" target="_blank">
+            <span class="bubble-name">ekphrasis-jar</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Family 3 -->
+      <div class="family">
+        <div class="family-header">
+          <h3>Narrative as OS</h3>
+          <p class="claim">Stories compiled as firmware. Pictures that run as performance.</p>
+        </div>
+        <div class="project-bubbles">
+          <a href="https://github.com/hartswf0/soul-mansion" class="bubble" target="_blank">
+            <span class="bubble-name">soul-mansion</span>
+            <span class="bubble-count">1</span>
+          </a>
+          <a href="https://hartswf0.github.io/LEGOS/" class="bubble" target="_blank">
+            <span class="bubble-name">LEGOS</span>
+          </a>
+          <a href="https://hartswf0.github.io/mythos-canon/" class="bubble" target="_blank">
+            <span class="bubble-name">mythos-canon</span>
+          </a>
+          <a href="https://hartswf0.github.io/spuddy-west/" class="bubble" target="_blank">
+            <span class="bubble-name">spuddy-west</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Family 4 -->
+      <div class="family">
+        <div class="family-header">
+          <h3>Encoded Power</h3>
+          <p class="claim">Counter-instruments with reflexive telemetry. Adversarial reimplementation.</p>
+        </div>
+        <div class="project-bubbles">
+          <a href="https://github.com/hartswf0/encoded-power" class="bubble" target="_blank">
+            <span class="bubble-name">encoded-power</span>
+          </a>
+          <a href="https://hartswf0.github.io/role-deck/" class="bubble" target="_blank">
+            <span class="bubble-name">role-deck</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Deflated Claims -->
+  <section class="deflation">
+    <h2>Mythic → Mechanics</h2>
+    
+    <div class="claims-slider">
+      <div class="claim-card">
+        <div class="version">Conference Version</div>
+        <p class="text">
+          "Media determine what is thinkable by operating as invisible epistemic infrastructure."
+        </p>
+      </div>
+
+      <div class="claim-card">
+        <div class="version">Real Version</div>
+        <p class="text">
+          "I build tools that turn media theory into interactive demos. tetrad-gamepad (3 users), 
+          latent-sculptor (1 user), soul-mansion (1 workshop)."
+        </p>
+      </div>
+
+      <div class="claim-card">
+        <div class="version">Elevator Version</div>
+        <p class="text">
+          "245 demos, 3 users. Goal: make critique playable. Status: early."
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer CTA -->
+  <section class="footer-cta">
+    <h2>Browse the Grid</h2>
+    <div class="links">
+      <a href="orange-grid-viewer.html">245 Projects</a>
+      <a href="https://github.com/hartswf0" target="_blank">GitHub</a>
+      <a href="https://youtube.com/@watsonhartsoe" target="_blank">YouTube</a>
+    </div>
+  </section>
+
+  <script>
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if(target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

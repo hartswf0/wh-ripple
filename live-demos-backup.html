@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Live Demos — hartswf0</title>
+  <style>
+    :root{
+      --bg:#0a0a0a;
+      --text:#f5f3ef;
+      --accent:#ff6b35;
+      --muted:#888;
+      --panel:#1a1a1a;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;overflow:hidden}
+    body{
+      background:radial-gradient(ellipse at center, #1a1a1a 0%, #0a0a0a 100%);
+      color:var(--text);
+      font:14px/1.5 -apple-system, sans-serif;
+    }
+
+    /* Header */
+    header{
+      background:rgba(10,10,10,0.98);
+      backdrop-filter:blur(20px);
+      padding:20px;
+      text-align:center;
+      border-bottom:1px solid var(--border);
+      position:sticky;
+      top:0;
+      z-index:100;
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size:clamp(24px, 5vw, 48px);
+      font-weight:800;
+      background:linear-gradient(135deg, var(--accent), #FFA500);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+
+    .subtitle{
+      font-size:14px;
+      opacity:0.8;
+      margin-bottom:15px;
+    }
+
+    .home-link{
+      position:absolute;
+      top:20px;
+      left:20px;
+      font-size:24px;
+      text-decoration:none;
+      opacity:0.8;
+      transition:all 0.2s;
+    }
+
+    .home-link:hover{
+      opacity:1;
+      transform:scale(1.1);
+    }
+
+    /* Stats */
+    .stats{
+      display:flex;
+      gap:30px;
+      justify-content:center;
+      padding:20px;
+      background:rgba(0,0,0,0.3);
+      border-bottom:1px solid var(--border);
+    }
+
+    .stat{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:5px;
+    }
+
+    .stat-num{
+      font-size:32px;
+      font-weight:700;
+      color:var(--accent);
+    }
+
+    .stat-label{
+      font-size:11px;
+      font-weight:600;
+      text-transform:uppercase;
+      color:var(--muted);
+      letter-spacing:1px;
+      opacity:0.8;
+    }
+
+    /* Main */
+    main{
+      max-width:1400px;
+      margin:0 auto;
+      padding:40px 20px 80px;
+    }
+
+    /* Cards Grid */
+    .cards{
+      display:grid;
+      gap:16px;
+      grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
+      margin-bottom:40px;
+    }
+
+    @media (min-width: 768px){
+      .cards{
+        grid-template-columns:repeat(3, 1fr);
+      }
+    }
+
+    @media (min-width: 1200px){
+      .cards{
+        grid-template-columns:repeat(4, 1fr);
+      }
+    }
+
+    .card{
+      position:relative;
+      background:var(--card-bg);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:20px;
+      transition:all 0.2s ease;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height:140px;
+      text-decoration:none;
+      color:var(--text);
+    }
+
+    .card:hover{
+      background:rgba(255,107,53,0.08);
+      border-color:var(--accent);
+      transform:translateY(-2px);
+      box-shadow:0 4px 16px rgba(255,107,53,0.2);
+    }
+
+    .card-badge{
+      position:absolute;
+      top:15px;
+      right:15px;
+      background:rgba(255,107,53,0.2);
+      color:var(--accent);
+      font-size:10px;
+      font-weight:700;
+      padding:4px 8px;
+      border-radius:12px;
+      border:1px solid var(--accent);
+    }
+
+    .card-title{
+      font-size:16px;
+      font-weight:700;
+      color:var(--text);
+      margin-top:5px;
+    }
+
+    .card-url{
+      font-size:11px;
+      color:var(--muted);
+      opacity:0.7;
+      word-break:break-all;
+      margin-top:auto;
+      font-family:monospace;
+    }
+
+    .card-count{
+      font-size:12px;
+      color:var(--accent);
+      font-weight:600;
+      opacity:0.8;
+    }
+
+    /* Section Headers */
+    .section{
+      margin-bottom:40px;
+    }
+
+    .section-header{
+      display:flex;
+      align-items:center;
+      gap:15px;
+      margin-bottom:25px;
+      padding-bottom:15px;
+      border-bottom:1px solid var(--border);
+    }
+
+    .section-icon{
+      width:40px;
+      height:40px;
+      background:rgba(255,107,53,0.2);
+      border:1px solid var(--accent);
+      border-radius:8px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:20px;
+    }
+
+    .section-title{
+      font-size:22px;
+      font-weight:700;
+      color:var(--accent);
+    }
+
+    .section-desc{
+      color:var(--muted);
+      font-size:13px;
+      opacity:0.8;
+      margin-left:auto;
+    }
+
+    /* Footer */
+    footer{
+      text-align:center;
+      padding:40px 20px;
+      background:rgba(0,0,0,0.5);
+      color:var(--text);
+      margin-top:80px;
+      border-top:1px solid var(--border);
+    }
+
+    footer a{
+      color:var(--accent);
+      font-weight:700;
+      text-decoration:none;
+    }
+
+    footer a:hover{
+      text-decoration:underline;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="home-link">🏺</a>
+    <h1>Live Demos</h1>
+    <div class="subtitle">Interactive projects deployed on GitHub Pages</div>
+  </header>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num" id="stat-projects">—</div>
+      <div class="stat-label">Projects</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="stat-demos">—</div>
+      <div class="stat-label">Live Demos</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="stat-categories">—</div>
+      <div class="stat-label">Categories</div>
+    </div>
+  </div>
+
+  <main>
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon">🚀</div>
+        <div class="section-title">All Live Demos</div>
+        <div class="section-desc"><span id="total-count">—</span> deployments</div>
+      </div>
+      <div class="cards" id="demos-grid"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      <strong>Live Demos</strong> — 
+      <a href="https://github.com/hartswf0" target="_blank" rel="noopener">@hartswf0</a>
+    </p>
+    <p style="opacity:0.7; margin-top:10px;">Click any card to open the live demo</p>
+  </footer>
+
+  <script>
+    const demos = {
+      "synarchiv": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/synarchiv/"]
+      },
+      "head-neuroglow": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/head-neuroglow/"]
+      },
+      "gene": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/gene/index.html"]
+      },
+      "os-dope": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/os-dope/",
+          "https://hartswf0.github.io/os-dope-faa/#tab=protocol"
+        ]
+      },
+      "chrono-mix": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/chrono-mix/"]
+      },
+      "orange-assemblies": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/orange-assemblies/"]
+      },
+      "iran-sugarscape-scholars-canvas": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/iran-sugarscape-scholars-canvas/"]
+      },
+      "unthinkable-media": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/unthinkable-media/",
+          "https://hartswf0.github.io/unthinkable-media/index_minimal.html"
+        ]
+      },
+      "smith-deck": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/smith-deck/index-min-alt.html"]
+      },
+      "dream-organ": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/dream-organ/"]
+      },
+      "cb": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/cb/"]
+      },
+      "liberty-machines": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/liberty-machines/"]
+      },
+      "windows-and-mirrors": {
+        "count": 3,
+        "urls": [
+          "https://hartswf0.github.io/windows-and-mirrors/closure-foraging-deck.zip/index.html",
+          "https://hartswf0.github.io/windows-and-mirrors/closure.html#slide-1",
+          "https://hartswf0.github.io/windows-and-mirrors/"
+        ]
+      },
+      "novus-groove": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/novus-groove/"]
+      },
+      "media-shaper-2400": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/media-shaper-2400/"]
+      },
+      "privacy-value-labels": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/privacy-value-labels/#view=label"]
+      },
+      "dirty-disclosure": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/dirty-disclosure/"]
+      },
+      "eco-media": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/eco-media/"]
+      },
+      "tetrad-gamepad": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/tetrad-gamepad/",
+          "https://hartswf0.github.io/tetrad-gamepad/mobile.html"
+        ]
+      },
+      "prompt-smith": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/prompt-smith/"]
+      },
+      "ecology-of-media": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/ecology-of-media/"]
+      },
+      "totb": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/totb/"]
+      },
+      "encoded-power": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/encoded-power/TETRAFORMER/tactic.html"]
+      },
+      "rosetta-protocol": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/rosetta-protocol/"]
+      },
+      "bluefoot": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/bluefoot/"]
+      },
+      "vol-air": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/vol-air/vols-02.html"]
+      },
+      "role-deck": {
+        "count": 5,
+        "urls": [
+          "https://hartswf0.github.io/role-deck/",
+          "https://hartswf0.github.io/role-deck/HUB.html",
+          "https://hartswf0.github.io/role-deck/work_sense_tui_company_os_mobile%20(3).html",
+          "https://hartswf0.github.io/role-deck/work_sense_tui_mobile_canvas_build.html",
+          "https://hartswf0.github.io/role-deck/work_sense_tui_mobile_canvas_build%20(1).html"
+        ]
+      },
+      "mfss": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/mfss/"]
+      },
+      "platos-laundry": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/platos-laundry/",
+          "https://hartswf0.github.io/platos-laundry/gain.html"
+        ]
+      },
+      "sterner": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/sterner/"]
+      },
+      "cage": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/cage/"]
+      },
+      "silence-has-rules": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/silence-has-rules/"]
+      },
+      "potters-wheel": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/potters-wheel/STEELMAN/slides_grid.html",
+          "https://hartswf0.github.io/potters-wheel/STEELMAN/index.html"
+        ]
+      },
+      "pca": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/pca/surreal-os-victor-index.html"]
+      },
+      "sr-os": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/sr-os/"]
+      },
+      "trui": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/trui/"]
+      },
+      "feedfall": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/feedfall/",
+          "https://hartswf0.github.io/feedfall/atlantis-explorer.html"
+        ]
+      },
+      "venn-32": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/venn-32/stack_index_minimal_preview_single_file_html%20(5).html?simple",
+          "https://hartswf0.github.io/venn-32/stack_index_minimal_preview_single_file_html%20(6).html"
+        ]
+      },
+      "arkadu": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/arkadu/index-master.html",
+          "https://hartswf0.github.io/arkadu/approach-fusion-voronoi.html"
+        ]
+      },
+      "abundant-nes": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/abundant-nes/abunes-07.html"]
+      },
+      "excavator": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/excavator/ai-07.html"]
+      },
+      "sense-ritual": {
+        "count": 8,
+        "urls": [
+          "https://hartswf0.github.io/sense-ritual/",
+          "https://hartswf0.github.io/sense-ritual/a0.html",
+          "https://hartswf0.github.io/sense-ritual/aaa.html",
+          "https://hartswf0.github.io/sense-ritual/cut.html",
+          "https://hartswf0.github.io/sense-ritual/THREE_GAMES.html",
+          "https://hartswf0.github.io/sense-ritual/garden-with-beats.html",
+          "https://hartswf0.github.io/sense-ritual/group.html",
+          "https://hartswf0.github.io/sense-ritual/ritual-garden-index.html"
+        ]
+      },
+      "eos": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/eos/operating-system/index.html",
+          "https://hartswf0.github.io/eos/"
+        ]
+      },
+      "mythos-canon": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/mythos-canon/"]
+      },
+      "hyperclay-editor": {
+        "count": 3,
+        "urls": [
+          "https://hartswf0.github.io/hyperclay-editor/CAN/hyperclay-index.html",
+          "https://hartswf0.github.io/hyperclay-editor/CAN/hyperclay-rex.html",
+          "https://hartswf0.github.io/hyperclay-editor/CAN/hyperclay-trex-minimal.html"
+        ]
+      },
+      "media-surfer": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/media-surfer/"]
+      },
+      "hamlets-napkin": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/hamlets-napkin/"]
+      },
+      "soul-mansion": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/soul-mansion/"]
+      },
+      "nexadoc-jar": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/nexadoc-jar/"]
+      },
+      "the-fork": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/the-fork/"]
+      },
+      "holo-project": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/holo-project/"]
+      },
+      "func-sub": {
+        "count": 4,
+        "urls": [
+          "https://hartswf0.github.io/func-sub/func-orb-training.html",
+          "https://hartswf0.github.io/func-sub/functown-index.html",
+          "https://hartswf0.github.io/func-sub/",
+          "https://hartswf0.github.io/func-sub/func-index.html"
+        ]
+      },
+      "sympathetic-magic": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/sympathetic-magic/"]
+      },
+      "1000-small-futures": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/1000-small-futures/",
+          "https://hartswf0.github.io/1000-small-futures/thousand-tetrad.html"
+        ]
+      },
+      "LEGOS": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/LEGOS/"]
+      },
+      "reading-with-machines": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/reading-with-machines/"]
+      },
+      "1000-medical": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/1000-medical/"]
+      },
+      "angel-meets-algo": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/angel-meets-algo/novus-assembly.html"]
+      },
+      "haunted-tools": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/haunted-tools/",
+          "https://github.com/hartswf0/haunted-tools"
+        ]
+      }
+    };
+
+    // Render demos
+    function renderDemos(){
+      const grid = document.getElementById('demos-grid');
+      let totalDemos = 0;
+      let html = '';
+
+      // Sort alphabetically
+      const sorted = Object.keys(demos).sort();
+
+      sorted.forEach(key => {
+        const demo = demos[key];
+        totalDemos += demo.count;
+
+        // Create a card for each URL
+        demo.urls.forEach((url, idx) => {
+          const isGithubRepo = url.includes('github.com') && !url.includes('github.io');
+          const badge = demo.count > 1 ? `${idx + 1}/${demo.count}` : '1';
+          
+          html += `
+            <a href="${url}" class="card" target="_blank" rel="noopener" title="${url}">
+              <div class="card-badge">${badge}</div>
+              <div class="card-title">${formatTitle(key)}</div>
+              <div class="card-count">${isGithubRepo ? '📦 Repo' : '🚀 Live'}</div>
+              <div class="card-url">${url.replace('https://hartswf0.github.io/', '').replace('https://github.com/', '')}</div>
+            </a>
+          `;
+        });
+      });
+
+      grid.innerHTML = html;
+
+      // Update stats
+      document.getElementById('stat-projects').textContent = Object.keys(demos).length;
+      document.getElementById('stat-demos').textContent = totalDemos;
+      document.getElementById('stat-categories').textContent = estimateCategories();
+      document.getElementById('total-count').textContent = totalDemos;
+    }
+
+    function formatTitle(key){
+      return key
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    }
+
+    function estimateCategories(){
+      // Rough categorization based on keywords
+      const categories = new Set();
+      Object.keys(demos).forEach(key => {
+        if(key.includes('media') || key.includes('tetrad')) categories.add('media-theory');
+        if(key.includes('os') || key.includes('protocol')) categories.add('systems');
+        if(key.includes('sense') || key.includes('ritual')) categories.add('interactive');
+        if(key.includes('game') || key.includes('play')) categories.add('games');
+        if(key.includes('role') || key.includes('deck')) categories.add('tools');
+      });
+      return Math.max(categories.size, 8); // Minimum 8 categories
+    }
+
+    // Initialize
+    renderDemos();
+  </script>
+</body>
+</html>

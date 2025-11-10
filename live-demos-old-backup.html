@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Live Demos — hartswf0 GitHub Pages</title>
+  <style>
+    :root{
+      --bg:#0a0a0a;
+      --text:#f5f3ef;
+      --accent:#ff6b35;
+      --muted:#888;
+      --panel:#1a1a1a;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;overflow:hidden}
+    body{
+      background:radial-gradient(ellipse at center, #1a1a1a 0%, #0a0a0a 100%);
+      color:var(--text);
+      font:14px/1.5 -apple-system, sans-serif;
+    }
+
+    /* Header - Compact */
+    header{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      z-index:100;
+      background:rgba(10,10,10,0.98);
+      backdrop-filter:blur(20px);
+      border-bottom:1px solid rgba(255,107,53,0.2);
+      padding:8px 20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      height:50px;
+    }
+
+    .home-link{
+      color:var(--accent);
+      text-decoration:none;
+      font-size:24px;
+      opacity:0.9;
+      transition:all 0.2s;
+    }
+
+    .home-link:hover{
+      opacity:1;
+      transform:scale(1.05);
+    }
+
+    .header-title{
+      font-size:16px;
+      font-weight:700;
+      color:var(--accent);
+    }
+
+    .header-stats{
+      font-size:11px;
+      color:var(--muted);
+      display:flex;
+      gap:12px;
+    }
+
+    .header-stats span{
+      color:var(--text);
+    }
+
+    /* Main container */
+    #main{
+      position:absolute;
+      top:50px;
+      left:0;
+      right:0;
+      bottom:0;
+      overflow:auto;
+      padding:30px;
+    }
+
+    /* Family sections - Compact */
+    .family-section{
+      margin-bottom:40px;
+    }
+
+    .family-header{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:20px;
+      padding-bottom:8px;
+      border-bottom:1px solid rgba(255,107,53,0.15);
+    }
+
+    .family-title{
+      font-size:18px;
+      font-weight:700;
+      color:var(--accent);
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+    }
+
+    .family-count{
+      margin-left:auto;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:600;
+    }
+
+    /* Orange Grid */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));
+      gap:20px;
+      transition:all 0.3s ease;
+    }
+
+    @media(min-width:1200px){
+      .grid{
+        grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
+        gap:24px;
+      }
+    }
+
+    .orange{
+      position:relative;
+      aspect-ratio:1;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      transition:transform 0.3s ease, opacity 0.3s ease;
+      overflow:hidden;
+      opacity:0;
+      transform:scale(0.8);
+      animation:popIn 0.5s ease forwards;
+    }
+
+    @keyframes popIn{
+      to{
+        opacity:1;
+        transform:scale(1);
+      }
+    }
+
+    .orange:hover{
+      transform:scale(1.1);
+      z-index:10;
+    }
+
+    .orange:hover .hover-preview{
+      opacity:1;
+      transform:scale(1);
+    }
+
+    .orange-number{
+      position:absolute;
+      top:10px;
+      right:10px;
+      background:rgba(0,0,0,0.9);
+      backdrop-filter:blur(10px);
+      color:#fff;
+      min-width:44px;
+      height:44px;
+      padding:0;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:16px;
+      font-weight:800;
+      font-family:-apple-system, sans-serif;
+      z-index:100;
+      border:2px solid rgba(255,255,255,0.3);
+      box-shadow:0 2px 12px rgba(0,0,0,0.5);
+      transition:all 0.2s ease;
+    }
+
+    .orange:hover .orange-number{
+      background:rgba(0,0,0,1);
+      color:var(--accent);
+      border-color:var(--accent);
+      box-shadow:0 4px 16px rgba(255,107,53,0.6);
+      transform:scale(1.05);
+    }
+
+    @media(min-width:1200px){
+      .orange-number{
+        min-width:50px;
+        height:50px;
+        font-size:18px;
+      }
+    }
+
+    .hover-preview{
+      position:absolute;
+      inset:0;
+      border-radius:50%;
+      overflow:hidden;
+      opacity:0;
+      transform:scale(0.85);
+      transition:all 0.3s ease;
+      z-index:2;
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .hover-preview iframe{
+      width:300%;
+      height:300%;
+      border:none;
+      transform:scale(0.33);
+      transform-origin:center;
+      pointer-events:none;
+    }
+
+    .orange-content{
+      text-align:center;
+      padding:24px 16px;
+      position:relative;
+      z-index:2;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      height:100%;
+    }
+
+    .orange-name{
+      font-size:13px;
+      font-weight:700;
+      margin-bottom:6px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      line-clamp:2;
+      -webkit-box-orient:vertical;
+      text-shadow:0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    .orange-meta{
+      font-size:10px;
+      color:rgba(255,255,255,0.8);
+      font-weight:600;
+      opacity:0.9;
+    }
+
+    /* Footer */
+    footer{
+      text-align:center;
+      padding:20px;
+      color:var(--muted);
+      font-size:12px;
+      opacity:0.8;
+    }
+
+    footer a{
+      color:var(--accent);
+      text-decoration:none;
+    }
+
+    footer a:hover{
+      text-decoration:underline;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="home-link">🏺</a>
+    <div class="header-title">Live Demos</div>
+    <div class="header-stats">
+      <span id="demo-count">—</span> total
+    </div>
+  </header>
+
+  <div id="main"></div>
+
+  <script>
+    // All data sources
+    const sources = {
+      glitch: {
+        count: 3,
+        urls: [
+          "https://bony-lucky-gargoyleosaurus.glitch.me/",
+          "https://periwinkle-harmonious-sneeze.glitch.me/",
+          "https://tetrafor.glitch.me/"
+        ]
+      },
+      youtube: {
+        count: 66,
+        urls: [
+          "https://www.youtube.com/watch?v=fhdQdCFJzso",
+          "https://youtube.com/clip/Ugkx8S3PdX8mO8500hGjW-_q6GmBRMiMJPoc",
+          "https://youtube.com/clip/UgkxfmunaGk4LwHfOdVBM89mBwxokcrK_2E2",
+          "https://youtube.com/clip/UgkxBClXTGmiXTtU0qHDYWEvVgfTcdw_Mc7x",
+          "https://youtube.com/clip/UgkxAtxYWe3PCUzHECelq7Ae0sqv0ANPUSFb",
+          "https://youtube.com/clip/UgkxqnapzY3y-ohWLE9EAjHsTy4thXKFcfN8",
+          "https://youtube.com/clip/Ugkx5qv0zdCKsFyCChi0Y6nE24_lrj_EPK4G",
+          "https://youtube.com/clip/UgkxB904Qn-BC7ByVN1bH2ldojZP8I1zGsjy",
+          "https://youtube.com/clip/Ugkxr7WjJQxl_ZB9qfYMUNqobmtPCHoBLwNF",
+          "https://youtube.com/clip/UgkxB4orluXbkv69mwL1cVfH6oe7F6ZF1gYc",
+          "https://youtube.com/clip/UgkxWfr4PMOVh8Eoeh670Znp3GHx-etn9InY",
+          "https://youtube.com/clip/UgkxrdmI9Q9g-BcsezFSwFdAnMEweLUGu2YQ",
+          "https://youtube.com/clip/UgkxKnSN7d0bUWdjbez9cFW_dmFHaIvwayIJ",
+          "https://youtube.com/clip/Ugkx5dOK79MtdKzTDB15CP5gcbiHIBaj6VTe",
+          "https://youtube.com/clip/UgkxiOfpfrn55ce8meFp65iZgGO0sdDifQEf",
+          "https://youtube.com/clip/Ugkx0c53nIByzqy6tFTN35GgOln4JiuymDjd",
+          "https://youtube.com/clip/UgkxP4eJ-a3W63b2S18peCJsNx2QJtDUhH3S",
+          "https://youtube.com/clip/Ugkx28En4RLYwWrcx9znLX7cinEWOzuqkVz_",
+          "https://youtube.com/clip/Ugkxm1XML6BqGanbKs5vAk63S5NDql3rdags",
+          "https://youtube.com/clip/Ugkx7f3UdAwXq9XEVocMCl2rkc6T3O6UhL-b",
+          "https://youtube.com/clip/UgkxjV3eUCuqV2SK4ZI6GRXcnwkq4PBQ_XVC",
+          "https://youtube.com/clip/Ugkxsycht4tO_n8DCbAoExL413hC8y1axSZs",
+          "https://youtube.com/clip/Ugkxc7kqv0WXf14ITBtH6gDoaUYpxnbcMgRA",
+          "https://youtube.com/clip/UgkxNJCC-ycNzttbXnr62yHBmQnF0VBjm_L0?si=na1-xyTNh2rikTgY",
+          "https://youtube.com/clip/UgkxYNMGHujcYYsWbQx9PzHdiUToESJyKpmb?si=_lPv0ZoQKblzk0eT",
+          "https://youtube.com/clip/Ugkx5Ld-p_MNM5VkI6OI_YQ_eFYzF15jXrd2?si=9UNdCnq24Wu25vsM",
+          "https://youtube.com/clip/Ugkx-oW8jgb5cRkWSAtdlYvuWzbpTsufmCqp?si=2rVpMihGeGolwPiY",
+          "https://youtube.com/clip/UgkxKiQYUzlrM13WXjg1FWTfu5NacMdGW_36?si=nCeCeEOXzKncZRqM",
+          "https://youtube.com/clip/UgkxsDfKvsvqMa5OqD0CLFZDILJhga_15gGr?si=uNkXakuTuzrBgPbl",
+          "https://youtube.com/clip/UgkxvzXeb3lBnt-5f0XmDNJ7aa1zNFAC_NmJ?si=4h9JeFIyzODZF6Rn",
+          "https://youtube.com/clip/UgkxLvAZvHuYOnq71nC3k8NYRYgWFhdZnvws?si=GqnUt_kbYQxId1On",
+          "https://youtube.com/clip/Ugkxrcs5MnDKC9yqDandqFM31aBNH3A7hB5b?si=6ve2Lrg9nGLIyrov",
+          "https://youtube.com/clip/UgkxEU52hCbxVREaproWlEs52I_4wcMJoe0f?si=7SZpvspIsxXD__Qr",
+          "https://youtube.com/clip/UgkxjYGyzmEJu8TJUOzvKWveL_nJQboBImNu?si=gt-giqwVAN7Xhj6z",
+          "https://youtube.com/clip/Ugkx7uQA1LkmJWCna__Uzwx30k3b_jAgIAsI?si=1AZrdB-sBvdHv2gc",
+          "https://youtube.com/clip/UgkxBLimNfXS11y4Y4pUAzpwYkv1CyT0vFAH?si=HSxWHzkbRG9zmzpX",
+          "https://youtube.com/clip/UgkxbiZOVlCQFox5Z1xULP4c1ibESk7Sq5jF?si=ZYXX8dXsZnGOD_GO",
+          "https://youtu.be/gQYPDUFjauM",
+          "https://youtube.com/clip/UgkxsIsXuqWIXQMIN2MeRuP3etRLDcRQNwUb",
+          "https://youtube.com/clip/UgkxPK9bo7Uzw24Uf0WwTJrMWs8nhyLZSOpt",
+          "https://youtu.be/DHyUYg8X31c",
+          "https://youtu.be/ETVr_lpIMO0",
+          "https://youtu.be/S94ETUiMZwQ",
+          "https://youtube.com/clip/Ugkx4q5dElZ2urQk5LCQA91P7QWAkwqZXafR",
+          "https://youtube.com/clip/UgkxdOORzlvRZ4gQqiVjkHemR7xVEgz3eixq",
+          "https://youtube.com/clip/Ugkxbo-udxLDnQo3T8v2hwGFbgzC3u931YtQ",
+          "https://youtube.com/clip/UgkxUXurG6IdXGDbLIOhH1tMwD-kK8xGiLII",
+          "https://youtube.com/clip/UgkxkUGwpYxJS2_wcuMB4PaabmE5pNN0kdud",
+          "https://youtube.com/clip/Ugkxi89UdyXV2aYokMrVjM1hVJOfQEGBNK89",
+          "https://youtube.com/clip/Ugkxu5zwKvBqVQXUIcWuOL2YqtWfG3k1Y0Jt",
+          "https://youtube.com/clip/UgkxfOcX7F4bsIKM51JhMwoxGUeZnbCja_WC",
+          "https://youtube.com/clip/Ugkx9RNP6fAxenpxJbDcOM5FhKLXRv3_3k2C",
+          "https://youtube.com/clip/UgkxAm_yVlB3hgP3EVBthk4DdavMxhwVRgrM",
+          "https://youtube.com/clip/Ugkx76J-0MtSGz20nG5wOzj9IjW4RhXpCi0n",
+          "https://youtube.com/clip/UgkxXzlEX2mhjO0qzbl2DcFjVDlVDCWS3eHY",
+          "https://youtube.com/clip/Ugkxv-qntFP_W7wJtYSDuP_94LUYJrSpXJkv",
+          "https://youtube.com/clip/UgkxbZW56Amb4wwwilQoevuNBzCY36kZJ2Rg",
+          "https://youtube.com/clip/UgkxKFjfFQuY-M4Npc3hGUFGOtI7CQkksRJF",
+          "https://youtube.com/clip/UgkxNDVRHtKip-wL0pB9ogvc5k3FYGzjJzkg",
+          "https://youtube.com/clip/Ugkx-A3PzpUB0wVjHOh8dQYYUOaelKk5HtSd",
+          "https://youtube.com/clip/Ugkxz1ZOzjIhn5PXNbAcUUY6scmRXf4tvVZR",
+          "https://youtube.com/clip/Ugkx747zikLShxbg7DxxNyl2h8rQa38jB_MT",
+          "https://youtube.com/clip/Ugkxp72uYIDpIJfoTd9ReOW6BP-1luB8eOLH",
+          "https://youtube.com/clip/UgkxjrzFDUDzOlAbjSF-PzNFrxvbWsbgiKxH",
+          "https://youtube.com/clip/Ugkx7ARgeof6sNiNFqNNEzsF100IxRwgAu10",
+          "https://youtube.com/shorts/T-9p8z2IPQs?feature=share"
+        ]
+      }
+    };
+
+    // GitHub Pages families (hartswf0)
+    const hartswf0 = {
+      "synarchiv": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/synarchiv/"]
+      },
+      "head-neuroglow": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/head-neuroglow/"]
+      },
+      "gene": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/gene/index.html"]
+      },
+      "os-dope": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/os-dope/",
+          "https://hartswf0.github.io/os-dope-faa/#tab=protocol"
+        ]
+      },
+      "chrono-mix": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/chrono-mix/"]
+      },
+      "orange-assemblies": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/orange-assemblies/"]
+      },
+      "iran-sugarscape-scholars-canvas": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/iran-sugarscape-scholars-canvas/"]
+      },
+      "unthinkable-media": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/unthinkable-media/",
+          "https://hartswf0.github.io/unthinkable-media/index_minimal.html"
+        ]
+      },
+      "smith-deck": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/smith-deck/index-min-alt.html"]
+      },
+      "dream-organ": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/dream-organ/"]
+      },
+      "cb": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/cb/"]
+      },
+      "liberty-machines": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/liberty-machines/"]
+      },
+      "windows-and-mirrors": {
+        "count": 3,
+        "urls": [
+          "https://hartswf0.github.io/windows-and-mirrors/closure-foraging-deck.zip/index.html",
+          "https://hartswf0.github.io/windows-and-mirrors/closure.html#slide-1",
+          "https://hartswf0.github.io/windows-and-mirrors/"
+        ]
+      },
+      "novus-groove": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/novus-groove/"]
+      },
+      "media-shaper-2400": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/media-shaper-2400/"]
+      },
+      "privacy-value-labels": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/privacy-value-labels/#view=label"]
+      },
+      "dirty-disclosure": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/dirty-disclosure/"]
+      },
+      "eco-media": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/eco-media/"]
+      },
+      "tetrad-gamepad": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/tetrad-gamepad/",
+          "https://hartswf0.github.io/tetrad-gamepad/mobile.html"
+        ]
+      },
+      "prompt-smith": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/prompt-smith/"]
+      },
+      "ecology-of-media": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/ecology-of-media/"]
+      },
+      "totb": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/totb/"]
+      },
+      "encoded-power": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/encoded-power/TETRAFORMER/tactic.html"]
+      },
+      "rosetta-protocol": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/rosetta-protocol/"]
+      },
+      "bluefoot": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/bluefoot/"]
+      },
+      "vol-air": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/vol-air/vols-02.html"]
+      },
+      "role-deck": {
+        "count": 5,
+        "urls": [
+          "https://hartswf0.github.io/role-deck/",
+          "https://hartswf0.github.io/role-deck/HUB.html",
+          "https://hartswf0.github.io/role-deck/work_sense_tui_company_os_mobile%20(3).html",
+          "https://hartswf0.github.io/role-deck/work_sense_tui_mobile_canvas_build.html",
+          "https://hartswf0.github.io/role-deck/work_sense_tui_mobile_canvas_build%20(1).html"
+        ]
+      },
+      "mfss": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/mfss/"]
+      },
+      "platos-laundry": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/platos-laundry/",
+          "https://hartswf0.github.io/platos-laundry/gain.html"
+        ]
+      },
+      "sterner": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/sterner/"]
+      },
+      "cage": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/cage/"]
+      },
+      "silence-has-rules": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/silence-has-rules/"]
+      },
+      "potters-wheel": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/potters-wheel/STEELMAN/slides_grid.html",
+          "https://hartswf0.github.io/potters-wheel/STEELMAN/index.html"
+        ]
+      },
+      "pca": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/pca/surreal-os-victor-index.html"]
+      },
+      "sr-os": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/sr-os/"]
+      },
+      "trui": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/trui/"]
+      },
+      "feedfall": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/feedfall/",
+          "https://hartswf0.github.io/feedfall/atlantis-explorer.html"
+        ]
+      },
+      "venn-32": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/venn-32/stack_index_minimal_preview_single_file_html%20(5).html?simple",
+          "https://hartswf0.github.io/venn-32/stack_index_minimal_preview_single_file_html%20(6).html"
+        ]
+      },
+      "arkadu": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/arkadu/index-master.html",
+          "https://hartswf0.github.io/arkadu/approach-fusion-voronoi.html"
+        ]
+      },
+      "abundant-nes": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/abundant-nes/abunes-07.html"]
+      },
+      "excavator": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/excavator/ai-07.html"]
+      },
+      "sense-ritual": {
+        "count": 8,
+        "urls": [
+          "https://hartswf0.github.io/sense-ritual/",
+          "https://hartswf0.github.io/sense-ritual/a0.html",
+          "https://hartswf0.github.io/sense-ritual/aaa.html",
+          "https://hartswf0.github.io/sense-ritual/cut.html",
+          "https://hartswf0.github.io/sense-ritual/THREE_GAMES.html",
+          "https://hartswf0.github.io/sense-ritual/garden-with-beats.html",
+          "https://hartswf0.github.io/sense-ritual/group.html",
+          "https://hartswf0.github.io/sense-ritual/ritual-garden-index.html"
+        ]
+      },
+      "eos": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/eos/operating-system/index.html",
+          "https://hartswf0.github.io/eos/"
+        ]
+      },
+      "mythos-canon": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/mythos-canon/"]
+      },
+      "hyperclay-editor": {
+        "count": 3,
+        "urls": [
+          "https://hartswf0.github.io/hyperclay-editor/CAN/hyperclay-index.html",
+          "https://hartswf0.github.io/hyperclay-editor/CAN/hyperclay-rex.html",
+          "https://hartswf0.github.io/hyperclay-editor/CAN/hyperclay-trex-minimal.html"
+        ]
+      },
+      "media-surfer": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/media-surfer/"]
+      },
+      "hamlets-napkin": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/hamlets-napkin/"]
+      },
+      "soul-mansion": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/soul-mansion/"]
+      },
+      "nexadoc-jar": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/nexadoc-jar/"]
+      },
+      "the-fork": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/the-fork/"]
+      },
+      "holo-project": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/holo-project/"]
+      },
+      "func-sub": {
+        "count": 4,
+        "urls": [
+          "https://hartswf0.github.io/func-sub/func-orb-training.html",
+          "https://hartswf0.github.io/func-sub/functown-index.html",
+          "https://hartswf0.github.io/func-sub/",
+          "https://hartswf0.github.io/func-sub/func-index.html"
+        ]
+      },
+      "sympathetic-magic": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/sympathetic-magic/"]
+      },
+      "1000-small-futures": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/1000-small-futures/",
+          "https://hartswf0.github.io/1000-small-futures/thousand-tetrad.html"
+        ]
+      },
+      "LEGOS": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/LEGOS/"]
+      },
+      "reading-with-machines": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/reading-with-machines/"]
+      },
+      "1000-medical": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/1000-medical/"]
+      },
+      "angel-meets-algo": {
+        "count": 1,
+        "urls": ["https://hartswf0.github.io/angel-meets-algo/novus-assembly.html"]
+      },
+      "haunted-tools": {
+        "count": 2,
+        "urls": [
+          "https://hartswf0.github.io/haunted-tools/",
+          "https://github.com/hartswf0/haunted-tools"
+        ]
+      }
+    };
+
+    // Categorize demos into families
+    const families = {
+      'media-theory': {
+        icon: '📺',
+        title: 'Media Theory',
+        color: '#ff6b35',
+        projects: []
+      },
+      'os-systems': {
+        icon: '🖥️',
+        title: 'Operating Systems',
+        color: '#22d3ee',
+        projects: []
+      },
+      'games-interactive': {
+        icon: '🎮',
+        title: 'Games & Interactive',
+        color: '#a855f7',
+        projects: []
+      },
+      'tools-utilities': {
+        icon: '🔧',
+        title: 'Tools & Utilities',
+        color: '#fbbf24',
+        projects: []
+      },
+      'philosophy-theory': {
+        icon: '🏛️',
+        title: 'Philosophy',
+        color: '#ec4899',
+        projects: []
+      },
+      'creative-visual': {
+        icon: '🎨',
+        title: 'Creative & Visual',
+        color: '#4ade80',
+        projects: []
+      },
+      'other': {
+        icon: '✨',
+        title: 'Other Projects',
+        color: '#f97316',
+        projects: []
+      }
+    };
+
+    // Categorize each demo
+    Object.keys(demos).forEach(key => {
+      const demo = demos[key];
+      let family = 'other';
+
+      if(key.includes('media') || key.includes('tetrad') || key.includes('ecology') || key.includes('mcluhan')) family = 'media-theory';
+      else if(key.includes('os') || key.includes('protocol') || key.includes('system') || key.includes('sr-os') || key.includes('pca')) family = 'os-systems';
+      else if(key.includes('game') || key.includes('sense') || key.includes('ritual') || key.includes('play') || key.includes('abundant')) family = 'games-interactive';
+      else if(key.includes('smith') || key.includes('tool') || key.includes('role') || key.includes('deck') || key.includes('prompt') || key.includes('excavator')) family = 'tools-utilities';
+      else if(key.includes('plato') || key.includes('cage') || key.includes('sterner') || key.includes('silence') || key.includes('fork')) family = 'philosophy-theory';
+      else if(key.includes('organ') || key.includes('visual') || key.includes('clay') || key.includes('surfer') || key.includes('vol-air') || key.includes('gene') || key.includes('neuroglow')) family = 'creative-visual';
+
+      demo.urls.forEach((url, idx) => {
+        families[family].projects.push({
+          key,
+          url,
+          name: formatTitle(key),
+          index: idx + 1,
+          total: demo.count
+        });
+      });
+    });
+
+    function formatTitle(key){
+      return key
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    }
+
+    function getThemeColor(colorHex){
+      // Convert hex to HSL for variation
+      return colorHex;
+    }
+
+    function renderDemos(){
+      const main = document.getElementById('main');
+      let totalDemos = 0;
+      let html = '';
+
+      // Render each family
+      Object.keys(families).forEach(familyKey => {
+        const family = families[familyKey];
+        if(family.projects.length === 0) return;
+
+        totalDemos += family.projects.length;
+
+        html += `
+          <div class="family-section">
+            <div class="family-header">
+              <div class="family-icon">${family.icon}</div>
+              <div class="family-title">${family.title}</div>
+              <div class="family-count">${family.projects.length} demo${family.projects.length > 1 ? 's' : ''}</div>
+            </div>
+            <div class="grid">
+        `;
+
+        family.projects.forEach((project, idx) => {
+          const number = project.total > 1 ? `${project.index}/${project.total}` : idx + 1;
+          html += `
+            <div class="orange" style="background:${family.color}; animation-delay:${idx * 0.05}s">
+              <div class="orange-number">${number}</div>
+              <div class="hover-preview">
+                <iframe src="${project.url}" sandbox="allow-scripts allow-same-origin"></iframe>
+              </div>
+              <div class="orange-content">
+                <div class="orange-name">${project.name}</div>
+                <div class="orange-meta">${project.url.replace('https://hartswf0.github.io/', '')}</div>
+              </div>
+            </div>
+          `;
+        });
+
+        html += `
+            </div>
+          </div>
+        `;
+      });
+
+      html += `
+        <footer>
+          <p><strong>${totalDemos}</strong> live demos · <a href="https://github.com/hartswf0" target="_blank">@hartswf0</a> on GitHub Pages</p>
+          <p style="margin-top:8px;opacity:0.7;">Hover over oranges to preview · Click to open full page</p>
+        </footer>
+      `;
+
+      main.innerHTML = html;
+      document.getElementById('demo-count').textContent = totalDemos;
+
+      // Add click handlers
+      document.querySelectorAll('.orange').forEach(orange => {
+        orange.addEventListener('click', function(){
+          const url = this.querySelector('iframe').src;
+          window.open(url, '_blank');
+        });
+      });
+    }
+
+    // Initialize
+    renderDemos();
+  </script>
+</body>
+</html>

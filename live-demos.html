@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Live Demos — WH_RIPPLE</title>
+  <style>
+    :root{
+      --bg:#0a0a0a;
+      --text:#f5f3ef;
+      --accent:#ff6b35;
+      --muted:#888;
+      --panel:#1a1a1a;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;overflow:hidden}
+    body{
+      background:radial-gradient(ellipse at center, #1a1a1a 0%, #0a0a0a 100%);
+      color:var(--text);
+      font:14px/1.5 -apple-system, sans-serif;
+    }
+
+    /* Header - Compact */
+    header{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      z-index:100;
+      background:rgba(10,10,10,0.98);
+      backdrop-filter:blur(20px);
+      border-bottom:1px solid rgba(255,107,53,0.2);
+      padding:8px 20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      height:50px;
+    }
+
+    .home-link{
+      color:var(--accent);
+      text-decoration:none;
+      font-size:24px;
+      opacity:0.9;
+      transition:all 0.2s;
+    }
+
+    .home-link:hover{
+      opacity:1;
+      transform:scale(1.05);
+    }
+
+    .header-title{
+      font-size:16px;
+      font-weight:700;
+      color:var(--accent);
+    }
+
+    .header-stats{
+      font-size:11px;
+      color:var(--muted);
+      display:flex;
+      gap:12px;
+    }
+
+    .header-stats span{
+      color:var(--text);
+    }
+
+    /* Main container */
+    #main{
+      position:absolute;
+      top:50px;
+      left:0;
+      right:0;
+      bottom:0;
+      overflow:auto;
+      padding:30px;
+    }
+
+    /* Family sections - Compact */
+    .family-section{
+      margin-bottom:40px;
+    }
+
+    .family-header{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:20px;
+      padding-bottom:8px;
+      border-bottom:1px solid rgba(255,107,53,0.15);
+    }
+
+    .family-title{
+      font-size:18px;
+      font-weight:700;
+      color:var(--accent);
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+    }
+
+    .family-count{
+      margin-left:auto;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:600;
+    }
+
+    /* Orange Grid */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));
+      gap:20px;
+      transition:all 0.3s ease;
+    }
+
+    @media(min-width:1200px){
+      .grid{
+        grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
+        gap:24px;
+      }
+    }
+
+    .orange{
+      position:relative;
+      aspect-ratio:1;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      transition:transform 0.3s ease, opacity 0.3s ease;
+      overflow:visible;
+      opacity:0;
+      transform:scale(0.8);
+      animation:popIn 0.5s ease forwards;
+    }
+
+    .orange::before{
+      content:'';
+      position:absolute;
+      inset:0;
+      border-radius:50%;
+      overflow:hidden;
+      z-index:1;
+    }
+
+    @keyframes popIn{
+      to{
+        opacity:1;
+        transform:scale(1);
+      }
+    }
+
+    .orange:hover{
+      transform:scale(1.1);
+      z-index:10;
+      cursor:grab;
+    }
+
+    .orange:active{
+      cursor:grabbing;
+      animation:pickOrange 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes pickOrange{
+      0%{ transform:scale(1.1) rotate(0deg); }
+      15%{ transform:scale(1.15) rotate(-5deg) translateY(-5px); }
+      30%{ transform:scale(1.2) rotate(5deg) translateY(-10px); }
+      45%{ transform:scale(1.15) rotate(-3deg) translateY(-8px); }
+      60%{ transform:scale(1.1) rotate(2deg) translateY(-5px); }
+      75%{ transform:scale(1.05) rotate(0deg) translateY(-3px); }
+      100%{ transform:scale(1) rotate(0deg) translateY(0); }
+    }
+
+    .orange.picked{
+      animation:wiggleAndFade 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    }
+
+    @keyframes wiggleAndFade{
+      0%{ transform:scale(1) rotate(0deg) translateY(0); opacity:1; }
+      20%{ transform:scale(1.2) rotate(-8deg) translateY(-20px); opacity:1; }
+      40%{ transform:scale(1.15) rotate(8deg) translateY(-30px); opacity:0.9; }
+      60%{ transform:scale(0.9) rotate(-5deg) translateY(-20px); opacity:0.7; }
+      80%{ transform:scale(0.5) rotate(5deg) translateY(-10px); opacity:0.3; }
+      100%{ transform:scale(0) rotate(0deg) translateY(0); opacity:0; }
+    }
+
+    .orange:hover .hover-preview{
+      opacity:1;
+      transform:scale(1);
+    }
+
+    .orange:hover .orange-content{
+      opacity:0;
+    }
+
+    .orange-number{
+      position:absolute;
+      top:5px;
+      right:5px;
+      background:rgba(255,255,255,0.95);
+      backdrop-filter:blur(10px);
+      color:#000;
+      min-width:50px;
+      width:50px;
+      height:32px;
+      padding:0;
+      border-radius:20px 16px 20px 10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:15px;
+      font-weight:700;
+      font-family:'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', ui-monospace, monospace;
+      letter-spacing:-1px;
+      z-index:1000;
+      border:1px solid rgba(0,0,0,0.15);
+      box-shadow:0 2px 8px rgba(0,0,0,0.25), 0 0 0 2px rgba(139,195,74,0.3);
+      transition:all 0.2s ease;
+      pointer-events:none;
+      transform:rotate(-8deg);
+      transform-origin:center right;
+    }
+
+    .orange:hover .orange-number{
+      background:rgba(139,195,74,0.95);
+      color:#000;
+      box-shadow:0 4px 12px rgba(139,195,74,0.6), 0 0 0 2px rgba(255,255,255,0.5);
+      transform:rotate(-12deg);
+    }
+
+    @media(min-width:1200px){
+      .orange-number{
+        top:8px;
+        right:8px;
+        min-width:60px;
+        width:60px;
+        height:38px;
+        font-size:17px;
+      }
+    }
+
+    @media(min-width:1600px){
+      .orange-number{
+        top:10px;
+        right:10px;
+        min-width:66px;
+        width:66px;
+        height:42px;
+        font-size:19px;
+      }
+    }
+
+    .hover-preview{
+      position:absolute;
+      inset:-5%;
+      border-radius:50%;
+      overflow:hidden;
+      opacity:0;
+      transform:scale(0.8);
+      transition:all 0.3s ease;
+      z-index:2;
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .hover-preview iframe{
+      width:150%;
+      height:150%;
+      border:none;
+      transform:scale(0.72);
+      transform-origin:center;
+      pointer-events:none;
+    }
+
+    .orange-content{
+      text-align:center;
+      padding:24px 16px;
+      position:relative;
+      z-index:2;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      height:100%;
+      transition:opacity 0.3s ease;
+    }
+
+    .orange-name{
+      font-size:15px;
+      font-weight:700;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      display:-webkit-box;
+      -webkit-line-clamp:3;
+      line-clamp:3;
+      -webkit-box-orient:vertical;
+      text-shadow:0 1px 3px rgba(0,0,0,0.3);
+      transition:all 0.3s ease;
+    }
+
+    .orange:hover .orange-name{
+      color:#000;
+      text-shadow:0 0 8px rgba(255,255,255,0.9),
+                   0 0 12px rgba(255,255,255,0.7),
+                   0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .orange-meta{
+      font-size:10px;
+      color:rgba(255,255,255,0.8);
+      font-weight:600;
+      opacity:0.9;
+    }
+
+    /* Footer */
+    footer{
+      text-align:center;
+      padding:20px;
+      color:var(--muted);
+      font-size:12px;
+      opacity:0.8;
+    }
+
+    footer a{
+      color:var(--accent);
+      text-decoration:none;
+    }
+
+    footer a:hover{
+      text-decoration:underline;
+    }
+
+    /* Jar Loading Animation */
+    #jar-loader{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      bottom:0;
+      background:rgba(10,10,10,0.98);
+      z-index:200;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      transition:opacity 0.6s ease;
+    }
+
+    #jar-loader.hidden{
+      opacity:0;
+      pointer-events:none;
+    }
+
+    .jar-emoji{
+      font-size:100px;
+      margin-bottom:-20px;
+      transform:rotate(-45deg);
+      animation:jarTilt 2s ease-in-out infinite;
+      position:relative;
+      z-index:10;
+    }
+
+    @keyframes jarTilt{
+      0%, 100%{ transform:rotate(-45deg); }
+      50%{ transform:rotate(-55deg); }
+    }
+
+    .balls-container{
+      position:relative;
+      width:400px;
+      height:150px;
+      margin-top:-30px;
+    }
+
+    .ball{
+      position:absolute;
+      width:24px;
+      height:24px;
+      border-radius:50%;
+      top:10px;
+      left:50%;
+      transform:translate(0, 0);
+      animation:ballPour 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+      box-shadow:0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .ball:nth-child(1){ background:#ff6b35; animation-delay:0s; }
+    .ball:nth-child(2){ background:#22d3ee; animation-delay:0.15s; }
+    .ball:nth-child(3){ background:#a855f7; animation-delay:0.3s; }
+    .ball:nth-child(4){ background:#fbbf24; animation-delay:0.45s; }
+    .ball:nth-child(5){ background:#4ade80; animation-delay:0.6s; }
+
+    @keyframes ballPour{
+      0%{
+        transform:translate(-40px, 0) scale(0) rotate(0deg);
+        opacity:0;
+      }
+      15%{
+        transform:translate(-40px, 0) scale(1) rotate(45deg);
+        opacity:1;
+      }
+      50%{
+        transform:translate(var(--x-offset, 0), 60px) scale(1) rotate(180deg);
+        opacity:1;
+      }
+      85%{
+        transform:translate(var(--x-offset, 0), 120px) scale(1) rotate(360deg);
+        opacity:0.8;
+      }
+      100%{
+        transform:translate(var(--x-offset, 0), 140px) scale(0.5) rotate(405deg);
+        opacity:0;
+      }
+    }
+
+    .ball:nth-child(1){ --x-offset:-100px; }
+    .ball:nth-child(2){ --x-offset:-50px; }
+    .ball:nth-child(3){ --x-offset:0; }
+    .ball:nth-child(4){ --x-offset:50px; }
+    .ball:nth-child(5){ --x-offset:100px; }
+
+    .loading-text{
+      margin-top:40px;
+      color:var(--accent);
+      font-size:14px;
+      font-weight:600;
+      opacity:0.8;
+    }
+  </style>
+</head>
+<body>
+  <div id="jar-loader">
+    <div class="jar-emoji">🏺</div>
+    <div class="balls-container">
+      <div class="ball"></div>
+      <div class="ball"></div>
+      <div class="ball"></div>
+      <div class="ball"></div>
+      <div class="ball"></div>
+    </div>
+    <div class="loading-text">Loading demos...</div>
+  </div>
+  <header>
+    <a href="index.html" class="home-link">🏺</a>
+    <div class="header-title">Live Demos & Media</div>
+    <div class="header-stats">
+      <span id="demo-count">—</span> items
+    </div>
+  </header>
+
+  <div id="main"></div>
+
+  <script>
+    // Define all families with their demos
+    const families = {
+      'github-pages': {
+        title: 'GitHub Pages',
+        color: '#ff6b35',
+        items: [
+          { name: 'Synarchiv', url: 'https://hartswf0.github.io/synarchiv/' },
+          { name: 'Head Neuroglow', url: 'https://hartswf0.github.io/head-neuroglow/' },
+          { name: 'Gene', url: 'https://hartswf0.github.io/gene/index.html' },
+          { name: 'OS Dope', url: 'https://hartswf0.github.io/os-dope/' },
+          { name: 'OS Dope FAA', url: 'https://hartswf0.github.io/os-dope-faa/#tab=protocol' },
+          { name: 'Chrono Mix', url: 'https://hartswf0.github.io/chrono-mix/' },
+          { name: 'Orange Assemblies', url: 'https://hartswf0.github.io/orange-assemblies/' },
+          { name: 'Iran Sugarscape', url: 'https://hartswf0.github.io/iran-sugarscape-scholars-canvas/' },
+          { name: 'Unthinkable Media', url: 'https://hartswf0.github.io/unthinkable-media/' },
+          { name: 'Unthinkable Minimal', url: 'https://hartswf0.github.io/unthinkable-media/index_minimal.html' },
+          { name: 'Smith Deck', url: 'https://hartswf0.github.io/smith-deck/index-min-alt.html' },
+          { name: 'Dream Organ', url: 'https://hartswf0.github.io/dream-organ/' },
+          { name: 'CB', url: 'https://hartswf0.github.io/cb/' },
+          { name: 'Liberty Machines', url: 'https://hartswf0.github.io/liberty-machines/' },
+          { name: 'Windows & Mirrors', url: 'https://hartswf0.github.io/windows-and-mirrors/' },
+          { name: 'Closure Foraging', url: 'https://hartswf0.github.io/windows-and-mirrors/closure-foraging-deck.zip/index.html' },
+          { name: 'Closure Deck', url: 'https://hartswf0.github.io/windows-and-mirrors/closure.html#slide-1' },
+          { name: 'Novus Groove', url: 'https://hartswf0.github.io/novus-groove/' },
+          { name: 'Media Shaper 2400', url: 'https://hartswf0.github.io/media-shaper-2400/' },
+          { name: 'Privacy Labels', url: 'https://hartswf0.github.io/privacy-value-labels/#view=label' },
+          { name: 'Dirty Disclosure', url: 'https://hartswf0.github.io/dirty-disclosure/' },
+          { name: 'Eco Media', url: 'https://hartswf0.github.io/eco-media/' },
+          { name: 'Tetrad Gamepad', url: 'https://hartswf0.github.io/tetrad-gamepad/' },
+          { name: 'Tetrad Mobile', url: 'https://hartswf0.github.io/tetrad-gamepad/mobile.html' },
+          { name: 'Prompt Smith', url: 'https://hartswf0.github.io/prompt-smith/' },
+          { name: 'Ecology of Media', url: 'https://hartswf0.github.io/ecology-of-media/' },
+          { name: 'TOTB', url: 'https://hartswf0.github.io/totb/' },
+          { name: 'Encoded Power', url: 'https://hartswf0.github.io/encoded-power/TETRAFORMER/tactic.html' },
+          { name: 'Rosetta Protocol', url: 'https://hartswf0.github.io/rosetta-protocol/' },
+          { name: 'Bluefoot', url: 'https://hartswf0.github.io/bluefoot/' },
+          { name: 'Vol Air', url: 'https://hartswf0.github.io/vol-air/vols-02.html' },
+          { name: 'Role Deck', url: 'https://hartswf0.github.io/role-deck/' },
+          { name: 'Role HUB', url: 'https://hartswf0.github.io/role-deck/HUB.html' },
+          { name: 'Role TUI 1', url: 'https://hartswf0.github.io/role-deck/work_sense_tui_company_os_mobile%20(3).html' },
+          { name: 'Role TUI 2', url: 'https://hartswf0.github.io/role-deck/work_sense_tui_mobile_canvas_build.html' },
+          { name: 'Role TUI 3', url: 'https://hartswf0.github.io/role-deck/work_sense_tui_mobile_canvas_build%20(1).html' },
+          { name: 'MFSS', url: 'https://hartswf0.github.io/mfss/' },
+          { name: 'Platos Laundry', url: 'https://hartswf0.github.io/platos-laundry/' },
+          { name: 'Platos Gain', url: 'https://hartswf0.github.io/platos-laundry/gain.html' },
+          { name: 'Sterner', url: 'https://hartswf0.github.io/sterner/' },
+          { name: 'Cage', url: 'https://hartswf0.github.io/cage/' },
+          { name: 'Silence Has Rules', url: 'https://hartswf0.github.io/silence-has-rules/' },
+          { name: 'Potters Wheel Grid', url: 'https://hartswf0.github.io/potters-wheel/STEELMAN/slides_grid.html' },
+          { name: 'Potters Wheel', url: 'https://hartswf0.github.io/potters-wheel/STEELMAN/index.html' },
+          { name: 'PCA', url: 'https://hartswf0.github.io/pca/surreal-os-victor-index.html' },
+          { name: 'SR OS', url: 'https://hartswf0.github.io/sr-os/' },
+          { name: 'TRUI', url: 'https://hartswf0.github.io/trui/' },
+          { name: 'Feedfall', url: 'https://hartswf0.github.io/feedfall/' },
+          { name: 'Atlantis Explorer', url: 'https://hartswf0.github.io/feedfall/atlantis-explorer.html' },
+          { name: 'Venn 32 Simple', url: 'https://hartswf0.github.io/venn-32/stack_index_minimal_preview_single_file_html%20(5).html?simple' },
+          { name: 'Venn 32', url: 'https://hartswf0.github.io/venn-32/stack_index_minimal_preview_single_file_html%20(6).html' },
+          { name: 'Arkadu Master', url: 'https://hartswf0.github.io/arkadu/index-master.html' },
+          { name: 'Arkadu Voronoi', url: 'https://hartswf0.github.io/arkadu/approach-fusion-voronoi.html' },
+          { name: 'Abundant NES', url: 'https://hartswf0.github.io/abundant-nes/abunes-07.html' },
+          { name: 'Excavator', url: 'https://hartswf0.github.io/excavator/ai-07.html' },
+          { name: 'Sense Ritual', url: 'https://hartswf0.github.io/sense-ritual/' },
+          { name: 'SR A0', url: 'https://hartswf0.github.io/sense-ritual/a0.html' },
+          { name: 'SR AAA', url: 'https://hartswf0.github.io/sense-ritual/aaa.html' },
+          { name: 'SR Cut', url: 'https://hartswf0.github.io/sense-ritual/cut.html' },
+          { name: 'SR Three Games', url: 'https://hartswf0.github.io/sense-ritual/THREE_GAMES.html' },
+          { name: 'SR Garden Beats', url: 'https://hartswf0.github.io/sense-ritual/garden-with-beats.html' },
+          { name: 'SR Group', url: 'https://hartswf0.github.io/sense-ritual/group.html' },
+          { name: 'SR Garden Index', url: 'https://hartswf0.github.io/sense-ritual/ritual-garden-index.html' },
+          { name: 'EOS System', url: 'https://hartswf0.github.io/eos/operating-system/index.html' },
+          { name: 'EOS', url: 'https://hartswf0.github.io/eos/' },
+          { name: 'Mythos Canon', url: 'https://hartswf0.github.io/mythos-canon/' },
+          { name: 'Hyperclay Index', url: 'https://hartswf0.github.io/hyperclay-editor/CAN/hyperclay-index.html' },
+          { name: 'Hyperclay Rex', url: 'https://hartswf0.github.io/hyperclay-editor/CAN/hyperclay-rex.html' },
+          { name: 'Hyperclay TREX', url: 'https://hartswf0.github.io/hyperclay-editor/CAN/hyperclay-trex-minimal.html' },
+          { name: 'Media Surfer', url: 'https://hartswf0.github.io/media-surfer/' },
+          { name: 'Hamlets Napkin', url: 'https://hartswf0.github.io/hamlets-napkin/' },
+          { name: 'Soul Mansion', url: 'https://hartswf0.github.io/soul-mansion/' },
+          { name: 'Nexadoc Jar', url: 'https://hartswf0.github.io/nexadoc-jar/' },
+          { name: 'The Fork', url: 'https://hartswf0.github.io/the-fork/' },
+          { name: 'Holo Project', url: 'https://hartswf0.github.io/holo-project/' },
+          { name: 'Func Orb', url: 'https://hartswf0.github.io/func-sub/func-orb-training.html' },
+          { name: 'Functown', url: 'https://hartswf0.github.io/func-sub/functown-index.html' },
+          { name: 'Func Sub', url: 'https://hartswf0.github.io/func-sub/' },
+          { name: 'Func Index', url: 'https://hartswf0.github.io/func-sub/func-index.html' },
+          { name: 'Sympathetic Magic', url: 'https://hartswf0.github.io/sympathetic-magic/' },
+          { name: '1000 Small Futures', url: 'https://hartswf0.github.io/1000-small-futures/' },
+          { name: '1000 Tetrad', url: 'https://hartswf0.github.io/1000-small-futures/thousand-tetrad.html' },
+          { name: 'LEGOS', url: 'https://hartswf0.github.io/LEGOS/' },
+          { name: 'Reading w/ Machines', url: 'https://hartswf0.github.io/reading-with-machines/' },
+          { name: '1000 Medical', url: 'https://hartswf0.github.io/1000-medical/' },
+          { name: 'Angel Meets Algo', url: 'https://hartswf0.github.io/angel-meets-algo/novus-assembly.html' },
+          { name: 'Haunted Tools', url: 'https://hartswf0.github.io/haunted-tools/' }
+        ]
+      },
+      'glitch': {
+        title: 'Glitch Demos',
+        color: '#22d3ee',
+        items: [
+          { name: 'Bony Gargoyle', url: 'https://bony-lucky-gargoyleosaurus.glitch.me/' },
+          { name: 'Periwinkle Sneeze', url: 'https://periwinkle-harmonious-sneeze.glitch.me/' },
+          { name: 'Tetrafor', url: 'https://tetrafor.glitch.me/' }
+        ]
+      },
+      'youtube': {
+        title: 'YouTube Clips',
+        color: '#a855f7',
+        items: [
+          { name: 'fhdQdCFJzso', url: 'https://www.youtube.com/watch?v=fhdQdCFJzso' },
+          { name: 'Ugkx8S3PdX8m', url: 'https://youtube.com/clip/Ugkx8S3PdX8mO8500hGjW-_q6GmBRMiMJPoc' },
+          { name: 'UgkxfmunaGk4', url: 'https://youtube.com/clip/UgkxfmunaGk4LwHfOdVBM89mBwxokcrK_2E2' },
+          { name: 'UgkxBClXTGmi', url: 'https://youtube.com/clip/UgkxBClXTGmiXTtU0qHDYWEvVgfTcdw_Mc7x' },
+          { name: 'UgkxAtxYWe3P', url: 'https://youtube.com/clip/UgkxAtxYWe3PCUzHECelq7Ae0sqv0ANPUSFb' },
+          { name: 'UgkxqnapzY3y', url: 'https://youtube.com/clip/UgkxqnapzY3y-ohWLE9EAjHsTy4thXKFcfN8' },
+          { name: 'Ugkx5qv0zdCK', url: 'https://youtube.com/clip/Ugkx5qv0zdCKsFyCChi0Y6nE24_lrj_EPK4G' },
+          { name: 'UgkxB904Qn-B', url: 'https://youtube.com/clip/UgkxB904Qn-BC7ByVN1bH2ldojZP8I1zGsjy' },
+          { name: 'Ugkxr7WjJQxl', url: 'https://youtube.com/clip/Ugkxr7WjJQxl_ZB9qfYMUNqobmtPCHoBLwNF' },
+          { name: 'UgkxB4orluXb', url: 'https://youtube.com/clip/UgkxB4orluXbkv69mwL1cVfH6oe7F6ZF1gYc' },
+          { name: 'UgkxWfr4PMOV', url: 'https://youtube.com/clip/UgkxWfr4PMOVh8Eoeh670Znp3GHx-etn9InY' },
+          { name: 'UgkxrdmI9Q9g', url: 'https://youtube.com/clip/UgkxrdmI9Q9g-BcsezFSwFdAnMEweLUGu2YQ' },
+          { name: 'UgkxKnSN7d0b', url: 'https://youtube.com/clip/UgkxKnSN7d0bUWdjbez9cFW_dmFHaIvwayIJ' },
+          { name: 'Ugkx5dOK79Mt', url: 'https://youtube.com/clip/Ugkx5dOK79MtdKzTDB15CP5gcbiHIBaj6VTe' },
+          { name: 'UgkxiOfpfrn5', url: 'https://youtube.com/clip/UgkxiOfpfrn55ce8meFp65iZgGO0sdDifQEf' },
+          { name: 'Ugkx0c53nIBy', url: 'https://youtube.com/clip/Ugkx0c53nIByzqy6tFTN35GgOln4JiuymDjd' },
+          { name: 'UgkxP4eJ-a3W', url: 'https://youtube.com/clip/UgkxP4eJ-a3W63b2S18peCJsNx2QJtDUhH3S' },
+          { name: 'Ugkx28En4RLY', url: 'https://youtube.com/clip/Ugkx28En4RLYwWrcx9znLX7cinEWOzuqkVz_' },
+          { name: 'Ugkxm1XML6Bq', url: 'https://youtube.com/clip/Ugkxm1XML6BqGanbKs5vAk63S5NDql3rdags' },
+          { name: 'Ugkx7f3UdAwX', url: 'https://youtube.com/clip/Ugkx7f3UdAwXq9XEVocMCl2rkc6T3O6UhL-b' }
+        ]
+      }
+    };
+
+    function renderDemos(){
+      const main = document.getElementById('main');
+      let totalCount = 0;
+      let html = '';
+      let globalNumber = 1;
+
+      // Render each family
+      Object.keys(families).forEach(familyKey => {
+        const family = families[familyKey];
+        totalCount += family.items.length;
+
+        html += `
+          <div class="family-section">
+            <div class="family-header">
+              <div class="family-title">${family.title}</div>
+              <div class="family-count">${family.items.length} items</div>
+            </div>
+            <div class="grid">
+        `;
+
+        family.items.forEach((item, idx) => {
+          html += `
+            <div class="orange" style="background:${family.color}; animation-delay:${idx * 0.03}s" data-url="${item.url}">
+              <div class="orange-number">${globalNumber}</div>
+              <div class="hover-preview">
+                <iframe src="${item.url}" sandbox="allow-scripts allow-same-origin"></iframe>
+              </div>
+              <div class="orange-content">
+                <div class="orange-name">${item.name}</div>
+              </div>
+            </div>
+          `;
+          globalNumber++;
+        });
+
+        html += `
+            </div>
+          </div>
+        `;
+      });
+
+      html += `
+        <footer>
+          <p><strong>${totalCount}</strong> demos & media · <a href="https://github.com/hartswf0" target="_blank">@hartswf0</a></p>
+          <p style="margin-top:8px;opacity:0.7;">🍊 Hover to preview · Pick to open</p>
+        </footer>
+      `;
+
+      main.innerHTML = html;
+      document.getElementById('demo-count').textContent = totalCount;
+
+      // Add click handlers with picking animation
+      document.querySelectorAll('.orange').forEach(orange => {
+        orange.addEventListener('click', function(e){
+          // Play picking sound
+          playPickSound();
+          
+          // Visual feedback
+          this.style.transform = 'scale(1.15) rotate(5deg)';
+          setTimeout(() => {
+            this.style.transform = '';
+          }, 200);
+          
+          // Open URL after brief delay for feedback
+          const url = this.getAttribute('data-url');
+          setTimeout(() => {
+            window.open(url, '_blank');
+          }, 150);
+        });
+      });
+    }
+
+    // Playful picking sound
+    function playPickSound(){
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      
+      // Create a pleasant "pop" sound
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      // Rising pitch for "pick" feeling
+      oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1);
+      
+      // Quick volume envelope
+      gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+      
+      oscillator.type = 'sine';
+      oscillator.start(audioCtx.currentTime);
+      oscillator.stop(audioCtx.currentTime + 0.15);
+    }
+
+    // Initialize
+    renderDemos();
+
+    // Hide loader after page loads
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const loader = document.getElementById('jar-loader');
+        loader.classList.add('hidden');
+        setTimeout(() => loader.remove(), 600);
+      }, 800);
+    });
+  </script>
+</body>
+</html>

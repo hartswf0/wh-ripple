@@ -58,7 +58,17 @@ Documentation (7):
 └── RECATEGORIZE-OTHER.md        # Theme guide
 ```
 
-**Total: 14 HTML files, all accessible from index.html**
+**Total: 15 HTML files, all accessible from index.html**
+
+### **🚀 NEW: Live Demos** (`live-demos.html`)
+**Real-world deployments on GitHub Pages**
+
+- ✅ **60+ live projects** from hartswf0 GitHub Pages
+- ✅ **Orange grid aesthetic** matching the main site
+- ✅ **Categorized cards** with project names and URLs
+- ✅ **Direct links** to tetrad-gamepad, soul-mansion, LEGOS, and more
+- ✅ **Multiple variants** shown when available
+- ✅ **Repo links** distinguished from live demos
 
 ---
 
@@ -260,11 +270,12 @@ All 14 HTML files now share the same circular, minimal aesthetic.
 | Metric | Value |
 |--------|-------|
 | **Total Repos** | 245 |
-| **HTML Files** | 14 (all connected) |
+| **HTML Files** | 15 (all connected) |
+| **Live Demos** | 60+ (GitHub Pages) |
 | **Themes** | 16 |
 | **Languages** | ~20 |
 | **Users** | 3 (tetrad-gamepad, latent-sculptor, soul-mansion) |
-| **Design System** | Circular, orange, minimal |
+| **Design System** | Orange grid, minimal |
 | **Status** | Early |
 
 ---

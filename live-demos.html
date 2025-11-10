@@ -21,7 +21,7 @@
       font:14px/1.5 -apple-system, sans-serif;
     }
 
-    /* Header - Compact */
+    /* Header */
     header{
       position:fixed;
       top:0;
@@ -31,52 +31,257 @@
       background:rgba(10,10,10,0.98);
       backdrop-filter:blur(20px);
       border-bottom:1px solid rgba(255,107,53,0.2);
-      padding:8px 20px;
+      padding:10px 20px;
+    }
+
+    .header-top{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      height:50px;
+      margin-bottom:8px;
+    }
+
+    .header-user{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:13px;
     }
 
     .home-link{
       color:var(--accent);
       text-decoration:none;
       font-size:24px;
-      opacity:0.9;
-      transition:all 0.2s;
-    }
-
-    .home-link:hover{
-      opacity:1;
-      transform:scale(1.05);
+      margin-right:12px;
     }
 
     .header-title{
-      font-size:16px;
+      font-weight:700;
+      color:var(--text);
+    }
+
+    .header-controls{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .search-box{
+      position:relative;
+    }
+
+    .search-box input{
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,107,53,0.2);
+      border-radius:20px;
+      padding:6px 16px;
+      font-size:12px;
+      color:var(--text);
+      width:200px;
+      transition:all 0.2s;
+    }
+
+    .search-box input:focus{
+      outline:none;
+      border-color:var(--accent);
+      background:rgba(255,255,255,0.08);
+    }
+
+    .view-btns{
+      display:flex;
+      gap:4px;
+      background:rgba(0,0,0,0.3);
+      padding:2px;
+      border-radius:6px;
+    }
+
+    .view-btn{
+      background:transparent;
+      border:none;
+      color:var(--muted);
+      padding:6px 12px;
+      border-radius:4px;
+      cursor:pointer;
+      font-size:11px;
+      font-weight:600;
+      transition:all 0.2s;
+    }
+
+    .view-btn:hover,
+    .view-btn.active{
+      background:var(--accent);
+      color:#000;
+    }
+
+    .hamburger{
+      display:none;
+      background:none;
+      border:none;
+      color:var(--accent);
+      font-size:24px;
+      cursor:pointer;
+      padding:4px;
+    }
+
+    /* Mobile menu */
+    .mobile-menu{
+      position:fixed;
+      top:0;
+      left:-100%;
+      width:280px;
+      height:100vh;
+      background:rgba(10,10,10,0.98);
+      backdrop-filter:blur(20px);
+      border-right:1px solid var(--accent);
+      padding:20px;
+      transition:left 0.3s ease;
+      z-index:200;
+      overflow-y:auto;
+    }
+
+    .mobile-menu.open{
+      left:0;
+    }
+
+    .mobile-menu-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:30px;
+      padding-bottom:15px;
+      border-bottom:1px solid rgba(255,107,53,0.2);
+    }
+
+    .mobile-menu-title{
       font-weight:700;
       color:var(--accent);
+      font-size:18px;
     }
 
-    .header-stats{
-      font-size:11px;
+    .menu-close{
+      background:none;
+      border:none;
+      color:var(--accent);
+      font-size:24px;
+      cursor:pointer;
+      padding:4px;
+    }
+
+    .mobile-menu-section{
+      margin-bottom:30px;
+    }
+
+    .mobile-menu-section h3{
+      font-size:12px;
+      font-weight:600;
       color:var(--muted);
-      display:flex;
-      gap:12px;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      margin-bottom:12px;
     }
 
-    .header-stats span{
+    .mobile-menu-search{
+      width:100%;
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,107,53,0.2);
+      border-radius:8px;
+      padding:10px 12px;
+      font-size:14px;
       color:var(--text);
+      margin-bottom:20px;
+    }
+
+    .mobile-menu-search:focus{
+      outline:none;
+      border-color:var(--accent);
+    }
+
+    .mobile-view-btns{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .mobile-view-btn{
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,107,53,0.2);
+      color:var(--text);
+      padding:12px 16px;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:14px;
+      font-weight:600;
+      transition:all 0.2s;
+      text-align:left;
+    }
+
+    .mobile-view-btn.active{
+      background:var(--accent);
+      color:#000;
+      border-color:var(--accent);
+    }
+
+    .menu-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.7);
+      backdrop-filter:blur(4px);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity 0.3s ease;
+      z-index:150;
+    }
+
+    .menu-overlay.open{
+      opacity:1;
+      pointer-events:all;
+    }
+
+    @media(max-width:768px){
+      .header-controls{display:none}
+      .hamburger{display:block}
+      .header-user span:not(:first-child){display:none}
     }
 
     /* Main container */
     #main{
       position:absolute;
-      top:50px;
+      top:70px;
       left:0;
       right:0;
       bottom:0;
+      overflow:hidden;
+    }
+
+    /* View containers */
+    #grid-view,
+    #canvas-view,
+    #timeline-view{
+      position:absolute;
+      inset:0;
+      display:none;
+    }
+
+    #grid-view.active,
+    #canvas-view.active,
+    #timeline-view.active{
+      display:block;
+    }
+
+    #grid-view{
       overflow:auto;
       padding:30px;
+    }
+
+    /* Canvas for ripple view */
+    canvas{
+      width:100%;
+      height:100%;
+      cursor:grab;
+    }
+
+    canvas:active{
+      cursor:grabbing;
     }
 
     /* Family sections - Compact */
@@ -357,13 +562,198 @@
       opacity:0.9;
     }
 
+    /* Timeline view - vertical chronological flow */
+    #timeline-view{
+      overflow:auto;
+      padding:40px 20px;
+    }
+
+    .timeline-container{
+      position:relative;
+      max-width:900px;
+      margin:0 auto;
+      padding-left:60px;
+    }
+
+    .timeline-line{
+      position:absolute;
+      left:30px;
+      top:0;
+      bottom:0;
+      width:3px;
+      background:linear-gradient(to bottom, transparent, var(--accent), var(--accent), transparent);
+      opacity:0.4;
+    }
+
+    .timeline-year{
+      margin-bottom:60px;
+      position:relative;
+    }
+
+    .year-label{
+      font-size:24px;
+      font-weight:800;
+      color:var(--accent);
+      text-transform:uppercase;
+      letter-spacing:2px;
+      margin-bottom:30px;
+      margin-left:-60px;
+      padding:12px 20px;
+      background:rgba(255,107,53,0.1);
+      border-left:4px solid var(--accent);
+      display:inline-block;
+      position:relative;
+    }
+
+    .year-label::before{
+      content:'';
+      position:absolute;
+      left:-34px;
+      top:50%;
+      transform:translateY(-50%);
+      width:16px;
+      height:16px;
+      background:var(--accent);
+      border-radius:50%;
+      border:3px solid var(--bg);
+      box-shadow:0 0 0 2px var(--accent);
+    }
+
+    .timeline-items{
+      display:flex;
+      flex-direction:column;
+      gap:24px;
+    }
+
+    .timeline-item{
+      position:relative;
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,107,53,0.2);
+      border-radius:12px;
+      padding:20px 24px;
+      cursor:pointer;
+      transition:all 0.3s ease;
+      display:flex;
+      align-items:center;
+      gap:20px;
+      opacity:0;
+      transform:translateX(-20px);
+      animation:slideIn 0.5s ease forwards;
+    }
+
+    @keyframes slideIn{
+      to{
+        opacity:1;
+        transform:translateX(0);
+      }
+    }
+
+    .timeline-item::before{
+      content:'';
+      position:absolute;
+      left:-63px;
+      top:50%;
+      transform:translateY(-50%);
+      width:10px;
+      height:10px;
+      background:var(--accent);
+      border-radius:50%;
+      border:2px solid var(--bg);
+    }
+
+    .timeline-item:hover{
+      background:rgba(255,107,53,0.08);
+      border-color:var(--accent);
+      transform:translateX(5px);
+      box-shadow:0 4px 16px rgba(255,107,53,0.3);
+    }
+
+    .timeline-item-number{
+      flex-shrink:0;
+      background:rgba(255,255,255,0.95);
+      backdrop-filter:blur(10px);
+      color:#000;
+      min-width:50px;
+      width:50px;
+      height:50px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:16px;
+      font-weight:700;
+      font-family:'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', ui-monospace, monospace;
+      letter-spacing:-1px;
+      border:2px solid rgba(139,195,74,0.5);
+      box-shadow:0 2px 8px rgba(0,0,0,0.25);
+    }
+
+    .timeline-item-content{
+      flex:1;
+      min-width:0;
+    }
+
+    .timeline-item-name{
+      font-weight:700;
+      font-size:16px;
+      color:var(--text);
+      margin-bottom:6px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .timeline-item-meta{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:500;
+    }
+
+    .timeline-item-color{
+      width:4px;
+      height:100%;
+      position:absolute;
+      left:0;
+      top:0;
+      border-radius:12px 0 0 12px;
+    }
+
+    /* Ripple view */
+    #canvas-view{
+      background:radial-gradient(ellipse at center, #1a1a1a 0%, #0a0a0a 100%);
+    }
+
+    canvas{
+      cursor:pointer;
+    }
+
+    .ripple-tooltip{
+      position:absolute;
+      background:rgba(0,0,0,0.9);
+      border:1px solid var(--accent);
+      border-radius:8px;
+      padding:12px 16px;
+      pointer-events:none;
+      opacity:0;
+      transition:opacity 0.2s;
+      z-index:100;
+      font-size:13px;
+      font-weight:600;
+      color:var(--text);
+      box-shadow:0 4px 12px rgba(0,0,0,0.5);
+    }
+
     /* Footer */
     footer{
       text-align:center;
-      padding:20px;
+      padding:30px;
       color:var(--muted);
-      font-size:12px;
-      opacity:0.8;
+      font-size:11px;
+      border-top:1px solid rgba(255,107,53,0.1);
+    }
+
+    footer strong{
+      color:var(--accent);
     }
 
     footer a{
@@ -375,25 +765,24 @@
       text-decoration:underline;
     }
 
-    /* Jar Loading Animation */
+    /* Loader */
     #jar-loader{
       position:fixed;
-      top:0;
-      left:0;
-      right:0;
-      bottom:0;
-      background:rgba(10,10,10,0.98);
-      z-index:200;
+      inset:0;
+      background:rgba(10,10,10,0.95);
+      backdrop-filter:blur(20px);
       display:flex;
       flex-direction:column;
       align-items:center;
       justify-content:center;
-      transition:opacity 0.6s ease;
+      z-index:1000;
+      transition:opacity 0.8s ease, backdrop-filter 0.8s ease;
     }
 
     #jar-loader.hidden{
       opacity:0;
       pointer-events:none;
+      backdrop-filter:blur(0px);
     }
 
     .jar-emoji{
@@ -429,11 +818,11 @@
       box-shadow:0 2px 8px rgba(0,0,0,0.4);
     }
 
-    .ball:nth-child(1){ background:#ff6b35; animation-delay:0s; }
-    .ball:nth-child(2){ background:#22d3ee; animation-delay:0.15s; }
-    .ball:nth-child(3){ background:#a855f7; animation-delay:0.3s; }
-    .ball:nth-child(4){ background:#fbbf24; animation-delay:0.45s; }
-    .ball:nth-child(5){ background:#4ade80; animation-delay:0.6s; }
+    .ball:nth-child(1){ background:#ff6b35; animation-delay:0s; --x-offset:-100px; }
+    .ball:nth-child(2){ background:#ffa500; animation-delay:0.2s; --x-offset:-50px; }
+    .ball:nth-child(3){ background:#ffdb58; animation-delay:0.4s; --x-offset:0; }
+    .ball:nth-child(4){ background:#4ecdc4; animation-delay:0.6s; --x-offset:50px; }
+    .ball:nth-child(5){ background:#8BC34A; animation-delay:0.8s; --x-offset:100px; }
 
     @keyframes ballPour{
       0%{
@@ -458,12 +847,6 @@
       }
     }
 
-    .ball:nth-child(1){ --x-offset:-100px; }
-    .ball:nth-child(2){ --x-offset:-50px; }
-    .ball:nth-child(3){ --x-offset:0; }
-    .ball:nth-child(4){ --x-offset:50px; }
-    .ball:nth-child(5){ --x-offset:100px; }
-
     .loading-text{
       margin-top:40px;
       color:var(--accent);
@@ -485,17 +868,66 @@
     </div>
     <div class="loading-text">Loading demos...</div>
   </div>
+  <!-- Mobile Menu -->
+  <div class="menu-overlay" id="menu-overlay"></div>
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="mobile-menu-header">
+      <div class="mobile-menu-title">Menu</div>
+      <button class="menu-close" id="menu-close">✕</button>
+    </div>
+    
+    <div class="mobile-menu-section">
+      <h3>Search</h3>
+      <input type="text" id="mobile-search" class="mobile-menu-search" placeholder="Search demos..." />
+    </div>
+    
+    <div class="mobile-menu-section">
+      <h3>View Mode</h3>
+      <div class="mobile-view-btns">
+        <button class="mobile-view-btn active" id="mobile-view-grid">📊 Grid View</button>
+        <button class="mobile-view-btn" id="mobile-view-ripple">🌊 Ripple View</button>
+        <button class="mobile-view-btn" id="mobile-view-timeline">⏱ Timeline View</button>
+      </div>
+    </div>
+  </div>
+
   <header>
-    <a href="index.html" class="home-link">🏺</a>
-    <div class="header-title">Live Demos & Media</div>
-    <div class="header-stats">
-      <span id="demo-count">—</span> items
+    <div class="header-top">
+      <div class="header-user">
+        <a href="index.html" class="home-link" title="Home">🏺</a>
+        <span class="header-title">Live Demos</span>
+        <span style="opacity:0.4">•</span>
+        <span><strong id="demo-count">0</strong> items</span>
+      </div>
+      <div class="header-controls">
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="Search demos..." />
+        </div>
+        <div class="view-btns">
+          <button class="view-btn active" id="view-grid">GRID</button>
+          <button class="view-btn" id="view-ripple">RIPPLE</button>
+          <button class="view-btn" id="view-timeline">TIMELINE</button>
+        </div>
+      </div>
+      <button class="hamburger" id="hamburger">☰</button>
     </div>
   </header>
 
-  <div id="main"></div>
+  <div id="main">
+    <div id="grid-view" class="active"></div>
+    <div id="canvas-view">
+      <canvas id="ripple-canvas"></canvas>
+    </div>
+    <div id="timeline-view">
+      <div class="timeline-container" id="timeline-container"></div>
+    </div>
+  </div>
 
   <script>
+    let currentView = 'grid';
+    let searchQuery = '';
+    let allDemos = [];
+
     // Define all families with their demos
     const families = {
       'github-pages': {
@@ -628,17 +1060,53 @@
       }
     };
 
+    // Build flat demo list
+    function buildDemoList(){
+      allDemos = [];
+      Object.keys(families).forEach(familyKey => {
+        const family = families[familyKey];
+        family.items.forEach(item => {
+          allDemos.push({
+            ...item,
+            family: familyKey,
+            familyTitle: family.title,
+            familyColor: family.color
+          });
+        });
+      });
+    }
+
     function renderDemos(){
-      const main = document.getElementById('main');
-      let totalCount = 0;
+      const gridView = document.getElementById('grid-view');
       let html = '';
       let globalNumber = 1;
 
-      // Render each family
-      Object.keys(families).forEach(familyKey => {
-        const family = families[familyKey];
-        totalCount += family.items.length;
+      // Apply search filter
+      const filtered = allDemos.filter(demo => {
+        if(!searchQuery) return true;
+        return demo.name.toLowerCase().includes(searchQuery) ||
+               demo.familyTitle.toLowerCase().includes(searchQuery);
+      });
 
+      // Group by family for grid view
+      const byFamily = {};
+      filtered.forEach(demo => {
+        if(!byFamily[demo.family]) {
+          byFamily[demo.family] = {
+            title: demo.familyTitle,
+            color: demo.familyColor,
+            items: []
+          };
+        }
+        byFamily[demo.family].items.push(demo);
+      });
+
+      let totalCount = filtered.length;
+
+      // Render each family
+      Object.keys(byFamily).forEach(familyKey => {
+        const family = byFamily[familyKey];
+        
         html += `
           <div class="family-section">
             <div class="family-header">
@@ -679,8 +1147,8 @@
         </footer>
       `;
 
-      main.innerHTML = html;
-      document.getElementById('demo-count').textContent = totalCount;
+      gridView.innerHTML = html;
+      document.getElementById('demo-count').textContent = allDemos.length;
 
       // Detect mobile
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
@@ -740,17 +1208,331 @@
       }
     }
 
-    // Initialize
+    // Timeline rendering - vertical chronological layout
+    function renderTimeline(){
+      const container = document.getElementById('timeline-container');
+      container.innerHTML = '<div class="timeline-line"></div>';
+      
+      const filtered = allDemos.filter(demo => {
+        if(!searchQuery) return true;
+        return demo.name.toLowerCase().includes(searchQuery) ||
+               demo.familyTitle.toLowerCase().includes(searchQuery);
+      });
+      
+      // Group by family
+      const byFamily = {};
+      filtered.forEach(demo => {
+        if(!byFamily[demo.family]) byFamily[demo.family] = [];
+        byFamily[demo.family].push(demo);
+      });
+      
+      let globalNumber = 1;
+      Object.keys(byFamily).forEach(familyKey => {
+        const demos = byFamily[familyKey];
+        const family = families[familyKey];
+        
+        const yearDiv = document.createElement('div');
+        yearDiv.className = 'timeline-year';
+        yearDiv.innerHTML = `
+          <div class="year-label">${family.title}</div>
+          <div class="timeline-items"></div>
+        `;
+        
+        const itemsContainer = yearDiv.querySelector('.timeline-items');
+        demos.forEach((demo, idx) => {
+          const item = document.createElement('div');
+          item.className = 'timeline-item';
+          item.style.animationDelay = `${idx * 0.05}s`;
+          item.innerHTML = `
+            <div class="timeline-item-color" style="background:${family.color}"></div>
+            <div class="timeline-item-number">${globalNumber}</div>
+            <div class="timeline-item-content">
+              <div class="timeline-item-name">${demo.name}</div>
+              <div class="timeline-item-meta">${family.title}</div>
+            </div>
+          `;
+          item.addEventListener('click', () => window.open(demo.url, '_blank'));
+          itemsContainer.appendChild(item);
+          globalNumber++;
+        });
+        
+        container.appendChild(yearDiv);
+      });
+    }
+
+    // Ripple canvas with optimal spacing
+    let canvas, ctx, ripples = [];
+    let hoveredRipple = null;
+    
+    function initRipples(){
+      if(!canvas){
+        canvas = document.getElementById('ripple-canvas');
+        ctx = canvas.getContext('2d');
+        window.addEventListener('resize', () => {
+          resize();
+          layoutRipples();
+        });
+        resize();
+      }
+      layoutRipples();
+      animate();
+      
+      // Interaction
+      canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        hoveredRipple = null;
+        ripples.forEach(r => {
+          const dist = Math.hypot(r.x - x, r.y - y);
+          if(dist < r.radius){
+            hoveredRipple = r;
+          }
+        });
+        canvas.style.cursor = hoveredRipple ? 'pointer' : 'default';
+      });
+      
+      canvas.addEventListener('click', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        ripples.forEach(r => {
+          const dist = Math.hypot(r.x - x, r.y - y);
+          if(dist < r.radius){
+            window.open(r.demo.url, '_blank');
+          }
+        });
+      });
+    }
+    
+    function layoutRipples(){
+      // Calculate optimal grid layout - less dense, more breathing room
+      const count = allDemos.length;
+      const padding = 60;
+      const minRadius = 35;
+      const maxRadius = 70;
+      const spacing = 1.5; // Increase spacing between circles
+      
+      // Calculate grid dimensions
+      const aspectRatio = canvas.width / canvas.height;
+      let cols = Math.ceil(Math.sqrt(count * aspectRatio));
+      let rows = Math.ceil(count / cols);
+      
+      // Calculate cell size with extra spacing
+      const cellWidth = (canvas.width - padding * 2) / cols;
+      const cellHeight = (canvas.height - padding * 2) / rows;
+      const cellSize = Math.min(cellWidth, cellHeight);
+      const radius = Math.min(maxRadius, Math.max(minRadius, cellSize * 0.35));
+      
+      // Position ripples in optimal grid with some randomness
+      ripples = allDemos.map((demo, i) => {
+        const col = i % cols;
+        const row = Math.floor(i / cols);
+        
+        const baseX = padding + col * cellWidth + cellWidth / 2;
+        const baseY = padding + row * cellHeight + cellHeight / 2;
+        
+        // Add slight random offset for organic feel
+        const offsetX = (Math.random() - 0.5) * cellSize * 0.15;
+        const offsetY = (Math.random() - 0.5) * cellSize * 0.15;
+        
+        return {
+          x: baseX + offsetX,
+          y: baseY + offsetY,
+          radius,
+          color: demo.familyColor,
+          demo,
+          number: i + 1,
+          scale: 1
+        };
+      });
+    }
+    
+    function resize(){
+      if(!canvas) return;
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+    
+    function animate(){
+      if(!ctx) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      ripples.forEach(r => {
+        const isHovered = hoveredRipple === r;
+        const targetScale = isHovered ? 1.1 : 1;
+        r.scale += (targetScale - r.scale) * 0.2;
+        
+        const currentRadius = r.radius * r.scale;
+        
+        // Draw circle with gradient
+        const gradient = ctx.createRadialGradient(r.x, r.y, 0, r.x, r.y, currentRadius);
+        gradient.addColorStop(0, r.color);
+        gradient.addColorStop(1, r.color + 'CC');
+        
+        ctx.beginPath();
+        ctx.arc(r.x, r.y, currentRadius, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        
+        if(isHovered){
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 3;
+          ctx.stroke();
+        }
+        
+        // Draw number badge (like grid view)
+        const badgeSize = 40;
+        const badgeX = r.x + currentRadius * 0.5;
+        const badgeY = r.y - currentRadius * 0.5;
+        
+        ctx.save();
+        ctx.translate(badgeX, badgeY);
+        ctx.rotate(-8 * Math.PI / 180);
+        
+        // Badge background
+        ctx.fillStyle = 'rgba(255,255,255,0.95)';
+        ctx.beginPath();
+        ctx.roundRect(-badgeSize/2, -16, badgeSize, 32, 16);
+        ctx.fill();
+        
+        // Badge border
+        ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        
+        // Number
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 15px "SF Mono", Monaco, monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(r.number, 0, 0);
+        ctx.restore();
+        
+        // Draw name
+        if(isHovered){
+          ctx.fillStyle = '#fff';
+          ctx.font = 'bold 14px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.shadowColor = 'rgba(0,0,0,0.8)';
+          ctx.shadowBlur = 4;
+          
+          const maxWidth = currentRadius * 1.6;
+          const name = r.demo.name.length > 25 ? r.demo.name.substring(0, 22) + '...' : r.demo.name;
+          ctx.fillText(name, r.x, r.y, maxWidth);
+          
+          ctx.shadowBlur = 0;
+        }
+      });
+      
+      requestAnimationFrame(animate);
+    }
+
+    // View switching
+    document.getElementById('view-grid').addEventListener('click', () => {
+      currentView = 'grid';
+      document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.mobile-view-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('view-grid').classList.add('active');
+      document.getElementById('mobile-view-grid').classList.add('active');
+      document.getElementById('grid-view').classList.add('active');
+      document.getElementById('canvas-view').classList.remove('active');
+      document.getElementById('timeline-view').classList.remove('active');
+    });
+
+    document.getElementById('view-ripple').addEventListener('click', () => {
+      currentView = 'ripple';
+      document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.mobile-view-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('view-ripple').classList.add('active');
+      document.getElementById('mobile-view-ripple').classList.add('active');
+      document.getElementById('grid-view').classList.remove('active');
+      document.getElementById('canvas-view').classList.add('active');
+      document.getElementById('timeline-view').classList.remove('active');
+      initRipples();
+    });
+
+    document.getElementById('view-timeline').addEventListener('click', () => {
+      currentView = 'timeline';
+      document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.mobile-view-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('view-timeline').classList.add('active');
+      document.getElementById('mobile-view-timeline').classList.add('active');
+      document.getElementById('grid-view').classList.remove('active');
+      document.getElementById('canvas-view').classList.remove('active');
+      document.getElementById('timeline-view').classList.add('active');
+      renderTimeline();
+    });
+
+    // Search
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      searchQuery = e.target.value.toLowerCase();
+      if(currentView === 'grid'){
+        renderDemos();
+      } else if(currentView === 'timeline'){
+        renderTimeline();
+      }
+    });
+
+    // Mobile menu functionality
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuOverlay = document.getElementById('menu-overlay');
+    const menuClose = document.getElementById('menu-close');
+
+    function openMenu(){
+      mobileMenu.classList.add('open');
+      menuOverlay.classList.add('open');
+    }
+
+    function closeMenu(){
+      mobileMenu.classList.remove('open');
+      menuOverlay.classList.remove('open');
+    }
+
+    hamburger.addEventListener('click', openMenu);
+    menuClose.addEventListener('click', closeMenu);
+    menuOverlay.addEventListener('click', closeMenu);
+
+    // Mobile search
+    document.getElementById('mobile-search').addEventListener('input', (e) => {
+      searchQuery = e.target.value.toLowerCase();
+      if(currentView === 'grid'){
+        renderDemos();
+      } else if(currentView === 'timeline'){
+        renderTimeline();
+      }
+    });
+
+    // Mobile view buttons
+    document.getElementById('mobile-view-grid').addEventListener('click', () => {
+      document.getElementById('view-grid').click();
+      closeMenu();
+    });
+
+    document.getElementById('mobile-view-ripple').addEventListener('click', () => {
+      document.getElementById('view-ripple').click();
+      closeMenu();
+    });
+
+    document.getElementById('mobile-view-timeline').addEventListener('click', () => {
+      document.getElementById('view-timeline').click();
+      closeMenu();
+    });
+
+    // Initialize immediately so content loads in background
+    buildDemoList();
     renderDemos();
 
-    // Hide loader after page loads
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        const loader = document.getElementById('jar-loader');
-        loader.classList.add('hidden');
-        setTimeout(() => loader.remove(), 600);
-      }, 800);
-    });
+    // Hide loader after content is ready
+    setTimeout(() => {
+      const loader = document.getElementById('jar-loader');
+      loader.classList.add('hidden');
+      setTimeout(() => loader.remove(), 800);
+    }, 600);
   </script>
 </body>
 </html>

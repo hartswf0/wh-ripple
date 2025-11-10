@@ -453,10 +453,14 @@
       justify-content:center;
       cursor:pointer;
       transition:transform 0.3s ease, opacity 0.3s ease;
-      overflow:hidden;
+      overflow:visible;
       opacity:0;
       transform:scale(0.8);
       animation:popIn 0.5s ease forwards;
+      touch-action:manipulation;
+      -webkit-user-select:none;
+      user-select:none;
+      -webkit-tap-highlight-color:transparent;
     }
 
     @keyframes popIn{
@@ -471,9 +475,15 @@
       z-index:10;
     }
 
-    .orange:hover .hover-preview{
+    .orange:hover .hover-preview,
+    .orange.show-preview .hover-preview{
       opacity:1;
       transform:scale(1);
+    }
+
+    .orange:hover .orange-content,
+    .orange.show-preview .orange-content{
+      opacity:0;
     }
 
     .orange-number{
@@ -495,10 +505,16 @@
       font-weight:700;
       font-family:'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', ui-monospace, monospace;
       letter-spacing:-1px;
-      z-index:100;
+      z-index:1000;
       border:1px solid rgba(0,0,0,0.2);
       box-shadow:0 2px 8px rgba(0,0,0,0.2);
       transition:all 0.2s ease;
+      pointer-events:auto;
+      cursor:pointer;
+      touch-action:manipulation;
+      -webkit-user-select:none;
+      user-select:none;
+      -webkit-tap-highlight-color:transparent;
     }
 
     .orange:hover .orange-number{
@@ -1038,6 +1054,33 @@
         top:8px;
         right:8px;
       }
+    }
+
+    /* Mobile: tap number to preview */
+    @media (max-width: 768px){
+      .orange.show-preview{
+        transform:scale(1.05);
+        z-index:50;
+      }
+      
+      .orange-number::after{
+        content:'👁';
+        position:absolute;
+        bottom:-4px;
+        right:-4px;
+        font-size:12px;
+        animation:pulse 2s ease-in-out infinite;
+      }
+      
+      .orange.show-preview .orange-number::after{
+        content:'✓';
+        animation:none;
+      }
+    }
+    
+    @keyframes pulse{
+      0%, 100%{ opacity:0.5; transform:scale(1); }
+      50%{ opacity:1; transform:scale(1.2); }
     }
   </style>
 </head>
@@ -1763,16 +1806,66 @@
           </div>
         `;
         
-        orange.addEventListener('click', () => {
-          showExpanded(repo, repo.theme);
-          // Highlight in minimap
-          const dots = document.querySelectorAll('.minimap-dot');
-          dots.forEach(d => d.classList.remove('active'));
-          if(dots[idx]) dots[idx].classList.add('active');
-        });
+        // Detect mobile
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+        
+        if(isMobile){
+          const numberBadge = orange.querySelector('.orange-number');
+          
+          // Mobile: number badge toggles preview
+          numberBadge.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            
+            // Close all other previews
+            document.querySelectorAll('.orange.show-preview').forEach(o => {
+              if(o !== orange) o.classList.remove('show-preview');
+            });
+            
+            // Toggle this preview
+            orange.classList.toggle('show-preview');
+          });
+          
+          // Mobile: clicking orange opens expanded view
+          orange.addEventListener('click', () => {
+            if(!orange.classList.contains('show-preview')){
+              showExpanded(repo, repo.theme);
+              // Highlight in minimap
+              const dots = document.querySelectorAll('.minimap-dot');
+              dots.forEach(d => d.classList.remove('active'));
+              if(dots[idx]) dots[idx].classList.add('active');
+            }
+          });
+        } else {
+          // Desktop: clicking anywhere opens expanded view
+          orange.addEventListener('click', () => {
+            showExpanded(repo, repo.theme);
+            // Highlight in minimap
+            const dots = document.querySelectorAll('.minimap-dot');
+            dots.forEach(d => d.classList.remove('active'));
+            if(dots[idx]) dots[idx].classList.add('active');
+          });
+        }
         
         grid.appendChild(orange);
       });
+      
+      // Close preview when clicking outside on mobile
+      const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+      if(isMobileDevice){
+        // Remove existing listener if any
+        document.removeEventListener('click', closePreviewsHandler);
+        document.addEventListener('click', closePreviewsHandler);
+      }
+    }
+    
+    // Define handler outside so we can remove/add it
+    function closePreviewsHandler(e){
+      if(!e.target.closest('.orange')){
+        document.querySelectorAll('.orange.show-preview').forEach(o => {
+          o.classList.remove('show-preview');
+        });
+      }
     }
 
     function createTimelineView(){

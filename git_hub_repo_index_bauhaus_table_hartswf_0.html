@@ -95,10 +95,13 @@
       font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:2px;
     }
     @media(max-width:800px){
-      .preview{height:60vh;border-top:2px solid #000}
-      .list{max-height:40vh}
+      body { display: flex; flex-direction: column; }
+      .layout { display: flex; flex-direction: column; flex: 1; height: auto; }
+      .preview { flex: 0 0 50vh; border-bottom: 2px solid #000; border-top: none; order: 1; }
+      .list { flex: 1; overflow-y: auto; max-height: none; order: 2; border-right: none; }
     }
   </style>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23000%22/></svg>">
 </head>
 <body>
   <header>

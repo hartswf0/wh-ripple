@@ -3,143 +3,174 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Year in Review — Repo Genome Patches</title>
-<meta name="description" content="168 repos. 12 months. One evolving world-model. Spatio-temporal semantic patches.">
+<title>Year in Review — Watson Hartsoe</title>
+<meta name="description" content="168 repositories. 12 months. One evolving world-model.">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#0a0a0f;--surface:#12121a;--card:#1a1a28;--border:#2a2a3a;
-  --text:#e0e0e8;--muted:#888;--accent:#ff6b35;
-  --seed:#52b788;--sketch:#36a9e1;--proto:#f7931e;--instrument:#e74c3c;
-  --seeding:#52b788;--eruption:#ff6b35;--consolidation:#36a9e1;--operationalization:#9b59b6;
+  --bg:#ffffff;--surface:#f8f8f8;--card:#ffffff;--border:#000000;
+  --text:#000000;--muted:#444444;--accent:#000000;
+  --seed:#1a7a4e;--sketch:#1a6db5;--proto:#c46a10;--instrument:#b82020;
+  --seeding:#1a7a4e;--eruption:#c44a10;--consolidation:#1a6db5;--operationalization:#6a3d8e;
 }
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 
-/* HEADER */
-.header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:16px 24px}
-.header h1{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;letter-spacing:2px;color:var(--accent);text-transform:uppercase}
-.header-stats{display:flex;gap:20px;margin-top:8px;font-size:12px;color:var(--muted)}
-.header-stats span{display:flex;align-items:center;gap:4px}
-.stat-num{color:var(--text);font-weight:600;font-family:'JetBrains Mono',monospace}
+/* HEADER — MINIMAL */
+.header{border-bottom:2px solid #000;padding:20px 32px 16px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
+.header-left h1{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#000}
+.header-left .subtitle{font-size:11px;color:var(--muted);margin-top:4px;font-family:'JetBrains Mono',monospace}
+.header-right{display:flex;gap:16px;align-items:center;font-size:11px;font-family:'JetBrains Mono',monospace}
+.header-right a{color:#000;text-decoration:none;border-bottom:1px solid #000;padding-bottom:1px;transition:opacity .2s}
+.header-right a:hover{opacity:.5}
+.stat-pill{display:inline-flex;align-items:center;gap:4px;background:#000;color:#fff;padding:2px 8px;border-radius:2px;font-size:10px;font-family:'JetBrains Mono',monospace}
 
-/* FILTERS */
-.filters{display:flex;gap:8px;padding:12px 24px;border-bottom:1px solid var(--border);flex-wrap:wrap;background:var(--surface)}
-.filter-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 12px;border-radius:20px;font-size:11px;cursor:pointer;font-family:'JetBrains Mono',monospace;transition:all .2s}
-.filter-btn:hover,.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.filter-btn.phase-seed{--fc:var(--seeding)}.filter-btn.phase-erupt{--fc:var(--eruption)}
-.filter-btn.phase-consol{--fc:var(--consolidation)}.filter-btn.phase-oper{--fc:var(--operationalization)}
-.filter-btn.phase-seed.active{background:var(--seeding);border-color:var(--seeding)}
-.filter-btn.phase-erupt.active{background:var(--eruption);border-color:var(--eruption)}
-.filter-btn.phase-consol.active{background:var(--consolidation);border-color:var(--consolidation)}
-.filter-btn.phase-oper.active{background:var(--operationalization);border-color:var(--operationalization)}
+/* SEARCH + FILTERS */
+.controls{border-bottom:1px solid #000;padding:10px 32px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.search-input{background:#fff;border:1px solid #000;color:#000;padding:5px 12px;font-size:11px;font-family:'JetBrains Mono',monospace;outline:none;width:220px}
+.search-input:focus{box-shadow:inset 0 -2px 0 #000}
+.search-input::placeholder{color:#999}
+.filter-btn{background:#fff;border:1px solid #000;color:#000;padding:4px 10px;font-size:10px;cursor:pointer;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;transition:all .15s}
+.filter-btn:hover{background:#000;color:#fff}
+.filter-btn.active{background:#000;color:#fff}
+.filter-sep{width:1px;height:16px;background:#ccc;margin:0 2px}
 
-/* PHASE BARS */
-.phase-bar{display:flex;height:6px;margin:0 24px}
-.phase-segment{height:100%;transition:flex .3s}
+/* PHASE BAR */
+.phase-bar{display:flex;height:4px}
+.phase-segment{height:100%}
+
+/* FEATURED / INSTRUMENTS */
+.featured{padding:24px 32px;border-bottom:1px solid #000}
+.featured-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.featured-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.featured-card{border:2px solid #000;padding:14px 16px;cursor:pointer;transition:all .15s;position:relative}
+.featured-card:hover{background:#000;color:#fff}
+.featured-card:hover .fc-desc{color:#ccc}
+.featured-card:hover .fc-meta{color:#999}
+.featured-card:hover .fc-badge{background:#fff;color:#000}
+.fc-name{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700}
+.fc-desc{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.fc-meta{display:flex;gap:10px;margin-top:8px;font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase}
+.fc-badge{display:inline-block;background:#000;color:#fff;padding:1px 6px;font-size:8px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px}
 
 /* TIMELINE */
-.timeline{padding:16px 24px 80px;position:relative}
-.month-group{margin-bottom:32px}
-.month-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;position:sticky;top:70px;background:var(--bg);padding:8px 0;z-index:10;display:flex;align-items:center;gap:12px}
-.month-label .count{background:var(--card);border:1px solid var(--border);padding:2px 8px;border-radius:10px;font-size:10px}
-.month-line{width:2px;flex:1;height:1px;background:var(--border)}
-.patches{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+.timeline{padding:0 32px 80px}
+.month-group{border-bottom:1px solid #e0e0e0}
+.month-header{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);padding:16px 0 10px;display:flex;align-items:center;gap:8px;position:sticky;top:0;background:#fff;z-index:10}
+.month-count{background:#000;color:#fff;padding:1px 6px;border-radius:1px;font-size:9px}
+.month-line{flex:1;height:1px;background:#e0e0e0}
+.patches{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px;padding-bottom:16px}
 
 /* PATCH CARD */
-.patch{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
-.patch:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
-.patch::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:8px 0 0 8px}
-.patch-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-.patch-id{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);opacity:.6}
-.patch-name{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--text);word-break:break-word}
-.patch-desc{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.patch-badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
-.badge{font-size:9px;padding:2px 6px;border-radius:3px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px}
-.badge-maturity{border:1px solid}
+.patch{border:1px solid #ccc;padding:12px 14px;cursor:pointer;transition:all .15s;position:relative}
+.patch:hover{border-color:#000;box-shadow:3px 3px 0 #000}
+.patch-header{display:flex;justify-content:space-between;align-items:flex-start}
+.patch-id{font-family:'JetBrains Mono',monospace;font-size:8px;color:#aaa}
+.patch-name{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600}
+.patch-desc{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.patch-badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.badge{font-size:8px;padding:1px 5px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;border:1px solid}
 .badge-maturity.seed{color:var(--seed);border-color:var(--seed)}.badge-maturity.sketch{color:var(--sketch);border-color:var(--sketch)}
 .badge-maturity.prototype{color:var(--proto);border-color:var(--proto)}.badge-maturity.instrument{color:var(--instrument);border-color:var(--instrument)}
-.badge-theme{background:rgba(255,255,255,.06);color:var(--muted)}
-.badge-constellation{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:8px}
-.patch-meta{display:flex;gap:12px;margin-top:8px;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.badge-theme{color:#000;border-color:#ccc;background:#f4f4f4}
+.patch-meta{display:flex;gap:10px;margin-top:6px;font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace}
 
-/* EXPANDED PANEL */
-.panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;opacity:0;pointer-events:none;transition:opacity .3s}
+/* PANEL */
+.panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s}
 .panel-overlay.open{opacity:1;pointer-events:all}
-.panel{position:fixed;right:0;top:0;bottom:0;width:min(520px,90vw);background:var(--surface);z-index:201;transform:translateX(100%);transition:transform .3s;overflow-y:auto;border-left:1px solid var(--border)}
+.panel{position:fixed;right:0;top:0;bottom:0;width:min(540px,92vw);background:#fff;z-index:201;transform:translateX(100%);transition:transform .25s;overflow-y:auto;border-left:2px solid #000}
 .panel.open{transform:translateX(0)}
-.panel-close{position:absolute;top:12px;right:12px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;z-index:5;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:4px}
-.panel-close:hover{background:var(--card);color:var(--text)}
-.panel-content{padding:24px}
-.panel-section{margin-bottom:24px}
-.panel-section h3{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
-.panel-section h2{font-family:'JetBrains Mono',monospace;font-size:16px;margin-bottom:4px}
-.genome-row{display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px solid rgba(255,255,255,.04)}
-.genome-row .label{color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:10px}
-.genome-row .value{color:var(--text);text-align:right;max-width:60%}
-.entity-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
-.entity-tag{font-size:10px;padding:2px 6px;border-radius:3px;font-family:'JetBrains Mono',monospace}
-.entity-tag.ent{background:rgba(82,183,136,.15);color:var(--seed);border:1px solid rgba(82,183,136,.3)}
-.entity-tag.morph{background:rgba(54,169,225,.15);color:var(--sketch);border:1px solid rgba(54,169,225,.3)}
-.entity-tag.grp{background:rgba(155,89,182,.15);color:#9b59b6;border:1px solid rgba(155,89,182,.3)}
-.lineage-link{color:var(--accent);cursor:pointer;text-decoration:underline;font-size:11px}
-.lineage-link:hover{color:#fff}
-.theory-block{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px;margin-top:8px;font-size:11px;line-height:1.6}
-.theory-block .problem{color:var(--text);margin-bottom:8px}
-.theory-block .tool-for{color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:10px}
-.confidence-bar{display:inline-block;padding:2px 8px;border-radius:3px;font-size:9px;font-family:'JetBrains Mono',monospace;text-transform:uppercase}
-.confidence-bar.strongly_inferred{background:rgba(82,183,136,.2);color:var(--seed)}
-.confidence-bar.weakly_inferred{background:rgba(247,147,30,.2);color:var(--proto)}
-.confidence-bar.name_only{background:rgba(231,76,60,.2);color:var(--instrument)}
-.trail-bar{height:4px;background:var(--border);border-radius:2px;margin-top:4px}
-.trail-bar-fill{height:100%;border-radius:2px;transition:width .3s}
-.panel-actions{display:flex;gap:8px;margin-top:12px}
-.panel-actions a{display:inline-block;padding:6px 14px;border-radius:4px;font-size:11px;text-decoration:none;font-family:'JetBrains Mono',monospace}
-.btn-primary{background:var(--accent);color:#fff}.btn-secondary{border:1px solid var(--border);color:var(--muted)}
-.btn-primary:hover{background:#e05a2a}.btn-secondary:hover{border-color:var(--text);color:var(--text)}
+.panel-close{position:absolute;top:10px;right:12px;background:#000;border:none;color:#fff;font-size:14px;cursor:pointer;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace}
+.panel-close:hover{background:#333}
+.panel-content{padding:24px 28px}
+.panel-section{margin-bottom:20px}
+.panel-section h3{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #e0e0e0}
+.panel-section h2{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700}
+.genome-row{display:flex;justify-content:space-between;padding:3px 0;font-size:11px;border-bottom:1px solid #f0f0f0}
+.genome-row .label{color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase}
+.genome-row .value{color:#000;text-align:right;max-width:60%;font-size:11px}
+.entity-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.entity-tag{font-size:9px;padding:2px 6px;font-family:'JetBrains Mono',monospace;border:1px solid}
+.entity-tag.ent{color:var(--seed);border-color:var(--seed)}.entity-tag.morph{color:var(--sketch);border-color:var(--sketch)}.entity-tag.grp{color:var(--operationalization);border-color:var(--operationalization)}
+.theory-block{border:1px solid #e0e0e0;padding:12px;margin-top:6px;font-size:11px;line-height:1.6}
+.theory-block .problem{color:#000;margin-bottom:6px}
+.theory-block .tool-for{color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase}
+.confidence-bar{display:inline-block;padding:1px 6px;font-size:8px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;border:1px solid}
+.confidence-bar.strongly_inferred{color:var(--seed);border-color:var(--seed)}
+.confidence-bar.weakly_inferred{color:var(--proto);border-color:var(--proto)}
+.confidence-bar.name_only{color:var(--instrument);border-color:var(--instrument)}
+.lineage-link{color:#000;cursor:pointer;text-decoration:underline;font-size:11px}
+.lineage-link:hover{color:var(--muted)}
+.panel-actions{display:flex;gap:8px;margin-top:10px}
+.panel-actions a{padding:6px 14px;font-size:10px;text-decoration:none;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px}
+.btn-primary{background:#000;color:#fff;border:1px solid #000}.btn-secondary{background:#fff;color:#000;border:1px solid #000}
+.btn-primary:hover{background:#333}.btn-secondary:hover{background:#f0f0f0}
 
-/* SEARCH */
-.search-box{padding:8px 24px;background:var(--bg)}
-.search-box input{width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 14px;border-radius:6px;font-size:12px;font-family:'JetBrains Mono',monospace;outline:none}
-.search-box input:focus{border-color:var(--accent)}
-.search-box input::placeholder{color:var(--muted)}
+/* EXTERNAL SOURCES */
+.ext-section{padding:20px 32px;border-bottom:1px solid #000}
+.ext-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.ext-title .ext-count{background:#000;color:#fff;padding:1px 6px;font-size:9px}
+.ext-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.ext-card{border:1px solid #ccc;padding:10px;cursor:pointer;transition:all .15s;text-decoration:none;color:#000;display:block}
+.ext-card:hover{border-color:#000;box-shadow:2px 2px 0 #000}
+.ext-card .ext-card-title{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;line-height:1.4}
+.ext-card .ext-card-meta{font-size:9px;color:var(--muted);margin-top:4px;font-family:'JetBrains Mono',monospace}
+.ext-card .ext-card-type{display:inline-block;background:#000;color:#fff;padding:0 4px;font-size:8px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-right:4px}
+.yt-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;margin-bottom:6px;filter:grayscale(0.3)}
+.ext-card:hover .yt-thumb{filter:grayscale(0)}
 
 @media(max-width:600px){
-  .patches{grid-template-columns:1fr}
-  .filters{overflow-x:auto;flex-wrap:nowrap}
-  .header-stats{flex-wrap:wrap;gap:8px}
+  .header{flex-direction:column;align-items:flex-start;padding:16px}
+  .controls{padding:8px 16px}.timeline{padding:0 16px 40px}.featured{padding:16px}.ext-section{padding:16px}
+  .patches,.featured-grid,.ext-grid{grid-template-columns:1fr}
+  .search-input{width:100%}
 }
 </style>
 </head>
 <body>
+
 <div class="header">
-  <h1>Repo Genome Patches — Year in Review</h1>
-  <div class="header-stats">
-    <span><span class="stat-num" id="total-count">—</span> patches</span>
-    <span><span class="stat-num" id="visible-count">—</span> visible</span>
-    <span>May 2025 — Apr 2026</span>
-    <span>Scanner v2.0</span>
+  <div class="header-left">
+    <h1>Year in Review</h1>
+    <div class="subtitle">Watson Hartsoe — May 2025 to April 2026</div>
+  </div>
+  <div class="header-right">
+    <span class="stat-pill" id="total-count">—</span>
+    <a href="https://github.com/hartswf0" target="_blank">GitHub</a>
+    <a href="https://medium.com/@watsonhartsoe" target="_blank">Medium</a>
+    <a href="https://youtube.com/@watsonhartsoe" target="_blank">YouTube</a>
   </div>
 </div>
 
-<div class="search-box">
-  <input type="text" id="search" placeholder="Search repos, descriptions, vocabulary...">
-</div>
-
-<div class="filters" id="filters">
-  <button class="filter-btn active" data-filter="all">ALL</button>
-  <button class="filter-btn phase-seed" data-filter="phase:SEEDING">SEEDING</button>
-  <button class="filter-btn phase-erupt" data-filter="phase:ERUPTION">ERUPTION</button>
-  <button class="filter-btn phase-consol" data-filter="phase:CONSOLIDATION">CONSOLIDATION</button>
-  <button class="filter-btn phase-oper" data-filter="phase:OPERATIONALIZATION">OPERATIONALIZATION</button>
-  <span style="width:1px;background:var(--border);margin:0 4px"></span>
-  <button class="filter-btn" data-filter="maturity:seed">seed</button>
-  <button class="filter-btn" data-filter="maturity:sketch">sketch</button>
-  <button class="filter-btn" data-filter="maturity:prototype">prototype</button>
-  <button class="filter-btn" data-filter="maturity:instrument">instrument</button>
+<div class="controls">
+  <input type="text" class="search-input" id="search" placeholder="Search patches...">
+  <button class="filter-btn active" data-filter="all">All</button>
+  <div class="filter-sep"></div>
+  <button class="filter-btn" data-filter="phase:SEEDING">Seeding</button>
+  <button class="filter-btn" data-filter="phase:ERUPTION">Eruption</button>
+  <button class="filter-btn" data-filter="phase:CONSOLIDATION">Consolidation</button>
+  <button class="filter-btn" data-filter="phase:OPERATIONALIZATION">Operationalization</button>
+  <div class="filter-sep"></div>
+  <button class="filter-btn" data-filter="maturity:instrument">Instruments</button>
+  <button class="filter-btn" data-filter="maturity:prototype">Prototypes</button>
 </div>
 
 <div class="phase-bar" id="phase-bar"></div>
+
+<div class="featured" id="featured">
+  <div class="featured-title">Most Developed — Instruments</div>
+  <div class="featured-grid" id="featured-grid"></div>
+</div>
+
+<div class="ext-section" id="youtube-section" style="display:none">
+  <div class="ext-title">YouTube <span class="ext-count" id="yt-count"></span></div>
+  <div class="ext-grid" id="yt-grid"></div>
+</div>
+
+<div class="ext-section" id="medium-section" style="display:none">
+  <div class="ext-title">Medium <span class="ext-count" id="med-count"></span></div>
+  <div class="ext-grid" id="med-grid"></div>
+</div>
 
 <div class="timeline" id="timeline"></div>
 
@@ -150,248 +181,212 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overf
 </div>
 
 <script>
-let data = null;
-let activeFilter = 'all';
-let searchQuery = '';
+let data=null,ytData=null,medData=null,activeFilter='all',searchQuery='';
 
 async function init(){
-  const resp = await fetch('genome-patches.json');
-  data = await resp.json();
-  document.getElementById('total-count').textContent = data.meta.total_patches;
+  const [patchResp,ytResp,medResp]=await Promise.all([
+    fetch('genome-patches.json'),
+    fetch('youtube-index.json').catch(()=>null),
+    fetch('medium-index.json').catch(()=>null)
+  ]);
+  data=await patchResp.json();
+  if(ytResp&&ytResp.ok) ytData=await ytResp.json();
+  if(medResp&&medResp.ok) medData=await medResp.json();
+  document.getElementById('total-count').textContent=data.meta.total_patches+' patches';
   renderPhaseBar();
+  renderFeatured();
+  if(ytData&&ytData.videos.length) renderYouTube();
+  if(medData&&medData.articles.length) renderMedium();
   renderTimeline();
   setupEvents();
 }
 
+function renderYouTube(){
+  const sec=document.getElementById('youtube-section');
+  sec.style.display='';
+  document.getElementById('yt-count').textContent=ytData.videos.length;
+  const grid=document.getElementById('yt-grid');
+  grid.innerHTML=ytData.videos.map(v=>`
+    <a class="ext-card" href="${v.url}" target="_blank">
+      <img class="yt-thumb" src="${v.thumbnail}" alt="" loading="lazy">
+      <div class="ext-card-title">${v.title||v.video_id}</div>
+      <div class="ext-card-meta"><span class="ext-card-type">video</span>${v.published?v.published.slice(0,10):''}</div>
+    </a>`).join('');
+}
+
+function renderMedium(){
+  const sec=document.getElementById('medium-section');
+  sec.style.display='';
+  document.getElementById('med-count').textContent=medData.articles.length;
+  const grid=document.getElementById('med-grid');
+  grid.innerHTML=medData.articles.map(a=>`
+    <a class="ext-card" href="${a.url}" target="_blank">
+      <div class="ext-card-title">${a.title}</div>
+      <div class="ext-card-meta"><span class="ext-card-type">essay</span>${a.date||''}</div>
+    </a>`).join('');
+}
+
 function renderPhaseBar(){
-  const bar = document.getElementById('phase-bar');
-  const phases = data.summary.phase_counts;
-  const total = Object.values(phases).reduce((a,b)=>a+b,0);
-  const colors = {SEEDING:'var(--seeding)',ERUPTION:'var(--eruption)',CONSOLIDATION:'var(--consolidation)',OPERATIONALIZATION:'var(--operationalization)'};
-  const order = ['SEEDING','ERUPTION','CONSOLIDATION','OPERATIONALIZATION'];
-  bar.innerHTML = order.map(p=>{
-    const pct = ((phases[p]||0)/total*100);
-    return `<div class="phase-segment" style="flex:${pct};background:${colors[p]}" title="${p}: ${phases[p]} repos"></div>`;
+  const bar=document.getElementById('phase-bar');
+  const ph=data.summary.phase_counts;
+  const total=Object.values(ph).reduce((a,b)=>a+b,0);
+  const colors={SEEDING:'var(--seeding)',ERUPTION:'var(--eruption)',CONSOLIDATION:'var(--consolidation)',OPERATIONALIZATION:'var(--operationalization)'};
+  bar.innerHTML=['SEEDING','ERUPTION','CONSOLIDATION','OPERATIONALIZATION'].map(p=>
+    `<div class="phase-segment" style="flex:${(ph[p]||0)/total*100};background:${colors[p]}" title="${p}: ${ph[p]}"></div>`
+  ).join('');
+}
+
+function renderFeatured(){
+  const grid=document.getElementById('featured-grid');
+  // Sort by combined score: size*lifespan, take instruments + top prototypes
+  const scored=data.patches.map(p=>{
+    const ct=p.creator_trail_genome.process_metadata;
+    return{...p,_score:(ct.size_mb+1)*(ct.lifespan_days+1)};
+  }).sort((a,b)=>b._score-a._score);
+  const top=scored.filter(p=>p.timeline_genome.maturity_stage==='instrument').concat(
+    scored.filter(p=>p.timeline_genome.maturity_stage==='prototype').slice(0,5)
+  ).slice(0,10);
+  grid.innerHTML=top.map(p=>{
+    const ct=p.creator_trail_genome.process_metadata;
+    const sizeTxt=ct.size_mb>1?ct.size_mb.toFixed(1)+'MB':Math.round(ct.size_mb*1024)+'KB';
+    return `<div class="featured-card" onclick="openPanel('${p.patch_id}')">
+      <div class="fc-name">${p.repo_name}</div>
+      <div class="fc-desc">${p.timeline_genome.one_line_summary}</div>
+      <div class="fc-meta">
+        <span>${sizeTxt}</span>
+        <span>${ct.lifespan_days}d active</span>
+        <span>${ct.commits!=='unknown'?ct.commits+' commits':''}</span>
+        <span class="fc-badge">${p.timeline_genome.maturity_stage}</span>
+      </div>
+    </div>`;
   }).join('');
 }
 
 function getFilteredPatches(){
-  let patches = data.patches;
-  if(activeFilter !== 'all'){
-    const [type, val] = activeFilter.split(':');
-    patches = patches.filter(p=>{
-      if(type==='phase') return p.phase===val;
-      if(type==='maturity') return p.timeline_genome.maturity_stage===val;
-      if(type==='theme') return p.timeline_genome.theme===val;
-      if(type==='constellation') return p.timeline_genome.all_constellations.includes(val);
+  let patches=data.patches;
+  if(activeFilter!=='all'){
+    const[type,val]=activeFilter.split(':');
+    patches=patches.filter(p=>{
+      if(type==='phase')return p.phase===val;
+      if(type==='maturity')return p.timeline_genome.maturity_stage===val;
       return true;
     });
   }
   if(searchQuery){
-    const q = searchQuery.toLowerCase();
-    patches = patches.filter(p=>{
-      const text = `${p.repo_name} ${p.timeline_genome.one_line_summary} ${p.timeline_genome.theme} ${p.timeline_genome.constellation} ${(p.vocabulary_genome.key_entities||[]).join(' ')} ${p.timeline_genome.maturity_stage} ${p.phase}`.toLowerCase();
-      return text.includes(q);
+    const q=searchQuery.toLowerCase();
+    patches=patches.filter(p=>{
+      const t=`${p.repo_name} ${p.timeline_genome.one_line_summary} ${p.timeline_genome.theme} ${p.timeline_genome.constellation} ${(p.vocabulary_genome.key_entities||[]).join(' ')} ${p.timeline_genome.maturity_stage} ${p.phase}`.toLowerCase();
+      return t.includes(q);
     });
   }
   return patches;
 }
 
 function renderTimeline(){
-  const container = document.getElementById('timeline');
-  const patches = getFilteredPatches();
-  document.getElementById('visible-count').textContent = patches.length;
-
-  const byMonth = {};
-  patches.forEach(p=>{
-    if(!byMonth[p.month]) byMonth[p.month]=[];
-    byMonth[p.month].push(p);
-  });
-
-  const months = Object.keys(byMonth).sort();
-  container.innerHTML = months.map(m=>{
-    const ps = byMonth[m];
-    const dt = new Date(m+'-15');
-    const label = dt.toLocaleDateString('en-US',{month:'long',year:'numeric'});
-    return `
-      <div class="month-group">
-        <div class="month-label">${label} <span class="count">${ps.length}</span><div class="month-line"></div></div>
-        <div class="patches">${ps.map(p=>renderPatchCard(p)).join('')}</div>
-      </div>`;
+  const container=document.getElementById('timeline');
+  const patches=getFilteredPatches();
+  const byMonth={};
+  patches.forEach(p=>{if(!byMonth[p.month])byMonth[p.month]=[];byMonth[p.month].push(p);});
+  const months=Object.keys(byMonth).sort();
+  container.innerHTML=months.map(m=>{
+    const ps=byMonth[m];
+    const dt=new Date(m+'-15');
+    const label=dt.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+    return `<div class="month-group">
+      <div class="month-header">${label}<span class="month-count">${ps.length}</span><div class="month-line"></div></div>
+      <div class="patches">${ps.map(renderPatchCard).join('')}</div>
+    </div>`;
   }).join('');
 }
 
 function renderPatchCard(p){
-  const tg = p.timeline_genome;
-  const maturity = tg.maturity_stage;
-  const color = tg.theme_color;
-  const constellations = tg.all_constellations.slice(0,2);
-  const trail = p.creator_trail_genome;
-  const sizeTxt = p.artifact_genome.size_mb > 1 ? `${p.artifact_genome.size_mb.toFixed(1)}MB` : `${Math.round(p.artifact_genome.size_mb*1024)}KB`;
-
-  return `
-    <div class="patch" data-patch-id="${p.patch_id}" style="--tc:${color}" onclick="openPanel('${p.patch_id}')">
-      <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:${color};border-radius:8px 0 0 8px"></div>
-      <div class="patch-header">
-        <div class="patch-name">${p.repo_name}</div>
-        <div class="patch-id">${p.patch_id}</div>
-      </div>
-      <div class="patch-desc">${tg.one_line_summary}</div>
-      <div class="patch-badges">
-        <span class="badge badge-maturity ${maturity}">${maturity}</span>
-        <span class="badge badge-theme">${tg.theme.split('&')[0].trim()}</span>
-        ${constellations.map(c=>`<span class="badge badge-constellation">${c.replace(' Constellation','')}</span>`).join('')}
-      </div>
-      <div class="patch-meta">
-        <span>${sizeTxt}</span>
-        <span>${trail.making_pattern.replace('_',' ')}</span>
-        ${p.artifact_genome.has_pages?'<span>pages</span>':''}
-      </div>
-    </div>`;
+  const tg=p.timeline_genome,ct=p.creator_trail_genome;
+  const sizeTxt=p.artifact_genome.size_mb>1?p.artifact_genome.size_mb.toFixed(1)+'MB':Math.round(p.artifact_genome.size_mb*1024)+'KB';
+  return `<div class="patch" onclick="openPanel('${p.patch_id}')">
+    <div class="patch-header"><div class="patch-name">${p.repo_name}</div><div class="patch-id">${p.patch_id}</div></div>
+    <div class="patch-desc">${tg.one_line_summary}</div>
+    <div class="patch-badges">
+      <span class="badge badge-maturity ${tg.maturity_stage}">${tg.maturity_stage}</span>
+      <span class="badge badge-theme">${tg.theme.split('&')[0].trim()}</span>
+    </div>
+    <div class="patch-meta"><span>${sizeTxt}</span><span>${ct.making_pattern.replace(/_/g,' ')}</span>${p.artifact_genome.has_pages?'<span>pages</span>':''}</div>
+  </div>`;
 }
 
-function openPanel(patchId){
-  const p = data.patches.find(x=>x.patch_id===patchId);
-  if(!p) return;
-
-  const tg = p.timeline_genome;
-  const ag = p.artifact_genome;
-  const vg = p.vocabulary_genome;
-  const pt = p.program_theory_capsule;
-  const ct = p.creator_trail_genome;
-  const lg = p.lineage_genome;
-  const ev = pt.evidence;
-
-  const content = document.getElementById('panel-content');
-  content.innerHTML = `
+function openPanel(id){
+  const p=data.patches.find(x=>x.patch_id===id);if(!p)return;
+  const tg=p.timeline_genome,ag=p.artifact_genome,vg=p.vocabulary_genome,pt=p.program_theory_capsule,ct=p.creator_trail_genome,lg=p.lineage_genome,ev=pt.evidence;
+  const c=document.getElementById('panel-content');
+  c.innerHTML=`
     <div class="panel-section">
-      <h2 style="color:${tg.theme_color}">${p.repo_name}</h2>
-      <div style="font-size:12px;color:var(--muted);margin-top:4px">${tg.one_line_summary}</div>
+      <h2>${p.repo_name}</h2>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">${tg.one_line_summary}</div>
       <div class="panel-actions">
-        ${ag.has_pages?`<a href="${ag.pages_url}" target="_blank" class="btn-primary">Open Pages</a>`:''}
+        ${ag.has_pages?`<a href="${ag.pages_url}" target="_blank" class="btn-primary">Open</a>`:''}
         <a href="${ag.github_url}" target="_blank" class="btn-secondary">GitHub</a>
       </div>
     </div>
-
-    <div class="panel-section">
-      <h3>Timeline Genome</h3>
-      <div class="genome-row"><span class="label">patch_id</span><span class="value">${p.patch_id}</span></div>
+    <div class="panel-section"><h3>Timeline Genome</h3>
+      <div class="genome-row"><span class="label">patch</span><span class="value">${p.patch_id}</span></div>
       <div class="genome-row"><span class="label">created</span><span class="value">${new Date(p.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span></div>
-      <div class="genome-row"><span class="label">phase</span><span class="value" style="color:var(--${p.phase.toLowerCase()})">${p.phase}</span></div>
-      <div class="genome-row"><span class="label">quarter</span><span class="value">${p.quarter}</span></div>
+      <div class="genome-row"><span class="label">phase</span><span class="value">${p.phase}</span></div>
       <div class="genome-row"><span class="label">maturity</span><span class="value"><span class="badge badge-maturity ${tg.maturity_stage}">${tg.maturity_stage}</span></span></div>
       <div class="genome-row"><span class="label">theme</span><span class="value">${tg.theme}</span></div>
-      <div class="genome-row"><span class="label">constellation</span><span class="value">${tg.constellation}</span></div>
-      ${tg.all_constellations.length>1?`<div class="genome-row"><span class="label">also in</span><span class="value">${tg.all_constellations.slice(1).join(', ')}</span></div>`:''}
+      <div class="genome-row"><span class="label">constellation</span><span class="value">${tg.all_constellations.join(', ')}</span></div>
     </div>
-
-    <div class="panel-section">
-      <h3>Artifact Genome</h3>
-      <div class="genome-row"><span class="label">type</span><span class="value">${ag.artifact_type}</span></div>
+    <div class="panel-section"><h3>Artifact Genome</h3>
       <div class="genome-row"><span class="label">language</span><span class="value">${ag.primary_language}</span></div>
       <div class="genome-row"><span class="label">size</span><span class="value">${ag.size_mb>1?ag.size_mb.toFixed(1)+'MB':Math.round(ag.size_mb*1024)+'KB'}</span></div>
-      <div class="genome-row"><span class="label">deployment</span><span class="value">${ag.deployment_shape}</span></div>
+      <div class="genome-row"><span class="label">deploy</span><span class="value">${ag.deployment_shape}</span></div>
     </div>
-
-    <div class="panel-section">
-      <h3>Program Theory Capsule</h3>
+    <div class="panel-section"><h3>Program Theory</h3>
       <div class="theory-block">
         <div class="problem">${pt.initial_interpretation.program_theory_problem}</div>
-        <div class="tool-for">tool_for: ${pt.initial_interpretation.repo_as_tool_for}</div>
+        <div class="tool-for">Tool for: ${pt.initial_interpretation.repo_as_tool_for}</div>
       </div>
-      <div style="margin-top:8px">
-        <span class="confidence-bar ${ev.confidence}">${ev.confidence}</span>
-        <span style="font-size:10px;color:var(--muted);margin-left:8px">scan: ${ev.scan_level}</span>
-      </div>
-      ${pt.theory_skeleton.entities.length?`
-        <div style="margin-top:10px;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace">ENTITIES</div>
-        <div class="entity-list">${pt.theory_skeleton.entities.map(e=>`<span class="entity-tag ent">${e}</span>`).join('')}</div>
-      `:''}
-      ${pt.theory_skeleton.operations.length?`
-        <div style="margin-top:8px;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace">OPERATIONS</div>
-        <div class="entity-list">${pt.theory_skeleton.operations.map(o=>`<span class="entity-tag morph">${o}</span>`).join('')}</div>
-      `:''}
+      <div style="margin-top:6px"><span class="confidence-bar ${ev.confidence}">${ev.confidence}</span></div>
+      ${pt.theory_skeleton.entities.length?`<div style="margin-top:8px;font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase">Entities</div><div class="entity-list">${pt.theory_skeleton.entities.map(e=>`<span class="entity-tag ent">${e}</span>`).join('')}</div>`:''}
+      ${pt.theory_skeleton.operations.length?`<div style="margin-top:6px;font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase">Operations</div><div class="entity-list">${pt.theory_skeleton.operations.map(o=>`<span class="entity-tag morph">${o}</span>`).join('')}</div>`:''}
     </div>
-
-    <div class="panel-section">
-      <h3>Vocabulary Genome</h3>
-      ${vg.key_entities.length?`
-        <div style="font-size:10px;color:var(--muted);margin-bottom:4px;font-family:'JetBrains Mono',monospace">ENTITIES</div>
-        <div class="entity-list">${vg.key_entities.map(e=>`<span class="entity-tag ent">&lt;${e}&gt;</span>`).join('')}</div>
-      `:''}
-      ${vg.key_morphisms.length?`
-        <div style="font-size:10px;color:var(--muted);margin-top:8px;margin-bottom:4px;font-family:'JetBrains Mono',monospace">MORPHISMS</div>
-        <div class="entity-list">${vg.key_morphisms.map(m=>`<span class="entity-tag morph">[${m}]</span>`).join('')}</div>
-      `:''}
-      ${vg.key_groups.length?`
-        <div style="font-size:10px;color:var(--muted);margin-top:8px;margin-bottom:4px;font-family:'JetBrains Mono',monospace">GROUPS</div>
-        <div class="entity-list">${vg.key_groups.map(g=>`<span class="entity-tag grp">{${g}}</span>`).join('')}</div>
-      `:''}
+    <div class="panel-section"><h3>Vocabulary Genome</h3>
+      ${vg.key_entities.length?`<div class="entity-list">${vg.key_entities.map(e=>`<span class="entity-tag ent">&lt;${e}&gt;</span>`).join('')}</div>`:''}
+      ${vg.key_morphisms.length?`<div class="entity-list" style="margin-top:4px">${vg.key_morphisms.map(m=>`<span class="entity-tag morph">[${m}]</span>`).join('')}</div>`:''}
+      ${vg.key_groups.length?`<div class="entity-list" style="margin-top:4px">${vg.key_groups.map(g=>`<span class="entity-tag grp">{${g}}</span>`).join('')}</div>`:''}
     </div>
-
-    <div class="panel-section">
-      <h3>Creator Trail Genome</h3>
-      <div class="genome-row"><span class="label">trail_maturity</span><span class="value">${ct.trail_maturity_label}</span></div>
-      <div class="genome-row"><span class="label">making_pattern</span><span class="value">${ct.making_pattern}</span></div>
+    <div class="panel-section"><h3>Creator Trail</h3>
+      <div class="genome-row"><span class="label">pattern</span><span class="value">${ct.making_pattern.replace(/_/g,' ')}</span></div>
       <div class="genome-row"><span class="label">lifespan</span><span class="value">${ct.process_metadata.lifespan_days}d</span></div>
       <div class="genome-row"><span class="label">commits</span><span class="value">${ct.process_metadata.commits}</span></div>
-      <div style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5">${ct.making_notes}</div>
+      <div class="genome-row"><span class="label">trail</span><span class="value">${ct.trail_maturity_label}</span></div>
+      <div style="font-size:10px;color:var(--muted);margin-top:6px">${ct.making_notes}</div>
     </div>
-
     ${(lg.parent_repos.length||lg.sibling_repos.length||lg.descendant_repos.length)?`
-    <div class="panel-section">
-      <h3>Lineage Genome</h3>
-      ${lg.parent_repos.length?`<div class="genome-row"><span class="label">parents</span><span class="value">${lg.parent_repos.map(r=>`<span class="lineage-link" onclick="jumpToRepo('${r}')">${r}</span>`).join(', ')}</span></div>`:''}
-      ${lg.sibling_repos.length?`<div class="genome-row"><span class="label">siblings</span><span class="value">${lg.sibling_repos.map(r=>`<span class="lineage-link" onclick="jumpToRepo('${r}')">${r}</span>`).join(', ')}</span></div>`:''}
-      ${lg.descendant_repos.length?`<div class="genome-row"><span class="label">descendants</span><span class="value">${lg.descendant_repos.map(r=>`<span class="lineage-link" onclick="jumpToRepo('${r}')">${r}</span>`).join(', ')}</span></div>`:''}
-    </div>
-    `:''}
-  `;
-
+    <div class="panel-section"><h3>Lineage</h3>
+      ${lg.parent_repos.length?`<div class="genome-row"><span class="label">parents</span><span class="value">${lg.parent_repos.map(r=>`<span class="lineage-link" onclick="jumpToRepo('${r}')">${r}</span>`).join(' ')}</span></div>`:''}
+      ${lg.sibling_repos.length?`<div class="genome-row"><span class="label">siblings</span><span class="value">${lg.sibling_repos.map(r=>`<span class="lineage-link" onclick="jumpToRepo('${r}')">${r}</span>`).join(' ')}</span></div>`:''}
+      ${lg.descendant_repos.length?`<div class="genome-row"><span class="label">descendants</span><span class="value">${lg.descendant_repos.map(r=>`<span class="lineage-link" onclick="jumpToRepo('${r}')">${r}</span>`).join(' ')}</span></div>`:''}
+    </div>`:''}`;
   document.getElementById('panel').classList.add('open');
   document.getElementById('panel-overlay').classList.add('open');
 }
-
-function closePanel(){
-  document.getElementById('panel').classList.remove('open');
-  document.getElementById('panel-overlay').classList.remove('open');
-}
-
-function jumpToRepo(name){
-  closePanel();
-  const patch = data.patches.find(p=>p.repo_name===name);
-  if(patch){
-    setTimeout(()=>openPanel(patch.patch_id),300);
-  }
-}
+function closePanel(){document.getElementById('panel').classList.remove('open');document.getElementById('panel-overlay').classList.remove('open')}
+function jumpToRepo(name){closePanel();const p=data.patches.find(x=>x.repo_name===name);if(p)setTimeout(()=>openPanel(p.patch_id),250)}
 
 function setupEvents(){
   document.getElementById('panel-close').addEventListener('click',closePanel);
   document.getElementById('panel-overlay').addEventListener('click',closePanel);
-
   document.querySelectorAll('.filter-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
       document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
-      activeFilter = btn.dataset.filter;
+      activeFilter=btn.dataset.filter;
       renderTimeline();
     });
   });
-
-  let searchTimeout;
-  document.getElementById('search').addEventListener('input',(e)=>{
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(()=>{
-      searchQuery = e.target.value;
-      renderTimeline();
-    },200);
-  });
-
-  document.addEventListener('keydown',(e)=>{
-    if(e.key==='Escape') closePanel();
-  });
+  let t;
+  document.getElementById('search').addEventListener('input',e=>{clearTimeout(t);t=setTimeout(()=>{searchQuery=e.target.value;renderTimeline()},200)});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
 }
-
 init();
 </script>
 </body>

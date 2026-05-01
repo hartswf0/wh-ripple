@@ -1,344 +1,978 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Year in Review — Watson Hartsoe</title>
-<meta name="description" content="168 repositories. 12 months. One evolving world-model.">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#ffffff;--surface:#f8f8f8;--card:#ffffff;--border:#000000;
-  --text:#000000;--muted:#444444;--accent:#000000;
-  --seed:#1a7a4e;--sketch:#1a6db5;--proto:#c46a10;--instrument:#b82020;
-  --seeding:#1a7a4e;--eruption:#c44a10;--consolidation:#1a6db5;--operationalization:#6a3d8e;
-}
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Year in Review — Watson Hartsoe</title>
+  <meta name="description" content="168 repositories. 12 months. One evolving world-model.">
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
 
-/* HEADER — MINIMAL */
-.header{border-bottom:2px solid #000;padding:20px 32px 16px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
-.header-left h1{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#000}
-.header-left .subtitle{font-size:11px;color:var(--muted);margin-top:4px;font-family:'JetBrains Mono',monospace}
-.header-right{display:flex;gap:16px;align-items:center;font-size:11px;font-family:'JetBrains Mono',monospace}
-.header-right a{color:#000;text-decoration:none;border-bottom:1px solid #000;padding-bottom:1px;transition:opacity .2s}
-.header-right a:hover{opacity:.5}
-.stat-pill{display:inline-flex;align-items:center;gap:4px;background:#000;color:#fff;padding:2px 8px;border-radius:2px;font-size:10px;font-family:'JetBrains Mono',monospace}
+    :root {
+      --bg: #ffffff;
+      --surface: #f8f8f8;
+      --card: #ffffff;
+      --border: #000000;
+      --text: #000000;
+      --muted: #444444;
+      --accent: #000000;
+      --seed: #1a7a4e;
+      --sketch: #1a6db5;
+      --proto: #c46a10;
+      --instrument: #b82020;
+      --seeding: #1a7a4e;
+      --eruption: #c44a10;
+      --consolidation: #1a6db5;
+      --operationalization: #6a3d8e;
+    }
 
-/* SEARCH + FILTERS */
-.controls{border-bottom:1px solid #000;padding:10px 32px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.search-input{background:#fff;border:1px solid #000;color:#000;padding:5px 12px;font-size:11px;font-family:'JetBrains Mono',monospace;outline:none;width:220px}
-.search-input:focus{box-shadow:inset 0 -2px 0 #000}
-.search-input::placeholder{color:#999}
-.filter-btn{background:#fff;border:1px solid #000;color:#000;padding:4px 10px;font-size:10px;cursor:pointer;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;transition:all .15s}
-.filter-btn:hover{background:#000;color:#fff}
-.filter-btn.active{background:#000;color:#fff}
-.filter-sep{width:1px;height:16px;background:#ccc;margin:0 2px}
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased
+    }
 
-/* PHASE BAR */
-.phase-bar{display:flex;height:4px}
-.phase-segment{height:100%}
+    /* HEADER — MINIMAL */
+    .header {
+      border-bottom: 2px solid #000;
+      padding: 20px 32px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 12px
+    }
 
-/* FEATURED / INSTRUMENTS */
-.featured{padding:24px 32px;border-bottom:1px solid #000}
-.featured-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
-.featured-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
-.featured-card{border:2px solid #000;padding:14px 16px;cursor:pointer;transition:all .15s;position:relative}
-.featured-card:hover{background:#000;color:#fff}
-.featured-card:hover .fc-desc{color:#ccc}
-.featured-card:hover .fc-meta{color:#999}
-.featured-card:hover .fc-badge{background:#fff;color:#000}
-.fc-name{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700}
-.fc-desc{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.fc-meta{display:flex;gap:10px;margin-top:8px;font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase}
-.fc-badge{display:inline-block;background:#000;color:#fff;padding:1px 6px;font-size:8px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px}
+    .header-left h1 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #000
+    }
 
-/* TIMELINE */
-.timeline{padding:0 32px 80px}
-.month-group{border-bottom:1px solid #e0e0e0}
-.month-header{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);padding:16px 0 10px;display:flex;align-items:center;gap:8px;position:sticky;top:0;background:#fff;z-index:10}
-.month-count{background:#000;color:#fff;padding:1px 6px;border-radius:1px;font-size:9px}
-.month-line{flex:1;height:1px;background:#e0e0e0}
-.patches{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px;padding-bottom:16px}
+    .header-left .subtitle {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+      font-family: 'JetBrains Mono', monospace
+    }
 
-/* PATCH CARD */
-.patch{border:1px solid #ccc;padding:12px 14px;cursor:pointer;transition:all .15s;position:relative}
-.patch:hover{border-color:#000;box-shadow:3px 3px 0 #000}
-.patch-header{display:flex;justify-content:space-between;align-items:flex-start}
-.patch-id{font-family:'JetBrains Mono',monospace;font-size:8px;color:#aaa}
-.patch-name{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600}
-.patch-desc{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.patch-badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
-.badge{font-size:8px;padding:1px 5px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;border:1px solid}
-.badge-maturity.seed{color:var(--seed);border-color:var(--seed)}.badge-maturity.sketch{color:var(--sketch);border-color:var(--sketch)}
-.badge-maturity.prototype{color:var(--proto);border-color:var(--proto)}.badge-maturity.instrument{color:var(--instrument);border-color:var(--instrument)}
-.badge-theme{color:#000;border-color:#ccc;background:#f4f4f4}
-.patch-meta{display:flex;gap:10px;margin-top:6px;font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+    .header-right {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace
+    }
 
-/* PANEL */
-.panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s}
-.panel-overlay.open{opacity:1;pointer-events:all}
-.panel{position:fixed;right:0;top:0;bottom:0;width:min(540px,92vw);background:#fff;z-index:201;transform:translateX(100%);transition:transform .25s;overflow-y:auto;border-left:2px solid #000}
-.panel.open{transform:translateX(0)}
-.panel-close{position:absolute;top:10px;right:12px;background:#000;border:none;color:#fff;font-size:14px;cursor:pointer;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace}
-.panel-close:hover{background:#333}
-.panel-content{padding:24px 28px}
-.panel-section{margin-bottom:20px}
-.panel-section h3{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #e0e0e0}
-.panel-section h2{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700}
-.genome-row{display:flex;justify-content:space-between;padding:3px 0;font-size:11px;border-bottom:1px solid #f0f0f0}
-.genome-row .label{color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase}
-.genome-row .value{color:#000;text-align:right;max-width:60%;font-size:11px}
-.entity-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
-.entity-tag{font-size:9px;padding:2px 6px;font-family:'JetBrains Mono',monospace;border:1px solid}
-.entity-tag.ent{color:var(--seed);border-color:var(--seed)}.entity-tag.morph{color:var(--sketch);border-color:var(--sketch)}.entity-tag.grp{color:var(--operationalization);border-color:var(--operationalization)}
-.theory-block{border:1px solid #e0e0e0;padding:12px;margin-top:6px;font-size:11px;line-height:1.6}
-.theory-block .problem{color:#000;margin-bottom:6px}
-.theory-block .tool-for{color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase}
-.confidence-bar{display:inline-block;padding:1px 6px;font-size:8px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;border:1px solid}
-.confidence-bar.strongly_inferred{color:var(--seed);border-color:var(--seed)}
-.confidence-bar.weakly_inferred{color:var(--proto);border-color:var(--proto)}
-.confidence-bar.name_only{color:var(--instrument);border-color:var(--instrument)}
-.lineage-link{color:#000;cursor:pointer;text-decoration:underline;font-size:11px}
-.lineage-link:hover{color:var(--muted)}
-.panel-actions{display:flex;gap:8px;margin-top:10px}
-.panel-actions a{padding:6px 14px;font-size:10px;text-decoration:none;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px}
-.btn-primary{background:#000;color:#fff;border:1px solid #000}.btn-secondary{background:#fff;color:#000;border:1px solid #000}
-.btn-primary:hover{background:#333}.btn-secondary:hover{background:#f0f0f0}
+    .header-right a {
+      color: #000;
+      text-decoration: none;
+      border-bottom: 1px solid #000;
+      padding-bottom: 1px;
+      transition: opacity .2s
+    }
 
-/* COMPANION FOOTER */
-.companion{padding:32px;border-top:2px solid #000;background:var(--surface)}
-.companion-header{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
-.companion-row{display:grid;grid-template-columns:1fr 1fr;gap:32px}
-.companion-col{min-width:0}
-.ext-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#000;margin-bottom:8px;display:flex;align-items:center;gap:6px;font-weight:700}
-.ext-title .ext-count{background:#000;color:#fff;padding:1px 6px;font-size:9px;font-weight:400}
-.ext-list{display:flex;flex-direction:column;gap:4px}
-.ext-card{border:1px solid #ddd;padding:8px 10px;text-decoration:none;color:#000;display:flex;gap:8px;align-items:center;transition:all .12s}
-.ext-card:hover{border-color:#000;background:#f4f4f4}
-.ext-card .ext-card-title{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;line-height:1.3;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ext-card .ext-card-meta{font-size:8px;color:var(--muted);font-family:'JetBrains Mono',monospace;white-space:nowrap}
-.ext-card .ext-card-type{display:inline-block;background:#000;color:#fff;padding:0 4px;font-size:7px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-right:4px}
-.yt-thumb{width:48px;height:27px;object-fit:cover;flex-shrink:0;filter:grayscale(0.4)}
-.ext-card:hover .yt-thumb{filter:grayscale(0)}
-.yt-grid-wrap{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+    .header-right a:hover {
+      opacity: .5
+    }
 
-@media(max-width:600px){
-  .header{flex-direction:column;align-items:flex-start;padding:16px}
-  .controls{padding:8px 16px}.timeline{padding:0 16px 40px}.featured{padding:16px}
-  .patches,.featured-grid{grid-template-columns:1fr}
-  .search-input{width:100%}
-  .companion-row{grid-template-columns:1fr}
-  .yt-grid-wrap{grid-template-columns:1fr}
-}
-</style>
+    .stat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #000;
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 2px;
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace
+    }
+
+    /* SEARCH + FILTERS */
+    .controls {
+      border-bottom: 1px solid #000;
+      padding: 10px 32px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center
+    }
+
+    .search-input {
+      background: #fff;
+      border: 1px solid #000;
+      color: #000;
+      padding: 5px 12px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+      width: 220px
+    }
+
+    .search-input:focus {
+      box-shadow: inset 0 -2px 0 #000
+    }
+
+    .search-input::placeholder {
+      color: #999
+    }
+
+    .filter-btn {
+      background: #fff;
+      border: 1px solid #000;
+      color: #000;
+      padding: 4px 10px;
+      font-size: 10px;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      transition: all .15s
+    }
+
+    .filter-btn:hover {
+      background: #000;
+      color: #fff
+    }
+
+    .filter-btn.active {
+      background: #000;
+      color: #fff
+    }
+
+    .filter-sep {
+      width: 1px;
+      height: 16px;
+      background: #ccc;
+      margin: 0 2px
+    }
+
+    /* PHASE BAR */
+    .phase-bar {
+      display: flex;
+      height: 4px
+    }
+
+    .phase-segment {
+      height: 100%
+    }
+
+    /* FEATURED / INSTRUMENTS */
+    .featured {
+      padding: 24px 32px;
+      border-bottom: 1px solid #000
+    }
+
+    .featured-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px
+    }
+
+    .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 10px
+    }
+
+    .featured-card {
+      border: 2px solid #000;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: all .15s;
+      position: relative
+    }
+
+    .featured-card:hover {
+      background: #000;
+      color: #fff
+    }
+
+    .featured-card:hover .fc-desc {
+      color: #ccc
+    }
+
+    .featured-card:hover .fc-meta {
+      color: #999
+    }
+
+    .featured-card:hover .fc-badge {
+      background: #fff;
+      color: #000
+    }
+
+    .fc-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 700
+    }
+
+    .fc-desc {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden
+    }
+
+    .fc-meta {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+      font-size: 9px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase
+    }
+
+    .fc-badge {
+      display: inline-block;
+      background: #000;
+      color: #fff;
+      padding: 1px 6px;
+      font-size: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: .5px
+    }
+
+    /* TIMELINE */
+    .timeline {
+      padding: 0 32px 80px
+    }
+
+    .month-group {
+      border-bottom: 1px solid #e0e0e0
+    }
+
+    .month-header {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 16px 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 10
+    }
+
+    .month-count {
+      background: #000;
+      color: #fff;
+      padding: 1px 6px;
+      border-radius: 1px;
+      font-size: 9px
+    }
+
+    .month-line {
+      flex: 1;
+      height: 1px;
+      background: #e0e0e0
+    }
+
+    .patches {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 8px;
+      padding-bottom: 16px
+    }
+
+    /* PATCH CARD */
+    .patch {
+      border: 1px solid #ccc;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: all .15s;
+      position: relative
+    }
+
+    .patch:hover {
+      border-color: #000;
+      box-shadow: 3px 3px 0 #000
+    }
+
+    .patch-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start
+    }
+
+    .patch-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      color: #aaa
+    }
+
+    .patch-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600
+    }
+
+    .patch-desc {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden
+    }
+
+    .patch-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px
+    }
+
+    .badge {
+      font-size: 8px;
+      padding: 1px 5px;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      border: 1px solid
+    }
+
+    .badge-maturity.seed {
+      color: var(--seed);
+      border-color: var(--seed)
+    }
+
+    .badge-maturity.sketch {
+      color: var(--sketch);
+      border-color: var(--sketch)
+    }
+
+    .badge-maturity.prototype {
+      color: var(--proto);
+      border-color: var(--proto)
+    }
+
+    .badge-maturity.instrument {
+      color: var(--instrument);
+      border-color: var(--instrument)
+    }
+
+    .badge-theme {
+      color: #000;
+      border-color: #ccc;
+      background: #f4f4f4
+    }
+
+    .patch-meta {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+      font-size: 9px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace
+    }
+
+    /* PANEL */
+    .panel-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .3);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s
+    }
+
+    .panel-overlay.open {
+      opacity: 1;
+      pointer-events: all
+    }
+
+    .panel {
+      position: fixed;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: min(540px, 92vw);
+      background: #fff;
+      z-index: 201;
+      transform: translateX(100%);
+      transition: transform .25s;
+      overflow-y: auto;
+      border-left: 2px solid #000
+    }
+
+    .panel.open {
+      transform: translateX(0)
+    }
+
+    .panel-close {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: #000;
+      border: none;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace
+    }
+
+    .panel-close:hover {
+      background: #333
+    }
+
+    .panel-content {
+      padding: 24px 28px
+    }
+
+    .panel-section {
+      margin-bottom: 20px
+    }
+
+    .panel-section h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #e0e0e0
+    }
+
+    .panel-section h2 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      font-weight: 700
+    }
+
+    .genome-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 3px 0;
+      font-size: 11px;
+      border-bottom: 1px solid #f0f0f0
+    }
+
+    .genome-row .label {
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      text-transform: uppercase
+    }
+
+    .genome-row .value {
+      color: #000;
+      text-align: right;
+      max-width: 60%;
+      font-size: 11px
+    }
+
+    .entity-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 4px
+    }
+
+    .entity-tag {
+      font-size: 9px;
+      padding: 2px 6px;
+      font-family: 'JetBrains Mono', monospace;
+      border: 1px solid
+    }
+
+    .entity-tag.ent {
+      color: var(--seed);
+      border-color: var(--seed)
+    }
+
+    .entity-tag.morph {
+      color: var(--sketch);
+      border-color: var(--sketch)
+    }
+
+    .entity-tag.grp {
+      color: var(--operationalization);
+      border-color: var(--operationalization)
+    }
+
+    .theory-block {
+      border: 1px solid #e0e0e0;
+      padding: 12px;
+      margin-top: 6px;
+      font-size: 11px;
+      line-height: 1.6
+    }
+
+    .theory-block .problem {
+      color: #000;
+      margin-bottom: 6px
+    }
+
+    .theory-block .tool-for {
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      text-transform: uppercase
+    }
+
+    .confidence-bar {
+      display: inline-block;
+      padding: 1px 6px;
+      font-size: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      border: 1px solid
+    }
+
+    .confidence-bar.strongly_inferred {
+      color: var(--seed);
+      border-color: var(--seed)
+    }
+
+    .confidence-bar.weakly_inferred {
+      color: var(--proto);
+      border-color: var(--proto)
+    }
+
+    .confidence-bar.name_only {
+      color: var(--instrument);
+      border-color: var(--instrument)
+    }
+
+    .lineage-link {
+      color: #000;
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 11px
+    }
+
+    .lineage-link:hover {
+      color: var(--muted)
+    }
+
+    .panel-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px
+    }
+
+    .panel-actions a {
+      padding: 6px 14px;
+      font-size: 10px;
+      text-decoration: none;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: .5px
+    }
+
+    .btn-primary {
+      background: #000;
+      color: #fff;
+      border: 1px solid #000
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: #000;
+      border: 1px solid #000
+    }
+
+    .btn-primary:hover {
+      background: #333
+    }
+
+    .btn-secondary:hover {
+      background: #f0f0f0
+    }
+
+    /* COMPANION FOOTER */
+    .companion {
+      padding: 32px;
+      border-top: 2px solid #000;
+      background: var(--surface)
+    }
+
+    .companion-header {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px
+    }
+
+    .companion-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px
+    }
+
+    .companion-col {
+      min-width: 0
+    }
+
+    .ext-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #000;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700
+    }
+
+    .ext-title .ext-count {
+      background: #000;
+      color: #fff;
+      padding: 1px 6px;
+      font-size: 9px;
+      font-weight: 400
+    }
+
+    .ext-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px
+    }
+
+    .ext-card {
+      border: 1px solid #ddd;
+      padding: 8px 10px;
+      text-decoration: none;
+      color: #000;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      transition: all .12s
+    }
+
+    .ext-card:hover {
+      border-color: #000;
+      background: #f4f4f4
+    }
+
+    .ext-card .ext-card-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      line-height: 1.3;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .ext-card .ext-card-meta {
+      font-size: 8px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap
+    }
+
+    .ext-card .ext-card-type {
+      display: inline-block;
+      background: #000;
+      color: #fff;
+      padding: 0 4px;
+      font-size: 7px;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      margin-right: 4px
+    }
+
+    .yt-thumb {
+      width: 48px;
+      height: 27px;
+      object-fit: cover;
+      flex-shrink: 0;
+      filter: grayscale(0.4)
+    }
+
+    .ext-card:hover .yt-thumb {
+      filter: grayscale(0)
+    }
+
+    .yt-grid-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px
+    }
+
+    @media(max-width:600px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px
+      }
+
+      .controls {
+        padding: 8px 16px
+      }
+
+      .timeline {
+        padding: 0 16px 40px
+      }
+
+      .featured {
+        padding: 16px
+      }
+
+      .patches,
+      .featured-grid {
+        grid-template-columns: 1fr
+      }
+
+      .search-input {
+        width: 100%
+      }
+
+      .companion-row {
+        grid-template-columns: 1fr
+      }
+
+      .yt-grid-wrap {
+        grid-template-columns: 1fr
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="header">
-  <div class="header-left">
-    <h1>Year in Review</h1>
-    <div class="subtitle">Watson Hartsoe — 168 repos · 10 essays · 43 videos — May 2025 to April 2026</div>
-  </div>
-  <div class="header-right">
-    <span class="stat-pill" id="total-count">—</span>
-    <a href="https://github.com/hartswf0" target="_blank">GitHub</a>
-    <a href="https://medium.com/@watsonhartsoe" target="_blank">Medium</a>
-    <a href="https://youtube.com/@watsonhartsoe" target="_blank">YouTube</a>
-  </div>
-</div>
-
-<div class="controls">
-  <input type="text" class="search-input" id="search" placeholder="Search patches...">
-  <button class="filter-btn active" data-filter="all">All</button>
-  <div class="filter-sep"></div>
-  <button class="filter-btn" data-filter="phase:SEEDING">Seeding</button>
-  <button class="filter-btn" data-filter="phase:ERUPTION">Eruption</button>
-  <button class="filter-btn" data-filter="phase:CONSOLIDATION">Consolidation</button>
-  <button class="filter-btn" data-filter="phase:OPERATIONALIZATION">Operationalization</button>
-  <div class="filter-sep"></div>
-  <button class="filter-btn" data-filter="maturity:instrument">Instruments</button>
-  <button class="filter-btn" data-filter="maturity:prototype">Prototypes</button>
-</div>
-
-<div class="phase-bar" id="phase-bar"></div>
-
-<div class="featured" id="featured">
-  <div class="featured-title">Most Developed — Instruments</div>
-  <div class="featured-grid" id="featured-grid"></div>
-</div>
-
-<div class="timeline" id="timeline"></div>
-
-<div class="companion" id="companion">
-  <div class="companion-header">Companion Artifacts</div>
-  <div class="companion-row">
-    <div class="companion-col" id="medium-section" style="display:none">
-      <div class="ext-title">Essays <span class="ext-count" id="med-count"></span></div>
-      <div class="ext-list" id="med-grid"></div>
+  <div class="header">
+    <div class="header-left">
+      <h1>Year in Review</h1>
+      <div class="subtitle">Watson Hartsoe — 168 repos · 10 essays · 43 videos — May 2025 to April 2026</div>
     </div>
-    <div class="companion-col" id="youtube-section" style="display:none">
-      <div class="ext-title">Videos <span class="ext-count" id="yt-count"></span></div>
-      <div class="ext-list" id="yt-grid"></div>
+    <div class="header-right">
+      <span class="stat-pill" id="total-count">—</span>
+      <a href="https://github.com/hartswf0" target="_blank">GitHub</a>
+      <a href="https://medium.com/@watsonhartsoe" target="_blank">Medium</a>
+      <a href="https://youtube.com/@watsonhartsoe" target="_blank">YouTube</a>
     </div>
   </div>
-</div>
 
-<div class="panel-overlay" id="panel-overlay"></div>
-<div class="panel" id="panel">
-  <button class="panel-close" id="panel-close">&times;</button>
-  <div class="panel-content" id="panel-content"></div>
-</div>
+  <div class="controls">
+    <input type="text" class="search-input" id="search" placeholder="Search patches...">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <div class="filter-sep"></div>
+    <button class="filter-btn" data-filter="phase:SEEDING">Seeding</button>
+    <button class="filter-btn" data-filter="phase:ERUPTION">Eruption</button>
+    <button class="filter-btn" data-filter="phase:CONSOLIDATION">Consolidation</button>
+    <button class="filter-btn" data-filter="phase:OPERATIONALIZATION">Operationalization</button>
+    <div class="filter-sep"></div>
+    <button class="filter-btn" data-filter="maturity:instrument">Instruments</button>
+    <button class="filter-btn" data-filter="maturity:prototype">Prototypes</button>
+  </div>
 
-<script>
-let data=null,ytData=null,medData=null,activeFilter='all',searchQuery='';
+  <div class="phase-bar" id="phase-bar"></div>
 
-async function init(){
-  const [patchResp,ytResp,medResp]=await Promise.all([
-    fetch('genome-patches.json'),
-    fetch('youtube-index.json').catch(()=>null),
-    fetch('medium-index.json').catch(()=>null)
-  ]);
-  data=await patchResp.json();
-  if(ytResp&&ytResp.ok) ytData=await ytResp.json();
-  if(medResp&&medResp.ok) medData=await medResp.json();
-  document.getElementById('total-count').textContent=data.meta.total_patches+' patches';
-  renderPhaseBar();
-  renderFeatured();
-  if(ytData&&ytData.videos.length) renderYouTube();
-  if(medData&&medData.articles.length) renderMedium();
-  renderTimeline();
-  setupEvents();
-}
+  <div class="featured" id="featured">
+    <div class="featured-title">Most Developed — Instruments</div>
+    <div class="featured-grid" id="featured-grid"></div>
+  </div>
 
-function renderYouTube(){
-  const sec=document.getElementById('youtube-section');
-  sec.style.display='';
-  document.getElementById('yt-count').textContent=ytData.videos.length;
-  const grid=document.getElementById('yt-grid');
-  grid.innerHTML=`<div class="yt-grid-wrap">${ytData.videos.map(v=>`
+  <div class="timeline" id="timeline"></div>
+
+  <div class="companion" id="companion">
+    <div class="companion-header">Companion Artifacts</div>
+    <div class="companion-row">
+      <div class="companion-col" id="medium-section" style="display:none">
+        <div class="ext-title">Essays <span class="ext-count" id="med-count"></span></div>
+        <div class="ext-list" id="med-grid"></div>
+      </div>
+      <div class="companion-col" id="youtube-section" style="display:none">
+        <div class="ext-title">Videos <span class="ext-count" id="yt-count"></span></div>
+        <div class="ext-list" id="yt-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-overlay" id="panel-overlay"></div>
+  <div class="panel" id="panel">
+    <button class="panel-close" id="panel-close">&times;</button>
+    <div class="panel-content" id="panel-content"></div>
+  </div>
+
+  <script>
+    let data = null, ytData = null, medData = null, activeFilter = 'all', searchQuery = '';
+
+    async function init() {
+      const [patchResp, ytResp, medResp] = await Promise.all([
+        fetch('genome-patches.json'),
+        fetch('youtube-index.json').catch(() => null),
+        fetch('medium-index.json').catch(() => null)
+      ]);
+      data = await patchResp.json();
+      if (ytResp && ytResp.ok) ytData = await ytResp.json();
+      if (medResp && medResp.ok) medData = await medResp.json();
+      document.getElementById('total-count').textContent = data.meta.total_patches + ' patches';
+      renderPhaseBar();
+      renderFeatured();
+      if (ytData && ytData.videos.length) renderYouTube();
+      if (medData && medData.articles.length) renderMedium();
+      renderTimeline();
+      setupEvents();
+    }
+
+    function renderYouTube() {
+      const sec = document.getElementById('youtube-section');
+      sec.style.display = '';
+      document.getElementById('yt-count').textContent = ytData.videos.length;
+      const grid = document.getElementById('yt-grid');
+      grid.innerHTML = `<div class="yt-grid-wrap">${ytData.videos.map(v => `
     <a class="ext-card" href="${v.url}" target="_blank">
       <img class="yt-thumb" src="${v.thumbnail}" alt="" loading="lazy">
-      <div class="ext-card-title">${v.title||v.video_id}</div>
+      <div class="ext-card-title">${v.title || v.video_id}</div>
     </a>`).join('')}</div>`;
-}
+    }
 
-function renderMedium(){
-  const sec=document.getElementById('medium-section');
-  sec.style.display='';
-  document.getElementById('med-count').textContent=medData.articles.length;
-  const grid=document.getElementById('med-grid');
-  grid.innerHTML=medData.articles.map(a=>`
+    function renderMedium() {
+      const sec = document.getElementById('medium-section');
+      sec.style.display = '';
+      document.getElementById('med-count').textContent = medData.articles.length;
+      const grid = document.getElementById('med-grid');
+      grid.innerHTML = medData.articles.map(a => `
     <a class="ext-card" href="${a.url}" target="_blank">
       <span class="ext-card-type">essay</span>
       <div class="ext-card-title">${a.title}</div>
-      <div class="ext-card-meta">${a.date||''}</div>
+      <div class="ext-card-meta">${a.date || ''}</div>
     </a>`).join('');
-}
+    }
 
-function renderPhaseBar(){
-  const bar=document.getElementById('phase-bar');
-  const ph=data.summary.phase_counts;
-  const total=Object.values(ph).reduce((a,b)=>a+b,0);
-  const colors={SEEDING:'var(--seeding)',ERUPTION:'var(--eruption)',CONSOLIDATION:'var(--consolidation)',OPERATIONALIZATION:'var(--operationalization)'};
-  bar.innerHTML=['SEEDING','ERUPTION','CONSOLIDATION','OPERATIONALIZATION'].map(p=>
-    `<div class="phase-segment" style="flex:${(ph[p]||0)/total*100};background:${colors[p]}" title="${p}: ${ph[p]}"></div>`
-  ).join('');
-}
+    function renderPhaseBar() {
+      const bar = document.getElementById('phase-bar');
+      const ph = data.summary.phase_counts;
+      const total = Object.values(ph).reduce((a, b) => a + b, 0);
+      const colors = { SEEDING: 'var(--seeding)', ERUPTION: 'var(--eruption)', CONSOLIDATION: 'var(--consolidation)', OPERATIONALIZATION: 'var(--operationalization)' };
+      bar.innerHTML = ['SEEDING', 'ERUPTION', 'CONSOLIDATION', 'OPERATIONALIZATION'].map(p =>
+        `<div class="phase-segment" style="flex:${(ph[p] || 0) / total * 100};background:${colors[p]}" title="${p}: ${ph[p]}"></div>`
+      ).join('');
+    }
 
-function renderFeatured(){
-  const grid=document.getElementById('featured-grid');
-  // Sort by combined score: size*lifespan, take instruments + top prototypes
-  const scored=data.patches.map(p=>{
-    const ct=p.creator_trail_genome.process_metadata;
-    return{...p,_score:(ct.size_mb+1)*(ct.lifespan_days+1)};
-  }).sort((a,b)=>b._score-a._score);
-  const top=scored.filter(p=>p.timeline_genome.maturity_stage==='instrument').concat(
-    scored.filter(p=>p.timeline_genome.maturity_stage==='prototype').slice(0,5)
-  ).slice(0,10);
-  grid.innerHTML=top.map(p=>{
-    const ct=p.creator_trail_genome.process_metadata;
-    const sizeTxt=ct.size_mb>1?ct.size_mb.toFixed(1)+'MB':Math.round(ct.size_mb*1024)+'KB';
-    return `<div class="featured-card" onclick="openPanel('${p.patch_id}')">
+    function renderFeatured() {
+      const grid = document.getElementById('featured-grid');
+      // Sort by authored touches from audit data
+      const ranked = [...data.patches].sort((a, b) => 
+        (b.creator_trail_genome.authored_touches||0) - (a.creator_trail_genome.authored_touches||0)
+      ).slice(0, 12);
+      grid.innerHTML = ranked.map(p => {
+        const ct = p.creator_trail_genome;
+        const touches = ct.authored_touches || 0;
+        const organ = ct.primary_organ || '';
+        return `<div class="featured-card" onclick="openPanel('${p.patch_id}')">
       <div class="fc-name">${p.repo_name}</div>
       <div class="fc-desc">${p.timeline_genome.one_line_summary}</div>
       <div class="fc-meta">
-        <span>${sizeTxt}</span>
-        <span>${ct.lifespan_days}d active</span>
-        <span>${ct.commits!=='unknown'?ct.commits+' commits':''}</span>
+        <span>${touches} touches</span>
+        ${organ ? `<span>${organ.split('/').pop()}</span>` : ''}
         <span class="fc-badge">${p.timeline_genome.maturity_stage}</span>
       </div>
     </div>`;
-  }).join('');
-}
+      }).join('');
+    }
 
-function getFilteredPatches(){
-  let patches=data.patches;
-  if(activeFilter!=='all'){
-    const[type,val]=activeFilter.split(':');
-    patches=patches.filter(p=>{
-      if(type==='phase')return p.phase===val;
-      if(type==='maturity')return p.timeline_genome.maturity_stage===val;
-      return true;
-    });
-  }
-  if(searchQuery){
-    const q=searchQuery.toLowerCase();
-    patches=patches.filter(p=>{
-      const t=`${p.repo_name} ${p.timeline_genome.one_line_summary} ${p.timeline_genome.theme} ${p.timeline_genome.constellation} ${(p.vocabulary_genome.key_entities||[]).join(' ')} ${p.timeline_genome.maturity_stage} ${p.phase}`.toLowerCase();
-      return t.includes(q);
-    });
-  }
-  return patches;
-}
+    function getFilteredPatches() {
+      let patches = data.patches;
+      if (activeFilter !== 'all') {
+        const [type, val] = activeFilter.split(':');
+        patches = patches.filter(p => {
+          if (type === 'phase') return p.phase === val;
+          if (type === 'maturity') return p.timeline_genome.maturity_stage === val;
+          return true;
+        });
+      }
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        patches = patches.filter(p => {
+          const t = `${p.repo_name} ${p.timeline_genome.one_line_summary} ${p.timeline_genome.theme} ${p.timeline_genome.constellation} ${(p.vocabulary_genome.key_entities || []).join(' ')} ${p.timeline_genome.maturity_stage} ${p.phase}`.toLowerCase();
+          return t.includes(q);
+        });
+      }
+      return patches;
+    }
 
-function renderTimeline(){
-  const container=document.getElementById('timeline');
-  const patches=getFilteredPatches();
-  const byMonth={};
-  patches.forEach(p=>{if(!byMonth[p.month])byMonth[p.month]=[];byMonth[p.month].push(p);});
-  const months=Object.keys(byMonth).sort();
-  container.innerHTML=months.map(m=>{
-    const ps=byMonth[m];
-    const dt=new Date(m+'-15');
-    const label=dt.toLocaleDateString('en-US',{month:'long',year:'numeric'});
-    return `<div class="month-group">
+    function renderTimeline() {
+      const container = document.getElementById('timeline');
+      const patches = getFilteredPatches();
+      const byMonth = {};
+      patches.forEach(p => { if (!byMonth[p.month]) byMonth[p.month] = []; byMonth[p.month].push(p); });
+      const months = Object.keys(byMonth).sort();
+      container.innerHTML = months.map(m => {
+        const ps = byMonth[m];
+        const dt = new Date(m + '-15');
+        const label = dt.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        return `<div class="month-group">
       <div class="month-header">${label}<span class="month-count">${ps.length}</span><div class="month-line"></div></div>
       <div class="patches">${ps.map(renderPatchCard).join('')}</div>
     </div>`;
-  }).join('');
-}
+      }).join('');
+    }
 
-function renderPatchCard(p){
-  const tg=p.timeline_genome,ct=p.creator_trail_genome;
-  const sizeTxt=p.artifact_genome.size_mb>1?p.artifact_genome.size_mb.toFixed(1)+'MB':Math.round(p.artifact_genome.size_mb*1024)+'KB';
-  return `<div class="patch" onclick="openPanel('${p.patch_id}')">
-    <div class="patch-header"><div class="patch-name">${p.repo_name}</div><div class="patch-id">${p.patch_id}</div></div>
+    function renderPatchCard(p) {
+      const tg = p.timeline_genome, ct = p.creator_trail_genome;
+      const touches = ct.authored_touches || 0;
+      return `<div class="patch" onclick="openPanel('${p.patch_id}')">
+    <div class="patch-header"><div class="patch-name">${p.repo_name}</div><div class="patch-id">${p.patch_id}${touches ? ' · '+touches+'t' : ''}</div></div>
     <div class="patch-desc">${tg.one_line_summary}</div>
     <div class="patch-badges">
       <span class="badge badge-maturity ${tg.maturity_stage}">${tg.maturity_stage}</span>
       <span class="badge badge-theme">${tg.theme.split('&')[0].trim()}</span>
     </div>
-    <div class="patch-meta"><span>${sizeTxt}</span><span>${ct.making_pattern.replace(/_/g,' ')}</span>${p.artifact_genome.has_pages?'<span>pages</span>':''}</div>
+    <div class="patch-meta"><span>${touches} touches</span><span>${ct.making_pattern.replace(/_/g, ' ')}</span>${p.artifact_genome.has_pages ? '<span>pages</span>' : ''}</div>
   </div>`;
-}
+    }
 
-function openPanel(id){
-  const p=data.patches.find(x=>x.patch_id===id);if(!p)return;
-  const tg=p.timeline_genome,ag=p.artifact_genome,vg=p.vocabulary_genome,pt=p.program_theory_capsule,ct=p.creator_trail_genome,lg=p.lineage_genome,ev=pt.evidence;
-  const c=document.getElementById('panel-content');
-  c.innerHTML=`
+    function openPanel(id) {
+      const p = data.patches.find(x => x.patch_id === id); if (!p) return;
+      const tg = p.timeline_genome, ag = p.artifact_genome, vg = p.vocabulary_genome, pt = p.program_theory_capsule, ct = p.creator_trail_genome, lg = p.lineage_genome, ev = pt.evidence;
+      const c = document.getElementById('panel-content');
+      c.innerHTML = `
     <div class="panel-section">
       <h2>${p.repo_name}</h2>
       <div style="font-size:11px;color:var(--muted);margin-top:4px">${tg.one_line_summary}</div>
       <div class="panel-actions">
-        ${ag.has_pages?`<a href="${ag.pages_url}" target="_blank" class="btn-primary">Open</a>`:''}
+        ${ag.has_pages ? `<a href="${ag.pages_url}" target="_blank" class="btn-primary">Open</a>` : ''}
         <a href="${ag.github_url}" target="_blank" class="btn-secondary">GitHub</a>
       </div>
     </div>
     <div class="panel-section"><h3>Timeline Genome</h3>
       <div class="genome-row"><span class="label">patch</span><span class="value">${p.patch_id}</span></div>
-      <div class="genome-row"><span class="label">created</span><span class="value">${new Date(p.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span></div>
+      <div class="genome-row"><span class="label">created</span><span class="value">${new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span></div>
       <div class="genome-row"><span class="label">phase</span><span class="value">${p.phase}</span></div>
       <div class="genome-row"><span class="label">maturity</span><span class="value"><span class="badge badge-maturity ${tg.maturity_stage}">${tg.maturity_stage}</span></span></div>
       <div class="genome-row"><span class="label">theme</span><span class="value">${tg.theme}</span></div>
@@ -346,7 +980,7 @@ function openPanel(id){
     </div>
     <div class="panel-section"><h3>Artifact Genome</h3>
       <div class="genome-row"><span class="label">language</span><span class="value">${ag.primary_language}</span></div>
-      <div class="genome-row"><span class="label">size</span><span class="value">${ag.size_mb>1?ag.size_mb.toFixed(1)+'MB':Math.round(ag.size_mb*1024)+'KB'}</span></div>
+      <div class="genome-row"><span class="label">size</span><span class="value">${ag.size_mb > 1 ? ag.size_mb.toFixed(1) + 'MB' : Math.round(ag.size_mb * 1024) + 'KB'}</span></div>
       <div class="genome-row"><span class="label">deploy</span><span class="value">${ag.deployment_shape}</span></div>
     </div>
     <div class="panel-section"><h3>Program Theory</h3>
@@ -355,49 +989,59 @@ function openPanel(id){
         <div class="tool-for">Tool for: ${pt.initial_interpretation.repo_as_tool_for}</div>
       </div>
       <div style="margin-top:6px"><span class="confidence-bar ${ev.confidence}">${ev.confidence}</span></div>
-      ${pt.theory_skeleton.entities.length?`<div style="margin-top:8px;font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase">Entities</div><div class="entity-list">${pt.theory_skeleton.entities.map(e=>`<span class="entity-tag ent">${e}</span>`).join('')}</div>`:''}
-      ${pt.theory_skeleton.operations.length?`<div style="margin-top:6px;font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase">Operations</div><div class="entity-list">${pt.theory_skeleton.operations.map(o=>`<span class="entity-tag morph">${o}</span>`).join('')}</div>`:''}
+      ${pt.theory_skeleton.entities.length ? `<div style="margin-top:8px;font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase">Entities</div><div class="entity-list">${pt.theory_skeleton.entities.map(e => `<span class="entity-tag ent">${e}</span>`).join('')}</div>` : ''}
+      ${pt.theory_skeleton.operations.length ? `<div style="margin-top:6px;font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase">Operations</div><div class="entity-list">${pt.theory_skeleton.operations.map(o => `<span class="entity-tag morph">${o}</span>`).join('')}</div>` : ''}
     </div>
     <div class="panel-section"><h3>Vocabulary Genome</h3>
-      ${vg.key_entities.length?`<div class="entity-list">${vg.key_entities.map(e=>`<span class="entity-tag ent">&lt;${e}&gt;</span>`).join('')}</div>`:''}
-      ${vg.key_morphisms.length?`<div class="entity-list" style="margin-top:4px">${vg.key_morphisms.map(m=>`<span class="entity-tag morph">[${m}]</span>`).join('')}</div>`:''}
-      ${vg.key_groups.length?`<div class="entity-list" style="margin-top:4px">${vg.key_groups.map(g=>`<span class="entity-tag grp">{${g}}</span>`).join('')}</div>`:''}
+      ${vg.key_entities.length ? `<div class="entity-list">${vg.key_entities.map(e => `<span class="entity-tag ent">&lt;${e}&gt;</span>`).join('')}</div>` : ''}
+      ${vg.key_morphisms.length ? `<div class="entity-list" style="margin-top:4px">${vg.key_morphisms.map(m => `<span class="entity-tag morph">[${m}]</span>`).join('')}</div>` : ''}
+      ${vg.key_groups.length ? `<div class="entity-list" style="margin-top:4px">${vg.key_groups.map(g => `<span class="entity-tag grp">{${g}}</span>`).join('')}</div>` : ''}
     </div>
     <div class="panel-section"><h3>Creator Trail</h3>
-      <div class="genome-row"><span class="label">pattern</span><span class="value">${ct.making_pattern.replace(/_/g,' ')}</span></div>
+      <div class="genome-row"><span class="label">authored touches</span><span class="value" style="font-weight:700">${ct.authored_touches||0}</span></div>
+      <div class="genome-row"><span class="label">pattern</span><span class="value">${ct.making_pattern.replace(/_/g, ' ')}</span></div>
+      <div class="genome-row"><span class="label">trail maturity</span><span class="value">${ct.trail_maturity_label}</span></div>
       <div class="genome-row"><span class="label">lifespan</span><span class="value">${ct.process_metadata.lifespan_days}d</span></div>
-      <div class="genome-row"><span class="label">commits</span><span class="value">${ct.process_metadata.commits}</span></div>
-      <div class="genome-row"><span class="label">trail</span><span class="value">${ct.trail_maturity_label}</span></div>
+      ${ct.primary_organ?`<div class="genome-row"><span class="label">primary organ</span><span class="value">${ct.primary_organ}</span></div>`:''}
       <div style="font-size:10px;color:var(--muted);margin-top:6px">${ct.making_notes}</div>
+      ${ct.hot_organs&&ct.hot_organs.length?`
+        <div style="margin-top:10px;font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px">Hot Organs</div>
+        ${ct.hot_organs.map(o=>`<div class="genome-row"><span class="label">${o.path.length>35?'...'+o.path.slice(-32):o.path}</span><span class="value">${o.touches}t \u00b7 ${o.lines}L</span></div>`).join('')}
+      `:''}
+      ${ct.most_returned_files&&ct.most_returned_files.length?`
+        <div style="margin-top:10px;font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px">Most Returned Files</div>
+        ${ct.most_returned_files.map(f=>`<div class="genome-row"><span class="label">${f.path.length>35?'...'+f.path.slice(-32):f.path}</span><span class="value">${f.touches} returns</span></div>`).join('')}
+      `:''}
     </div>
-    ${(lg.parent_repos.length||lg.sibling_repos.length||lg.descendant_repos.length)?`
+    ${(lg.parent_repos.length || lg.sibling_repos.length || lg.descendant_repos.length) ? `
     <div class="panel-section"><h3>Lineage</h3>
-      ${lg.parent_repos.length?`<div class="genome-row"><span class="label">parents</span><span class="value">${lg.parent_repos.map(r=>`<span class="lineage-link" onclick="jumpToRepo('${r}')">${r}</span>`).join(' ')}</span></div>`:''}
-      ${lg.sibling_repos.length?`<div class="genome-row"><span class="label">siblings</span><span class="value">${lg.sibling_repos.map(r=>`<span class="lineage-link" onclick="jumpToRepo('${r}')">${r}</span>`).join(' ')}</span></div>`:''}
-      ${lg.descendant_repos.length?`<div class="genome-row"><span class="label">descendants</span><span class="value">${lg.descendant_repos.map(r=>`<span class="lineage-link" onclick="jumpToRepo('${r}')">${r}</span>`).join(' ')}</span></div>`:''}
-    </div>`:''}`;
-  document.getElementById('panel').classList.add('open');
-  document.getElementById('panel-overlay').classList.add('open');
-}
-function closePanel(){document.getElementById('panel').classList.remove('open');document.getElementById('panel-overlay').classList.remove('open')}
-function jumpToRepo(name){closePanel();const p=data.patches.find(x=>x.repo_name===name);if(p)setTimeout(()=>openPanel(p.patch_id),250)}
+      ${lg.parent_repos.length ? `<div class="genome-row"><span class="label">parents</span><span class="value">${lg.parent_repos.map(r => `<span class="lineage-link" onclick="jumpToRepo('${r}')">${r}</span>`).join(' ')}</span></div>` : ''}
+      ${lg.sibling_repos.length ? `<div class="genome-row"><span class="label">siblings</span><span class="value">${lg.sibling_repos.map(r => `<span class="lineage-link" onclick="jumpToRepo('${r}')">${r}</span>`).join(' ')}</span></div>` : ''}
+      ${lg.descendant_repos.length ? `<div class="genome-row"><span class="label">descendants</span><span class="value">${lg.descendant_repos.map(r => `<span class="lineage-link" onclick="jumpToRepo('${r}')">${r}</span>`).join(' ')}</span></div>` : ''}
+    </div>`: ''}`;
+      document.getElementById('panel').classList.add('open');
+      document.getElementById('panel-overlay').classList.add('open');
+    }
+    function closePanel() { document.getElementById('panel').classList.remove('open'); document.getElementById('panel-overlay').classList.remove('open') }
+    function jumpToRepo(name) { closePanel(); const p = data.patches.find(x => x.repo_name === name); if (p) setTimeout(() => openPanel(p.patch_id), 250) }
 
-function setupEvents(){
-  document.getElementById('panel-close').addEventListener('click',closePanel);
-  document.getElementById('panel-overlay').addEventListener('click',closePanel);
-  document.querySelectorAll('.filter-btn').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      activeFilter=btn.dataset.filter;
-      renderTimeline();
-    });
-  });
-  let t;
-  document.getElementById('search').addEventListener('input',e=>{clearTimeout(t);t=setTimeout(()=>{searchQuery=e.target.value;renderTimeline()},200)});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
-}
-init();
-</script>
+    function setupEvents() {
+      document.getElementById('panel-close').addEventListener('click', closePanel);
+      document.getElementById('panel-overlay').addEventListener('click', closePanel);
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeFilter = btn.dataset.filter;
+          renderTimeline();
+        });
+      });
+      let t;
+      document.getElementById('search').addEventListener('input', e => { clearTimeout(t); t = setTimeout(() => { searchQuery = e.target.value; renderTimeline() }, 200) });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel() });
+    }
+    init();
+  </script>
 </body>
+
 </html>

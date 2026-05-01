@@ -1118,6 +1118,11 @@
         </div>
         
         <div class="filter-group">
+          <input type="text" id="search-repos" placeholder="Search..." style="
+            background:rgba(255,255,255,0.08);border:1px solid rgba(255,107,53,0.3);
+            border-radius:6px;padding:6px 10px;color:var(--text);font:12px -apple-system,sans-serif;
+            outline:none;width:160px;
+          " />
           <select id="filter-theme">
             <option value="all">All Themes</option>
           </select>
@@ -1272,7 +1277,7 @@
     let ripples = [];
     let currentView = 'grid';
     let zoomLevel = 'md'; // sm, md, lg, xl
-    let currentFilter = {theme: 'all', lang: 'all', sort: 'touches'};
+    let currentFilter = {theme: 'all', lang: 'all', sort: 'touches', search: ''};
     let showConnections = false;
     let filteredRepos = [];
     let repoIndex = 0;
@@ -1578,6 +1583,11 @@
       filteredRepos = allRepos.filter(repo => {
         if(currentFilter.theme !== 'all' && repo.theme.theme_id !== currentFilter.theme) return false;
         if(currentFilter.lang !== 'all' && repo.language !== currentFilter.lang) return false;
+        if(currentFilter.search){
+          const q = currentFilter.search.toLowerCase();
+          const hay = `${repo.name} ${repo.description||''} ${repo._maturity||''}`.toLowerCase();
+          if(!hay.includes(q)) return false;
+        }
         return true;
       });
       
@@ -2309,6 +2319,12 @@
 
       document.getElementById('sort-by').addEventListener('change', (e) => {
         currentFilter.sort = e.target.value;
+        applyFiltersAndSort();
+      });
+
+      // Search
+      document.getElementById('search-repos').addEventListener('input', (e) => {
+        currentFilter.search = e.target.value;
         applyFiltersAndSort();
       });
 

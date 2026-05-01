@@ -149,8 +149,22 @@ def create_enhanced_index(input_file):
     }
     
     # Convert themes to ring structure
+    # Priority order: most important themes first, 'other' always last
+    theme_priority = {
+        'media_theory': 0,
+        'ai_systems': 1,
+        'interactive_media': 2,
+        'platos_cave': 3,
+        'narrative_tools': 4,
+        'temporal_systems': 5,
+        'sound_audio': 6,
+        'three_d_viz': 7,
+        'educational': 8,
+        'archives': 9,
+        'other': 99  # Always last
+    }
     theme_rings = []
-    for idx, (theme_id, theme_data) in enumerate(sorted(themes.items(), key=lambda x: len(x[1]['repos']), reverse=True)):
+    for idx, (theme_id, theme_data) in enumerate(sorted(themes.items(), key=lambda x: (theme_priority.get(x[0], 50), -len(x[1]['repos'])))):
         ring = {
             'ring_id': idx,
             'theme_name': theme_data['name'],

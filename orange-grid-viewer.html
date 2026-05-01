@@ -1770,9 +1770,58 @@
     `;
     document.head.appendChild(style);
 
+    // Lazy iframe management — only one iframe in DOM at a time
+    let activePreviewOrange = null;
+
+    function injectPreviewIframe(orange){
+      const url = orange.dataset.previewUrl;
+      if(!url) return;
+      let container = orange.querySelector('.hover-preview');
+      if(!container){
+        container = document.createElement('div');
+        container.className = 'hover-preview';
+        // Insert before .orange-content
+        const content = orange.querySelector('.orange-content');
+        orange.insertBefore(container, content);
+      }
+      // Only create iframe if not already present
+      if(!container.querySelector('iframe')){
+        const iframe = document.createElement('iframe');
+        iframe.src = url;
+        iframe.loading = 'lazy';
+        // Sandbox: block camera, mic, vibrate, popups, autoplay
+        iframe.sandbox = 'allow-scripts allow-same-origin';
+        iframe.allow = "autoplay 'none'; camera 'none'; microphone 'none'";
+        container.appendChild(iframe);
+      }
+    }
+
+    function removePreviewIframe(orange){
+      const container = orange.querySelector('.hover-preview');
+      if(container){
+        const iframe = container.querySelector('iframe');
+        if(iframe){
+          iframe.src = 'about:blank';
+          iframe.remove();
+        }
+      }
+    }
+
+    function destroyAllPreviews(){
+      document.querySelectorAll('.orange.show-preview').forEach(o => {
+        o.classList.remove('show-preview');
+        removePreviewIframe(o);
+      });
+      if(activePreviewOrange){
+        removePreviewIframe(activePreviewOrange);
+        activePreviewOrange = null;
+      }
+    }
+
     function createGridView(){
       const grid = document.getElementById('grid-container');
       grid.innerHTML = '';
+      activePreviewOrange = null;
       
       // Apply zoom class
       grid.className = 'grid';
@@ -1790,40 +1839,55 @@
         orange.style.animationDelay = `${idx * 0.02}s`;
         orange.dataset.repoIndex = idx;
         
-        // Hover preview
-        const hoverPreview = repo.has_pages ? `
-          <div class="hover-preview">
-            <iframe src="https://hartswf0.github.io/${repo.name}/" loading="lazy"></iframe>
-          </div>
-        ` : '';
+        // Store preview URL in data attribute — NO iframe in DOM yet
+        if(repo.has_pages){
+          orange.dataset.previewUrl = `https://hartswf0.github.io/${repo.name}/`;
+          // Create empty hover-preview container (no iframe)
+          const previewContainer = document.createElement('div');
+          previewContainer.className = 'hover-preview';
+          orange.appendChild(previewContainer);
+        }
         
-        orange.innerHTML = `
-          <div class="orange-number">${repoIndex}</div>
-          ${hoverPreview}
-          <div class="orange-content">
-            <div class="orange-name">${repo.name}</div>
-            <div class="orange-meta">${repo.language || 'Repository'}</div>
-          </div>
+        // Build orange content (no iframe in innerHTML)
+        const numberEl = document.createElement('div');
+        numberEl.className = 'orange-number';
+        numberEl.textContent = repoIndex;
+        orange.appendChild(numberEl);
+        
+        const contentEl = document.createElement('div');
+        contentEl.className = 'orange-content';
+        contentEl.innerHTML = `
+          <div class="orange-name">${repo.name}</div>
+          <div class="orange-meta">${repo.language || 'Repository'}</div>
         `;
+        orange.appendChild(contentEl);
         
         // Detect mobile
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
         
         if(isMobile){
-          const numberBadge = orange.querySelector('.orange-number');
-          
           // Mobile: number badge toggles preview
-          numberBadge.addEventListener('click', (e) => {
+          numberEl.addEventListener('click', (e) => {
             e.stopPropagation();
             e.preventDefault();
             
-            // Close all other previews
+            // Close all other previews and destroy their iframes
             document.querySelectorAll('.orange.show-preview').forEach(o => {
-              if(o !== orange) o.classList.remove('show-preview');
+              if(o !== orange){
+                o.classList.remove('show-preview');
+                removePreviewIframe(o);
+              }
             });
             
             // Toggle this preview
-            orange.classList.toggle('show-preview');
+            const showing = orange.classList.toggle('show-preview');
+            if(showing){
+              injectPreviewIframe(orange);
+              activePreviewOrange = orange;
+            } else {
+              removePreviewIframe(orange);
+              activePreviewOrange = null;
+            }
           });
           
           // Mobile: clicking orange opens expanded view
@@ -1837,6 +1901,21 @@
             }
           });
         } else {
+          // Desktop: create iframe on hover, destroy on leave
+          orange.addEventListener('mouseenter', () => {
+            // Destroy previous if any
+            if(activePreviewOrange && activePreviewOrange !== orange){
+              removePreviewIframe(activePreviewOrange);
+            }
+            injectPreviewIframe(orange);
+            activePreviewOrange = orange;
+          });
+          
+          orange.addEventListener('mouseleave', () => {
+            removePreviewIframe(orange);
+            if(activePreviewOrange === orange) activePreviewOrange = null;
+          });
+          
           // Desktop: clicking anywhere opens expanded view
           orange.addEventListener('click', () => {
             showExpanded(repo, repo.theme);
@@ -1862,9 +1941,7 @@
     // Define handler outside so we can remove/add it
     function closePreviewsHandler(e){
       if(!e.target.closest('.orange')){
-        document.querySelectorAll('.orange.show-preview').forEach(o => {
-          o.classList.remove('show-preview');
-        });
+        destroyAllPreviews();
       }
     }
 

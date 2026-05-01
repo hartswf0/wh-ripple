@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Watson Franklin Hartsoe III — CV & Progress Update</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23000%22/></svg>">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #000000;
+      --muted: #666666;
+      --border: #000000;
+      --accent: #ff6b35;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      font-size: 14px;
+      padding: 0;
+    }
+    a { color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border); transition: all 0.2s; }
+    a:hover { background: var(--text); color: var(--bg); border-bottom-color: transparent; }
+    
+    header {
+      padding: 40px 60px;
+      border-bottom: 4px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    h1 { font-family: 'JetBrains Mono', monospace; font-size: 32px; font-weight: 700; text-transform: uppercase; letter-spacing: -1px; }
+    .subtitle { font-size: 16px; font-weight: 600; color: var(--muted); }
+    .bio { max-width: 800px; font-size: 18px; font-weight: 400; margin-top: 20px; line-height: 1.5; }
+    
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      min-height: calc(100vh - 200px);
+    }
+    
+    .main-col {
+      padding: 40px 60px;
+      border-right: 1px solid var(--border);
+    }
+    .side-col {
+      padding: 40px;
+      background: #fafafa;
+    }
+    
+    section { margin-bottom: 60px; }
+    h2 { 
+      font-family: 'JetBrains Mono', monospace; 
+      font-size: 14px; 
+      font-weight: 700; 
+      text-transform: uppercase; 
+      letter-spacing: 1px; 
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+    }
+    
+    .claim-box {
+      border: 2px solid var(--border);
+      padding: 24px;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 40px;
+      background: #f4f4f4;
+    }
+    
+    .grid-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+    
+    .item { margin-bottom: 24px; }
+    .item-title { font-weight: 800; font-size: 16px; margin-bottom: 4px; display: block; }
+    .item-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; }
+    .item-desc { font-size: 14px; color: #333; }
+    
+    .stat-box {
+      border: 1px solid var(--border);
+      padding: 15px;
+      margin-bottom: 15px;
+      text-align: center;
+      background: #fff;
+    }
+    .stat-num { font-family: 'JetBrains Mono', monospace; font-size: 32px; font-weight: 700; line-height: 1; }
+    .stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-top: 5px; }
+
+    ul.roadmap { list-style: none; }
+    ul.roadmap li {
+      padding: 12px 0;
+      border-bottom: 1px dashed #ccc;
+    }
+    ul.roadmap li:last-child { border-bottom: none; }
+    .ch-title { font-weight: 600; display: block; }
+    .ch-desc { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    @media(max-width: 1000px) {
+      .container { grid-template-columns: 1fr; }
+      .main-col { border-right: none; border-bottom: 1px solid var(--border); }
+      .grid-list { grid-template-columns: 1fr; }
+    }
+    @media(max-width: 600px) {
+      header, .main-col, .side-col { padding: 20px; }
+      h1 { font-size: 24px; }
+      .bio { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Watson Franklin Hartsoe III</h1>
+    <div class="subtitle">PhD Candidate, Digital Media • Georgia Institute of Technology • Atlanta, GA</div>
+    <div class="bio">
+      A design researcher and creative technologist working across HCI, critical AI systems, neurosymbolic systems, participatory algorithm auditing, physical computing, and generative media epistemology. Building semantic instruments where prompts, interfaces, and media theory become manipulable objects.
+    </div>
+  </header>
+
+  <div class="container">
+    
+    <div class="main-col">
+      
+      <section>
+        <h2>The Dissertation Statement</h2>
+        <div class="claim-box">
+          "This dissertation argues that generative AI transforms language from a descriptive medium into an operative one by analyzing how text-to-world systems compile navigable environments from verbal instructions."
+        </div>
+        <p><strong>The Core Spine:</strong> When the output of generative AI shifts from a bounded, two-dimensional image (<em>imagetext</em>) to a navigable space with physical constraints and temporal behavior, the prompt is no longer describing a picture—it is specifying a world. This operative function is called <strong>worldtext</strong>. The dissertation uses <strong>thick prompting</strong> as an interpretive method to demonstrate how operative ekphrasis functions across specific text-to-world AI systems, shifting the focus from "better prompts" to the interfaces that make generative outputs stable, inspectable, and revisable.</p>
+      </section>
+
+      <section>
+        <h2>Key Semantic Instruments & Prototypes</h2>
+        <div class="grid-list">
+          
+          <div class="item">
+            <a href="https://hartswf0.github.io/operation-describe/" class="item-title" target="_blank">Operation-Describe</a>
+            <div class="item-meta">Operative Ekphrasis / Worldtext</div>
+            <div class="item-desc">The strongest thesis-in-code of 2026: to describe is no longer to stand outside and look in. To describe is to build. Making ekphrasis explicitly executable.</div>
+          </div>
+
+          <div class="item">
+            <a href="https://hartswf0.github.io/tractor-dce-gyo/" class="item-title" target="_blank">TRACTOR / WAG</a>
+            <div class="item-meta">Object-world Construction / Assembly</div>
+            <div class="item-desc">Words Assemble Geometry (WAG). A pipeline treating natural language as executable spatial specification, routing prompts through planning and compilation into inspectable world files.</div>
+          </div>
+
+          <div class="item">
+            <a href="https://hartswf0.github.io/ethics-infrastructure/" class="item-title" target="_blank">Ethics Infrastructure</a>
+            <div class="item-meta">Ethics as Build System</div>
+            <div class="item-desc">Exploring language as a leverage point for spatial computing. Ethics appears not as a late-stage disclaimer, but as part of the build system itself.</div>
+          </div>
+
+          <div class="item">
+            <a href="https://hartswf0.github.io/LEGOS/" class="item-title" target="_blank">LEGOS Framework</a>
+            <div class="item-meta">Narrative Generation</div>
+            <div class="item-desc">Location, Entity, Goal, Obstacle, Shift, Solution. A structural framework for narrative generation where each element plays a specific computational and cultural role.</div>
+          </div>
+
+          <div class="item">
+            <a href="https://hartswf0.github.io/abc-flix/" class="item-title" target="_blank">ABC-FLIX / ICARO</a>
+            <div class="item-meta">Motion Instrument / Browser Harness</div>
+            <div class="item-desc">Finding new ways of thinking about video creation. Harness engineering and temporal infrastructure for frame busses and generative film.</div>
+          </div>
+
+          <div class="item">
+            <div class="item-title">MOTO / VOLHOLLA</div>
+            <div class="item-meta">Sound, Speech, Broadcast</div>
+            <div class="item-desc">Sound as a relational medium: DJ logic, prompt-smithing, speech synthesis, groove, and transmission. Not just audio as content, but audio as timing and social encounter.</div>
+          </div>
+
+        </div>
+      </section>
+
+      <section>
+        <h2>Presentations & Proposals (2026)</h2>
+        
+        <div class="item">
+          <span class="item-title">The Myth Engine: Generative AI as a Cultural Interface for Audiovisual Meaning-Making</span>
+          <div class="item-meta">SIGGRAPH DAC SPARKS — Theme: A New Assemblage</div>
+          <div class="item-desc">A practice-based framework treating prompts, models, and outputs as a “meaning pipeline” where aesthetics and ideology co-produce each other. Arguing for a shift from “AI as generator” to “AI as interface”: a system that organizes belief, taste, and narrative power.</div>
+        </div>
+
+        <div class="item">
+          <span class="item-title">Poetic Latency: Mapping Verse to Cinematic Syntax via Generative Pipelines</span>
+          <div class="item-meta">SIGGRAPH DAC SPARKS — Theme: Confluence of Generative AI and Filmmaking</div>
+          <div class="item-desc">Introducing "WYGWYL," an AI-driven system translating the rhythmic and metaphorical nuances of poetry into structured cinematic image sequences using formal film theory to dictate composition and pacing based on textual cadence.</div>
+        </div>
+
+        <div class="item">
+          <span class="item-title">From Imagetext to Worldtext: Generative AI as Operative Ekphrasis</span>
+          <div class="item-meta">Co-authored Draft with Jay David Bolter</div>
+          <div class="item-desc">Draft paper establishing the central thesis that generative AI shifts description into construction, extending operative ekphrasis from text-to-image toward text-to-world.</div>
+        </div>
+
+      </section>
+
+    </div>
+
+    <div class="side-col">
+      
+      <section>
+        <h2>2025–2026 Progress Output</h2>
+        <p style="font-size:12px; margin-bottom:15px; color:var(--muted);">The "September Eruption" and the move toward media as executable machinery.</p>
+        
+        <div class="stat-box">
+          <div class="stat-num">168</div>
+          <div class="stat-label">Repositories Created</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">5.9 GB</div>
+          <div class="stat-label">Total Code Size</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">92%</div>
+          <div class="stat-label">Deploy Rate</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Dissertation Roadmap</h2>
+        <ul class="roadmap">
+          <li>
+            <span class="ch-title">1. From Imagetext to Worldtext</span>
+            <div class="ch-desc">The problem: What changes when description triggers a navigable environment instead of a frame?</div>
+          </li>
+          <li>
+            <span class="ch-title">2. The Operative Turn</span>
+            <div class="ch-desc">The mechanism: How language compiles worlds. Using Wittgenstein (picture theory) and Geertz (thick description).</div>
+          </li>
+          <li>
+            <span class="ch-title">3. Case Studies: Language Operating</span>
+            <div class="ch-desc">Demonstration: Close analysis of 3 specific text-to-world AI systems generating environments.</div>
+          </li>
+          <li>
+            <span class="ch-title">4. Worldtext as Category</span>
+            <div class="ch-desc">Contribution: What worldtext explains that imagetext, remediation, and simulation do not.</div>
+          </li>
+        </ul>
+      </section>
+      
+      <section>
+        <h2>Methodological Limits</h2>
+        <ul class="roadmap">
+          <li><span class="ch-title">Scope restriction</span><div class="ch-desc">Focusing on text-to-world systems, excluding general LLM chatbots and non-AI worldbuilding.</div></li>
+          <li><span class="ch-title">Evidence bounds</span><div class="ch-desc">Utilizing bounded cases of documented prompt sequences, avoiding broad platform surveys.</div></li>
+          <li><span class="ch-title">Tooling limits</span><div class="ch-desc">Excluding prototype development as primary validation to ensure the media theory argument stands on close reading.</div></li>
+        </ul>
+      </section>
+
+    </div>
+  </div>
+
+</body>
+</html>

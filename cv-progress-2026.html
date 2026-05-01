@@ -147,6 +147,27 @@
       h1 { font-size: 24px; }
       .bio { font-size: 15px; }
     }
+
+    @media print {
+      body { font-size: 11px; line-height: 1.4; }
+      .container { display: block; }
+      .main-col, .side-col { padding: 20px 0; border: none; background: none; }
+      .grid-list { grid-template-columns: 1fr 1fr; gap: 15px; }
+      .nav-links, .item-links { gap: 4px; }
+      .stat-box { border: 1px solid #000; background: none; }
+      a { border-bottom: none; color: #000; }
+      a[href]:after { content: " [" attr(href) "]"; font-size: 8px; color: #666; word-break: break-all; }
+      a.item-title[href]:after { content: none; }
+      .item-links a[href]:after { content: none; }
+      .nav-links a[href]:after { content: none; }
+      .item-meta a[href]:after { content: none; }
+      header { padding: 20px 0; }
+      h1 { font-size: 22px; }
+      h2 { font-size: 11px; }
+      section { margin-bottom: 30px; page-break-inside: avoid; }
+      .claim-box { font-size: 14px; padding: 12px; }
+      .lineage-chain { page-break-inside: avoid; }
+    }
   </style>
 </head>
 <body>
@@ -175,6 +196,38 @@
           &ldquo;This dissertation argues that generative AI transforms language from a descriptive medium into an operative one by analyzing how text-to-world systems compile navigable environments from verbal instructions.&rdquo;
         </div>
         <p><strong>The Core Spine:</strong> When the output of generative AI shifts from a bounded, two-dimensional image (<em>imagetext</em>) to a navigable space with physical constraints and temporal behavior, the prompt is no longer describing a picture&mdash;it is specifying a world. This operative function is called <strong>worldtext</strong>. The dissertation uses <strong>thick prompting</strong> as an interpretive method to demonstrate how operative ekphrasis functions across specific text-to-world AI systems, shifting the focus from &ldquo;better prompts&rdquo; to the interfaces that make generative outputs stable, inspectable, and revisable.</p>
+      </section>
+
+      <section>
+        <h2>Research Lineage &mdash; How the Work Connects</h2>
+        <div class="lineage-chain">
+          <ul class="roadmap">
+            <li>
+              <span class="ch-title">1. WAGYO &mdash; Startup Competition Win</span>
+              <div class="ch-desc">The earliest seed. Semantic-to-spatial work that won a startup competition and proved the core idea: language can assemble geometry. This informed everything that followed.</div>
+            </li>
+            <li>
+              <span class="ch-title">2. <a href="https://hartswf0.github.io/LEGOS/" target="_blank">LEGOS</a> &mdash; Transformer Conference</span>
+              <div class="ch-desc">Location, Entity, Goal, Obstacle, Shift, Solution. Built off the WAGYO work and already presented at the Transformer Conference. A framework for narrative generation where each element plays a specific computational and cultural role. <a href="https://github.com/hartswf0/LEGOS" target="_blank">source</a></div>
+            </li>
+            <li>
+              <span class="ch-title">3. <a href="https://hartswf0.github.io/ethics-infrastructure/" target="_blank">Ethics Infrastructure</a> &mdash; Language as Leverage</span>
+              <div class="ch-desc">This led to the building out of Ethics Infrastructure. Language as leverage point for spatial computing. Prompts become executable specifications; authorship shifts from engine primitives to cultural, narrative, and spatial intent. Ethics appears not as a late-stage disclaimer, but as part of the build system. <a href="https://github.com/hartswf0/ethics-infrastructure" target="_blank">source</a></div>
+            </li>
+            <li>
+              <span class="ch-title">4. <a href="https://hartswf0.github.io/tractor-dce-gyo/" target="_blank">WAG / TRACTOR</a> &mdash; Semantic-to-Spatial Compilation</span>
+              <div class="ch-desc">Words Assemble Geometry. The central challenge is semantic fidelity&mdash;preserving meaning through compilation, not geometric fidelity. Routes prompts through planning, compilation into inspectable world files, and browser rendering. Participatory work with co-designers shows constraints and legible representations enable rapid iteration without semantic collapse. <a href="https://hartswf0.github.io/tractor-dce-gyo/wag-work.html" target="_blank">WAG Work</a> &bull; <a href="https://github.com/hartswf0/tractor-dce-gyo" target="_blank">source</a></div>
+            </li>
+            <li>
+              <span class="ch-title">5. <a href="https://hartswf0.github.io/abc-flix/" target="_blank">ABC-FLIX / BFLIX</a> &mdash; Getting AI to Code in Old Languages</span>
+              <div class="ch-desc">Started with LDraw and WAG project. Now working with BFLIX (Bell Lab lineage). Finding new ways of thinking about video creation. Contributions in harness engineering, prompt and context engineering. <a href="https://github.com/hartswf0/abc-flix" target="_blank">source</a></div>
+            </li>
+            <li>
+              <span class="ch-title">6. Shield of Achilles &mdash; From Imagetext to Worldtext</span>
+              <div class="ch-desc">The biggest undertaking. Dutiful research alongside advisor <strong>Jay David Bolter</strong>. Toward the dissertation proposal and toward a published essay in a collection. The co-authored draft that defines the imagetext&rarr;worldtext shift. When description triggers production and must be evaluated with its output. <a href="https://hartswf0.github.io/operation-describe/" target="_blank">Operation-Describe</a></div>
+            </li>
+          </ul>
+        </div>
       </section>
 
       <section>

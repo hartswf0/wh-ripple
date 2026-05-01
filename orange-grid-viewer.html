@@ -1584,7 +1584,11 @@
       // Apply sorting
       switch(currentFilter.sort){
         case 'touches':
-          filteredRepos.sort((a, b) => (b._touches||0) - (a._touches||0));
+          filteredRepos.sort((a, b) => {
+            if(a.quarantined && !b.quarantined) return 1;
+            if(!a.quarantined && b.quarantined) return -1;
+            return (b._touches||0) - (a._touches||0);
+          });
           break;
         case 'created':
           filteredRepos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -1866,15 +1870,23 @@
         repoIndex++;
         const orange = document.createElement('div');
         orange.className = 'orange';
-        orange.style.background = `radial-gradient(circle at 30% 30%, ${repo.themeColor}ff, ${repo.themeColor}cc 70%, ${repo.themeColor}88)`;
-        orange.style.boxShadow = `0 4px 15px ${repo.themeColor}80, inset -10px -10px 20px rgba(0,0,0,0.3), inset 10px 10px 20px rgba(255,255,255,0.2)`;
+        const isQ = repo.quarantined;
+        if(isQ){
+          orange.style.opacity = '0.3';
+          orange.style.filter = 'grayscale(1)';
+          orange.style.background = `radial-gradient(circle at 30% 30%, #666, #444 70%, #333)`;
+          orange.style.boxShadow = 'none';
+        } else {
+          orange.style.background = `radial-gradient(circle at 30% 30%, ${repo.themeColor}ff, ${repo.themeColor}cc 70%, ${repo.themeColor}88)`;
+          orange.style.boxShadow = `0 4px 15px ${repo.themeColor}80, inset -10px -10px 20px rgba(0,0,0,0.3), inset 10px 10px 20px rgba(255,255,255,0.2)`;
+        }
         
         // Stagger animation delay
         orange.style.animationDelay = `${idx * 0.02}s`;
         orange.dataset.repoIndex = idx;
         
         // Store preview URL in data attribute — NO iframe in DOM yet
-        if(repo.has_pages){
+        if(repo.has_pages && !isQ){
           orange.dataset.previewUrl = `https://hartswf0.github.io/${repo.name}/`;
           // Create empty hover-preview container (no iframe)
           const previewContainer = document.createElement('div');

@@ -133,7 +133,8 @@
           "html_url": "https://github.com/hartswf0/potters-wheel",
           "homepage": "https://hartswf0.github.io/potters-wheel/POTTERS_WHEEL/index.html",
           "has_pages": true,
-          "topics": []
+          "topics": [],
+          "quarantined": true
         },
         {
           "name": "1000-small-futures",
@@ -418,7 +419,8 @@
           "html_url": "https://github.com/hartswf0/media-train",
           "homepage": null,
           "has_pages": false,
-          "topics": []
+          "topics": [],
+          "quarantined": true
         },
         {
           "name": "DM-Almanac",
@@ -448,7 +450,8 @@
           "html_url": "https://github.com/hartswf0/DM-MS-Overview",
           "homepage": null,
           "has_pages": false,
-          "topics": []
+          "topics": [],
+          "quarantined": true
         },
         {
           "name": "cybernetic-reality-media-explorer",
@@ -589,7 +592,8 @@
           "html_url": "https://github.com/hartswf0/looking-machine",
           "homepage": null,
           "has_pages": true,
-          "topics": []
+          "topics": [],
+          "quarantined": true
         },
         {
           "name": "trails-and-crates",
@@ -1159,7 +1163,8 @@
           "html_url": "https://github.com/hartswf0/LCM-architecture",
           "homepage": null,
           "has_pages": false,
-          "topics": []
+          "topics": [],
+          "quarantined": true
         },
         {
           "name": "archer-ai",
@@ -1309,7 +1314,8 @@
           "html_url": "https://github.com/hartswf0/afternoon-tea",
           "homepage": null,
           "has_pages": false,
-          "topics": []
+          "topics": [],
+          "quarantined": true
         },
         {
           "name": "simple-ai-chatbot",
@@ -1354,7 +1360,8 @@
           "html_url": "https://github.com/hartswf0/chatbot-testing",
           "homepage": null,
           "has_pages": false,
-          "topics": []
+          "topics": [],
+          "quarantined": true
         },
         {
           "name": "openai-roaster",
@@ -1369,7 +1376,8 @@
           "html_url": "https://github.com/hartswf0/openai-roaster",
           "homepage": null,
           "has_pages": false,
-          "topics": []
+          "topics": [],
+          "quarantined": true
         },
         {
           "name": "blue-belt-microdrama",
@@ -1444,7 +1452,8 @@
           "html_url": "https://github.com/hartswf0/watson-hartsoe-project-showcase",
           "homepage": null,
           "has_pages": false,
-          "topics": []
+          "topics": [],
+          "quarantined": true
         },
         {
           "name": "Text-to-Image-Models-Presentation-",
@@ -1504,7 +1513,8 @@
           "html_url": "https://github.com/hartswf0/MESA-SAGA",
           "homepage": null,
           "has_pages": false,
-          "topics": []
+          "topics": [],
+          "quarantined": true
         },
         {
           "name": "mesa-examples",
@@ -1639,7 +1649,8 @@
           "html_url": "https://github.com/hartswf0/babkala",
           "homepage": null,
           "has_pages": false,
-          "topics": []
+          "topics": [],
+          "quarantined": true
         },
         {
           "name": "wagyo-lo",
@@ -1669,7 +1680,8 @@
           "html_url": "https://github.com/hartswf0/centaured",
           "homepage": null,
           "has_pages": false,
-          "topics": []
+          "topics": [],
+          "quarantined": true
         }
       ]
     },
@@ -2050,7 +2062,8 @@
           "html_url": "https://github.com/hartswf0/genoma",
           "homepage": null,
           "has_pages": false,
-          "topics": []
+          "topics": [],
+          "quarantined": true
         },
         {
           "name": "uncontracting",
@@ -2234,7 +2247,8 @@
           "html_url": "https://github.com/hartswf0/aura-after-copies",
           "homepage": null,
           "has_pages": false,
-          "topics": []
+          "topics": [],
+          "quarantined": true
         },
         {
           "name": "metisim",
@@ -2478,7 +2492,8 @@
           "html_url": "https://github.com/hartswf0/codon",
           "homepage": null,
           "has_pages": true,
-          "topics": []
+          "topics": [],
+          "quarantined": true
         },
         {
           "name": "synarchiv",
@@ -3196,7 +3211,8 @@
           "html_url": "https://github.com/hartswf0/gaze",
           "homepage": null,
           "has_pages": false,
-          "topics": []
+          "topics": [],
+          "quarantined": true
         },
         {
           "name": "gob",
@@ -3451,7 +3467,8 @@
           "html_url": "https://github.com/hartswf0/hyperclay-editor",
           "homepage": "https://hartswf0.github.io/hyperclay-editor/root-clay.html",
           "has_pages": true,
-          "topics": []
+          "topics": [],
+          "quarantined": true
         },
         {
           "name": "soul-mansion",

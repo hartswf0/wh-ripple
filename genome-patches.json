@@ -423,7 +423,7 @@
         "all_constellations": [
           "Media Constellation"
         ],
-        "maturity_stage": "seed",
+        "maturity_stage": "quarantined",
         "theme": "Media Theory & McLuhan",
         "theme_color": "#ff6b35"
       },
@@ -477,7 +477,7 @@
       },
       "creator_trail_genome": {
         "trail_maturity": 0,
-        "trail_maturity_label": "TRAIL_AS_INVISIBLE_EXHAUST",
+        "trail_maturity_label": "QUARANTINED",
         "process_metadata": {
           "created_at": "2025-05-27T16:23:15Z",
           "updated_at": "2025-05-27T16:23:16Z",
@@ -490,7 +490,7 @@
           "authored_touches": 0
         },
         "making_pattern": "flash_sketch",
-        "making_notes": "Created and deployed in one session",
+        "making_notes": "QUARANTINED: Pages 404 or GitHub-quarantined. Original touches: 0",
         "trail_ethics": {
           "supports_observing": true,
           "supports_inferring": false,
@@ -1184,7 +1184,7 @@
           "Genetic Constellation",
           "Temporal Constellation"
         ],
-        "maturity_stage": "instrument",
+        "maturity_stage": "quarantined",
         "theme": "Time & Memory",
         "theme_color": "#52b788"
       },
@@ -1246,7 +1246,7 @@
       },
       "creator_trail_genome": {
         "trail_maturity": 2,
-        "trail_maturity_label": "TRAIL_AS_BACKBONE",
+        "trail_maturity_label": "QUARANTINED",
         "process_metadata": {
           "created_at": "2025-06-19T07:34:46Z",
           "updated_at": "2025-06-19T07:40:41Z",
@@ -1259,7 +1259,7 @@
           "authored_touches": 114
         },
         "making_pattern": "sustained_practice",
-        "making_notes": "114 authored file-touches — sustained, deep practice",
+        "making_notes": "QUARANTINED: Pages 404 or GitHub-quarantined. Original touches: 114",
         "trail_ethics": {
           "supports_observing": true,
           "supports_inferring": true,
@@ -1267,7 +1267,7 @@
           "risks_caging": false,
           "risks_surveilling": false
         },
-        "authored_touches": 114,
+        "authored_touches": 0,
         "hot_organs": [
           {
             "score": 7.06,
@@ -1794,7 +1794,7 @@
         "all_constellations": [
           "Cave Constellation"
         ],
-        "maturity_stage": "instrument",
+        "maturity_stage": "quarantined",
         "theme": "Plato's Cave & Philosophy",
         "theme_color": "#c1d82f"
       },
@@ -1853,7 +1853,7 @@
       },
       "creator_trail_genome": {
         "trail_maturity": 2,
-        "trail_maturity_label": "TRAIL_AS_BACKBONE",
+        "trail_maturity_label": "QUARANTINED",
         "process_metadata": {
           "created_at": "2025-06-27T03:21:34Z",
           "updated_at": "2025-06-27T03:22:56Z",
@@ -1866,7 +1866,7 @@
           "authored_touches": 114
         },
         "making_pattern": "sustained_practice",
-        "making_notes": "114 authored file-touches — sustained, deep practice",
+        "making_notes": "QUARANTINED: Pages 404 or GitHub-quarantined. Original touches: 114",
         "trail_ethics": {
           "supports_observing": true,
           "supports_inferring": false,
@@ -1874,7 +1874,7 @@
           "risks_caging": false,
           "risks_surveilling": false
         },
-        "authored_touches": 114,
+        "authored_touches": 0,
         "hot_organs": [
           {
             "score": 7.06,
@@ -4650,7 +4650,7 @@
         "all_constellations": [
           "Media Constellation"
         ],
-        "maturity_stage": "instrument",
+        "maturity_stage": "quarantined",
         "theme": "Media Theory & McLuhan",
         "theme_color": "#ff6b35"
       },
@@ -4705,7 +4705,7 @@
       },
       "creator_trail_genome": {
         "trail_maturity": 2,
-        "trail_maturity_label": "TRAIL_AS_BACKBONE",
+        "trail_maturity_label": "QUARANTINED",
         "process_metadata": {
           "created_at": "2025-08-21T07:02:26Z",
           "updated_at": "2025-12-16T18:46:52Z",
@@ -4718,7 +4718,7 @@
           "authored_touches": 205
         },
         "making_pattern": "sustained_practice",
-        "making_notes": "205 authored file-touches — sustained, deep practice",
+        "making_notes": "QUARANTINED: Pages 404 or GitHub-quarantined. Original touches: 205",
         "trail_ethics": {
           "supports_observing": true,
           "supports_inferring": true,
@@ -4726,7 +4726,7 @@
           "risks_caging": false,
           "risks_surveilling": false
         },
-        "authored_touches": 205,
+        "authored_touches": 0,
         "hot_organs": [
           {
             "score": 7.85,
@@ -8639,7 +8639,7 @@
           "Myth/Narrative Constellation",
           "Temporal Constellation"
         ],
-        "maturity_stage": "sketch",
+        "maturity_stage": "quarantined",
         "theme": "Narrative & Storytelling",
         "theme_color": "#8ac926"
       },
@@ -8695,7 +8695,7 @@
       },
       "creator_trail_genome": {
         "trail_maturity": 0,
-        "trail_maturity_label": "TRAIL_AS_INVISIBLE_EXHAUST",
+        "trail_maturity_label": "QUARANTINED",
         "process_metadata": {
           "created_at": "2025-09-10T17:26:02Z",
           "updated_at": "2025-09-10T18:45:54Z",
@@ -8708,7 +8708,7 @@
           "authored_touches": 4
         },
         "making_pattern": "flash_sketch",
-        "making_notes": "4 authored file-touches — single-session or minimal touch",
+        "making_notes": "QUARANTINED: Pages 404 or GitHub-quarantined. Original touches: 4",
         "trail_ethics": {
           "supports_observing": true,
           "supports_inferring": false,
@@ -8716,7 +8716,7 @@
           "risks_caging": false,
           "risks_surveilling": false
         },
-        "authored_touches": 4,
+        "authored_touches": 0,
         "hot_organs": [
           {
             "score": 7.15,
@@ -16792,7 +16792,7 @@
         "local_cluster": "Oct 2025 cluster",
         "constellation": "Uncharted",
         "all_constellations": [],
-        "maturity_stage": "instrument",
+        "maturity_stage": "quarantined",
         "theme": "Other Projects",
         "theme_color": "#ff6b35"
       },
@@ -16849,7 +16849,7 @@
       },
       "creator_trail_genome": {
         "trail_maturity": 2,
-        "trail_maturity_label": "TRAIL_AS_BACKBONE",
+        "trail_maturity_label": "QUARANTINED",
         "process_metadata": {
           "created_at": "2025-10-28T05:37:38Z",
           "updated_at": "2025-12-16T22:00:56Z",
@@ -16862,7 +16862,7 @@
           "authored_touches": 317
         },
         "making_pattern": "sustained_practice",
-        "making_notes": "317 authored file-touches — sustained, deep practice",
+        "making_notes": "QUARANTINED: Pages 404 or GitHub-quarantined. Original touches: 317",
         "trail_ethics": {
           "supports_observing": true,
           "supports_inferring": true,
@@ -16870,7 +16870,7 @@
           "risks_caging": false,
           "risks_surveilling": false
         },
-        "authored_touches": 317,
+        "authored_touches": 0,
         "hot_organs": [
           {
             "score": 33.34,
@@ -29204,7 +29204,7 @@
         "local_cluster": "Mar 2026 cluster",
         "constellation": "Uncharted",
         "all_constellations": [],
-        "maturity_stage": "prototype",
+        "maturity_stage": "quarantined",
         "theme": "Other Projects",
         "theme_color": "#ff6b35"
       },
@@ -29257,7 +29257,7 @@
       },
       "creator_trail_genome": {
         "trail_maturity": 1,
-        "trail_maturity_label": "TRAIL_AS_FEATURE",
+        "trail_maturity_label": "QUARANTINED",
         "process_metadata": {
           "created_at": "2026-03-05T18:50:56Z",
           "updated_at": "2026-03-10T10:00:02Z",
@@ -29270,7 +29270,7 @@
           "authored_touches": 46
         },
         "making_pattern": "project",
-        "making_notes": "46 authored file-touches — multi-session project with repeated return",
+        "making_notes": "QUARANTINED: Pages 404 or GitHub-quarantined. Original touches: 46",
         "trail_ethics": {
           "supports_observing": true,
           "supports_inferring": false,
@@ -29278,7 +29278,7 @@
           "risks_caging": false,
           "risks_surveilling": false
         },
-        "authored_touches": 46,
+        "authored_touches": 0,
         "hot_organs": [
           {
             "score": 30.08,
@@ -29399,7 +29399,7 @@
         "all_constellations": [
           "Machine Constellation"
         ],
-        "maturity_stage": "sketch",
+        "maturity_stage": "quarantined",
         "theme": "AI Systems & Agents",
         "theme_color": "#f7931e"
       },
@@ -29457,7 +29457,7 @@
       },
       "creator_trail_genome": {
         "trail_maturity": 2,
-        "trail_maturity_label": "TRAIL_AS_CONTAINER",
+        "trail_maturity_label": "QUARANTINED",
         "process_metadata": {
           "created_at": "2026-03-10T17:04:27Z",
           "updated_at": "2026-03-10T17:15:06Z",
@@ -29470,7 +29470,7 @@
           "authored_touches": 708
         },
         "making_pattern": "sustained_practice",
-        "making_notes": "Touches demoted: repo is an umbrella for sub-projects (GAZE, etc.), Pages 404s",
+        "making_notes": "QUARANTINED: Pages 404 or GitHub-quarantined. Original touches: 0",
         "trail_ethics": {
           "supports_observing": true,
           "supports_inferring": true,

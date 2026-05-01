@@ -29399,7 +29399,7 @@
         "all_constellations": [
           "Machine Constellation"
         ],
-        "maturity_stage": "instrument",
+        "maturity_stage": "sketch",
         "theme": "AI Systems & Agents",
         "theme_color": "#f7931e"
       },
@@ -29457,7 +29457,7 @@
       },
       "creator_trail_genome": {
         "trail_maturity": 2,
-        "trail_maturity_label": "TRAIL_AS_BACKBONE",
+        "trail_maturity_label": "TRAIL_AS_CONTAINER",
         "process_metadata": {
           "created_at": "2026-03-10T17:04:27Z",
           "updated_at": "2026-03-10T17:15:06Z",
@@ -29470,7 +29470,7 @@
           "authored_touches": 708
         },
         "making_pattern": "sustained_practice",
-        "making_notes": "708 authored file-touches — sustained, deep practice",
+        "making_notes": "Touches demoted: repo is an umbrella for sub-projects (GAZE, etc.), Pages 404s",
         "trail_ethics": {
           "supports_observing": true,
           "supports_inferring": true,
@@ -29478,7 +29478,7 @@
           "risks_caging": false,
           "risks_surveilling": false
         },
-        "authored_touches": 708,
+        "authored_touches": 0,
         "hot_organs": [
           {
             "score": 12.86,

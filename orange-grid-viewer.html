@@ -1121,10 +1121,10 @@
           </select>
           
           <select id="sort-by">
+            <option value="touches" selected>By Touches</option>
             <option value="theme">By Theme</option>
             <option value="created">Chronological (Newest)</option>
             <option value="oldest">Chronological (Oldest)</option>
-            <option value="stars">By Stars</option>
             <option value="size">By Size</option>
             <option value="updated">Recently Updated</option>
             <option value="name">By Name</option>
@@ -1181,10 +1181,10 @@
     <div class="mobile-menu-section">
       <div class="mobile-menu-label">Sort</div>
       <select id="mobile-sort-by">
+        <option value="touches" selected>By Touches</option>
         <option value="theme">By Theme</option>
         <option value="created">Newest First</option>
         <option value="oldest">Oldest First</option>
-        <option value="stars">By Stars</option>
         <option value="size">By Size</option>
         <option value="updated">Recently Updated</option>
         <option value="name">By Name</option>
@@ -1266,10 +1266,11 @@
     let ripples = [];
     let currentView = 'grid';
     let zoomLevel = 'md'; // sm, md, lg, xl
-    let currentFilter = {theme: 'all', lang: 'all', sort: 'theme'};
+    let currentFilter = {theme: 'all', lang: 'all', sort: 'touches'};
     let showConnections = false;
     let filteredRepos = [];
     let repoIndex = 0;
+    let auditLookup = {};
 
     // Ripple class (for canvas view)
     class Ripple{
@@ -1413,8 +1414,35 @@
 
     async function loadData(){
       try{
-        const response = await fetch('github-thematic-index.json');
-        data = await response.json();
+        const [themeResp, auditResp] = await Promise.all([
+          fetch('github-thematic-index.json'),
+          fetch('genome-patches.json').catch(()=>null)
+        ]);
+        data = await themeResp.json();
+
+        // Build audit lookup from genome patches
+        if(auditResp && auditResp.ok){
+          const gp = await auditResp.json();
+          gp.patches.forEach(p => {
+            auditLookup[p.repo_name] = {
+              touches: p.creator_trail_genome.authored_touches || 0,
+              maturity: p.timeline_genome.maturity_stage,
+              primary_organ: p.creator_trail_genome.primary_organ || '',
+              making_pattern: p.creator_trail_genome.making_pattern || '',
+            };
+          });
+          // Attach audit data to all repos in theme_rings
+          data.theme_rings.forEach(theme => {
+            theme.repos.forEach(repo => {
+              const a = auditLookup[repo.name] || {};
+              repo._touches = a.touches || 0;
+              repo._maturity = a.maturity || '';
+              repo._organ = a.primary_organ || '';
+              repo._pattern = a.making_pattern || '';
+            });
+          });
+        }
+
         document.getElementById('count').textContent = data.summary.total_repos;
         
         // Populate filter dropdowns
@@ -1549,14 +1577,14 @@
       
       // Apply sorting
       switch(currentFilter.sort){
+        case 'touches':
+          filteredRepos.sort((a, b) => (b._touches||0) - (a._touches||0));
+          break;
         case 'created':
           filteredRepos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
           break;
         case 'oldest':
           filteredRepos.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-          break;
-        case 'stars':
-          filteredRepos.sort((a, b) => b.stars - a.stars);
           break;
         case 'size':
           filteredRepos.sort((a, b) => b.size_kb - a.size_kb);
@@ -2077,14 +2105,15 @@
       document.getElementById('exp-desc').textContent = repo.description || 'No description';
       
       // Stats
+      const audit = auditLookup[repo.name] || {};
       document.getElementById('stats').innerHTML = `
         <div class="stat-card">
-          <div class="stat-label">Stars</div>
-          <div class="stat-value">${repo.stars}</div>
+          <div class="stat-label">Touches</div>
+          <div class="stat-value">${audit.touches || 0}</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Forks</div>
-          <div class="stat-value">${repo.forks}</div>
+          <div class="stat-label">Maturity</div>
+          <div class="stat-value" style="font-size:14px;text-transform:uppercase">${audit.maturity || '—'}</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Size</div>

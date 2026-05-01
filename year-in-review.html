@@ -106,24 +106,30 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overf
 .btn-primary{background:#000;color:#fff;border:1px solid #000}.btn-secondary{background:#fff;color:#000;border:1px solid #000}
 .btn-primary:hover{background:#333}.btn-secondary:hover{background:#f0f0f0}
 
-/* EXTERNAL SOURCES */
-.ext-section{padding:20px 32px;border-bottom:1px solid #000}
-.ext-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.ext-title .ext-count{background:#000;color:#fff;padding:1px 6px;font-size:9px}
-.ext-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
-.ext-card{border:1px solid #ccc;padding:10px;cursor:pointer;transition:all .15s;text-decoration:none;color:#000;display:block}
-.ext-card:hover{border-color:#000;box-shadow:2px 2px 0 #000}
-.ext-card .ext-card-title{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;line-height:1.4}
-.ext-card .ext-card-meta{font-size:9px;color:var(--muted);margin-top:4px;font-family:'JetBrains Mono',monospace}
-.ext-card .ext-card-type{display:inline-block;background:#000;color:#fff;padding:0 4px;font-size:8px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-right:4px}
-.yt-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;margin-bottom:6px;filter:grayscale(0.3)}
+/* COMPANION FOOTER */
+.companion{padding:32px;border-top:2px solid #000;background:var(--surface)}
+.companion-header{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.companion-row{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.companion-col{min-width:0}
+.ext-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#000;margin-bottom:8px;display:flex;align-items:center;gap:6px;font-weight:700}
+.ext-title .ext-count{background:#000;color:#fff;padding:1px 6px;font-size:9px;font-weight:400}
+.ext-list{display:flex;flex-direction:column;gap:4px}
+.ext-card{border:1px solid #ddd;padding:8px 10px;text-decoration:none;color:#000;display:flex;gap:8px;align-items:center;transition:all .12s}
+.ext-card:hover{border-color:#000;background:#f4f4f4}
+.ext-card .ext-card-title{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;line-height:1.3;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ext-card .ext-card-meta{font-size:8px;color:var(--muted);font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.ext-card .ext-card-type{display:inline-block;background:#000;color:#fff;padding:0 4px;font-size:7px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-right:4px}
+.yt-thumb{width:48px;height:27px;object-fit:cover;flex-shrink:0;filter:grayscale(0.4)}
 .ext-card:hover .yt-thumb{filter:grayscale(0)}
+.yt-grid-wrap{display:grid;grid-template-columns:1fr 1fr;gap:4px}
 
 @media(max-width:600px){
   .header{flex-direction:column;align-items:flex-start;padding:16px}
-  .controls{padding:8px 16px}.timeline{padding:0 16px 40px}.featured{padding:16px}.ext-section{padding:16px}
-  .patches,.featured-grid,.ext-grid{grid-template-columns:1fr}
+  .controls{padding:8px 16px}.timeline{padding:0 16px 40px}.featured{padding:16px}
+  .patches,.featured-grid{grid-template-columns:1fr}
   .search-input{width:100%}
+  .companion-row{grid-template-columns:1fr}
+  .yt-grid-wrap{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -132,7 +138,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overf
 <div class="header">
   <div class="header-left">
     <h1>Year in Review</h1>
-    <div class="subtitle">Watson Hartsoe — May 2025 to April 2026</div>
+    <div class="subtitle">Watson Hartsoe — 168 repos · 10 essays · 43 videos — May 2025 to April 2026</div>
   </div>
   <div class="header-right">
     <span class="stat-pill" id="total-count">—</span>
@@ -162,17 +168,21 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overf
   <div class="featured-grid" id="featured-grid"></div>
 </div>
 
-<div class="ext-section" id="youtube-section" style="display:none">
-  <div class="ext-title">YouTube <span class="ext-count" id="yt-count"></span></div>
-  <div class="ext-grid" id="yt-grid"></div>
-</div>
-
-<div class="ext-section" id="medium-section" style="display:none">
-  <div class="ext-title">Medium <span class="ext-count" id="med-count"></span></div>
-  <div class="ext-grid" id="med-grid"></div>
-</div>
-
 <div class="timeline" id="timeline"></div>
+
+<div class="companion" id="companion">
+  <div class="companion-header">Companion Artifacts</div>
+  <div class="companion-row">
+    <div class="companion-col" id="medium-section" style="display:none">
+      <div class="ext-title">Essays <span class="ext-count" id="med-count"></span></div>
+      <div class="ext-list" id="med-grid"></div>
+    </div>
+    <div class="companion-col" id="youtube-section" style="display:none">
+      <div class="ext-title">Videos <span class="ext-count" id="yt-count"></span></div>
+      <div class="ext-list" id="yt-grid"></div>
+    </div>
+  </div>
+</div>
 
 <div class="panel-overlay" id="panel-overlay"></div>
 <div class="panel" id="panel">
@@ -206,12 +216,11 @@ function renderYouTube(){
   sec.style.display='';
   document.getElementById('yt-count').textContent=ytData.videos.length;
   const grid=document.getElementById('yt-grid');
-  grid.innerHTML=ytData.videos.map(v=>`
+  grid.innerHTML=`<div class="yt-grid-wrap">${ytData.videos.map(v=>`
     <a class="ext-card" href="${v.url}" target="_blank">
       <img class="yt-thumb" src="${v.thumbnail}" alt="" loading="lazy">
       <div class="ext-card-title">${v.title||v.video_id}</div>
-      <div class="ext-card-meta"><span class="ext-card-type">video</span>${v.published?v.published.slice(0,10):''}</div>
-    </a>`).join('');
+    </a>`).join('')}</div>`;
 }
 
 function renderMedium(){
@@ -221,8 +230,9 @@ function renderMedium(){
   const grid=document.getElementById('med-grid');
   grid.innerHTML=medData.articles.map(a=>`
     <a class="ext-card" href="${a.url}" target="_blank">
+      <span class="ext-card-type">essay</span>
       <div class="ext-card-title">${a.title}</div>
-      <div class="ext-card-meta"><span class="ext-card-type">essay</span>${a.date||''}</div>
+      <div class="ext-card-meta">${a.date||''}</div>
     </a>`).join('');
 }
 

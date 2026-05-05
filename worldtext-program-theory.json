@@ -1,0 +1,554 @@
+{
+  "program_theory_id": "WORLDTEXT_PRACTICE_ARCHIVE",
+  "version": "1.0",
+  "governing_claim": "Watson Hartsoe researches how language, media, and computation become worlds.",
+  "archive_tiers": [
+    {
+      "tier_id": "current_research",
+      "tier_name": "Current Research Gateway",
+      "color": "#ff6b35",
+      "nodes": [
+        {
+          "id": "operation_describe",
+          "title": "Operation Describe",
+          "url": "https://hartswf0.github.io/operation-describe/",
+          "repo": "https://github.com/hartswf0/operation-describe",
+          "role": "WorldtextCore",
+          "kicker": "Current Research Core",
+          "thesis": "Central research engine: ekphrasis, thick description, and generative AI converge into worldtext theory.",
+          "bridge": "Description no longer stands outside the world; it becomes a generative operation inside it."
+        }
+      ]
+    },
+    {
+      "tier_id": "synthetic_culture",
+      "tier_name": "Synthetic Culture Systems",
+      "color": "#e63946",
+      "nodes": [
+        {
+          "id": "metisim",
+          "title": "METISIM",
+          "url": "https://hartswf0.github.io/metisim/",
+          "repo": "https://github.com/hartswf0/metisim",
+          "role": "MythOperatingSystem",
+          "kicker": "Synthetic Culture Systems",
+          "thesis": "Myth as adaptive computation rather than static content.",
+          "bridge": "If Operation Describe asks how description becomes world, METISIM asks how myth becomes system behavior."
+        },
+        {
+          "id": "mythos_canon",
+          "title": "Mythos Canon",
+          "url": "https://hartswf0.github.io/mythos-canon/",
+          "repo": "https://github.com/hartswf0/mythos-canon",
+          "role": "ArchiveOfArchives",
+          "kicker": "Archive Machine",
+          "thesis": "78 documents: chapters, viewers, manifestos, film systems, and defense materials as navigable research surface.",
+          "bridge": "The archive becomes a worldtext when its viewers and chapters become navigable parts of the argument.",
+          "density": {"touches": 303, "size_kb": 9129, "maturity": "instrument"}
+        },
+        {
+          "id": "myth_as_os",
+          "title": "Myth as OS",
+          "url": "https://hartswf0.github.io/myth-as-os/",
+          "repo": "https://github.com/hartswf0/myth-as-os",
+          "role": "MythRootProcess",
+          "kicker": "Myth Root Process",
+          "thesis": "Language is the root process that scripts reality; media are the engines that run it. Myth as operating system for cultural computation.",
+          "bridge": "If METISIM simulates myth, Myth-as-OS declares myth IS the operating system.",
+          "density": {"size_kb": 25634}
+        },
+        {
+          "id": "arkadu",
+          "title": "Arkadu",
+          "url": "https://hartswf0.github.io/arkadu/",
+          "repo": "https://github.com/hartswf0/arkadu",
+          "role": "ArchiveXanadu",
+          "kicker": "Archive Cosmology",
+          "thesis": "Noah's Ark meets Nelson's Xanadu: a hyperlinked archive cosmology for AI filmmaking and generative production pipelines.",
+          "bridge": "Archive becomes cosmology when every artifact links to every other artifact in a navigable structure.",
+          "density": {"touches": 68, "size_kb": 7612}
+        }
+      ]
+    },
+    {
+      "tier_id": "operative_pedagogy",
+      "tier_name": "Operative Media Pedagogy",
+      "color": "#f4a261",
+      "nodes": [
+        {
+          "id": "ecology_of_media",
+          "title": "Ecology of Media",
+          "url": "https://hartswf0.github.io/ecology-of-media/",
+          "repo": "https://github.com/hartswf0/ecology-of-media",
+          "role": "OperativeEkphrasisVideoSeries",
+          "kicker": "Operative Media",
+          "thesis": "Operative ekphrasis as public video practice: theory composed with AI across image, voice, and episode.",
+          "bridge": "Worldtext as media ecology: prompts, tools, voices, images form an inhabitable series."
+        },
+        {
+          "id": "medium_as_operator",
+          "title": "The Medium as Operator",
+          "url": "https://hartswf0.github.io/medium-as-operator/",
+          "repo": "https://github.com/hartswf0/medium-as-operator",
+          "role": "PedagogicalDeck",
+          "kicker": "Teaching Surface",
+          "thesis": "Carey vs Kittler, operative ekphrasis, AI text-image systems, prompt rewriting.",
+          "bridge": "Worldtext is teachable as a media practice."
+        },
+        {
+          "id": "abc_flix",
+          "title": "ABC-FLIX / ICARO",
+          "url": "https://hartswf0.github.io/abc-flix/",
+          "repo": "https://github.com/hartswf0/abc-flix",
+          "role": "UnifiedProductionBus",
+          "kicker": "Operative Animation",
+          "thesis": "BEFLIX-128 lineage: a unified production bus that harnesses cross-iframe instruments (engine + tunnel) through a hardened message router, turning prompt-driven media into inspectable temporal sequences.",
+          "bridge": "The harness proves that worldtext is not a single artifact but a production architecture: engine, tunnel, bus, cursor, sync, and frame patch become the operative grammar of AI filmmaking.",
+          "density": {"touches": 269, "size_kb": 43651, "maturity": "instrument"},
+          "elements": {
+            "sub_instruments": ["icaro-pro-bus.html", "c-bus.html", "icaro-flow.html", "icaro-achilles.html", "sand-plate.html", "icaro-all-time.html"],
+            "bus_protocol": ["FRAMES_SYNC", "FRAME_PATCH", "CURSOR_MOVE", "GOTO_FRAME", "PLAY_SYNC", "CLIP_SELECT", "REQUEST_SYNC", "RIP_PROGRESS", "VIEW_CYCLE"],
+            "views": ["BARREL", "INSIDE", "OUTSIDE", "SIDE", "BENCH"]
+          }
+        }
+      ]
+    },
+    {
+      "tier_id": "operative_instruments",
+      "tier_name": "Operative Instruments",
+      "color": "#e76f51",
+      "nodes": [
+        {
+          "id": "moto",
+          "title": "MOTO",
+          "url": "https://hartswf0.github.io/moto/",
+          "repo": "https://github.com/hartswf0/moto",
+          "role": "SoundBroadcastInstrument",
+          "kicker": "Sound / Broadcast",
+          "thesis": "The highest-density instrument in the constellation (1541 touches). Sound, broadcast, and media deck infrastructure.",
+          "bridge": "If worldtext operates through images and code, MOTO proves it also operates through sound, broadcast, and rhythmic structure.",
+          "density": {"touches": 1541, "maturity": "instrument"}
+        },
+        {
+          "id": "sense_ritual",
+          "title": "Sense Ritual",
+          "url": "https://hartswf0.github.io/sense-ritual/aaa.html",
+          "repo": "https://github.com/hartswf0/sense-ritual",
+          "role": "PlayablePrompts",
+          "kicker": "Playable Prompts",
+          "thesis": "Digital architectures that condition cognition through ritual repetition: prompts become playable instruments rather than disposable inputs.",
+          "bridge": "Ritual transforms prompt from instruction into inhabited practice.",
+          "density": {"touches": 207, "size_kb": 175310, "maturity": "instrument"}
+        },
+        {
+          "id": "pretext_field",
+          "title": "Pretext Field",
+          "url": "https://hartswf0.github.io/pretext-field/jumpar/",
+          "repo": "https://github.com/hartswf0/pretext-field",
+          "role": "CognitiveCartography",
+          "kicker": "Cognitive Cartography",
+          "thesis": "Spatial scholarship instrument: mapping how urban environments are manufactured, stratified, and perceived through operative description.",
+          "bridge": "The city becomes a worldtext when its spatial logic is made inspectable through cartographic instruments."
+        },
+        {
+          "id": "blue_deli",
+          "title": "Blue Deli / Blue Belt Films",
+          "url": "https://hartswf0.github.io/blue-deli/",
+          "repo": "https://github.com/hartswf0/blue-deli",
+          "role": "AIFilmmakingInfrastructure",
+          "kicker": "AI Filmmaking",
+          "thesis": "Collaborative AI filmmaking infrastructure: matrix editor, world prompt, emergent narrative as operative media production.",
+          "bridge": "Film becomes worldtext when its production pipeline is prompt-driven, inspectable, and revisable."
+        }
+      ]
+    },
+    {
+      "tier_id": "research_lineage",
+      "tier_name": "Research Lineage",
+      "color": "#457b9d",
+      "nodes": [
+        {
+          "id": "tractor_wag",
+          "title": "TRACTOR / WAG",
+          "url": "https://hartswf0.github.io/tractor-dce-gyo/",
+          "repo": "https://github.com/hartswf0/tractor-dce-gyo",
+          "role": "SpatialCompilation",
+          "kicker": "Spatial Compilation",
+          "thesis": "Words Assemble Geometry: language as executable spatial specification routed through planning, compilation, inspectable world files, and browser rendering.",
+          "bridge": "WAG is the strongest practice-based evidence that description becomes construction.",
+          "density": {"touches": 403, "size_kb": 445110, "maturity": "instrument"},
+          "elements": {
+            "sub_pages": [
+              {"label": "WAG Work", "url": "https://hartswf0.github.io/tractor-dce-gyo/wag-work.html"}
+            ]
+          }
+        },
+        {
+          "id": "ripples",
+          "title": "Ripples",
+          "url": "https://hartswf0.github.io/ripples/",
+          "repo": "https://github.com/hartswf0/ripples",
+          "role": "BrowserMotion",
+          "kicker": "Browser Motion",
+          "thesis": "Relational Imagination of Perspective, Presence, and Latent Ecologies in Space. Accepted at ELO 2026 with Marttila and Bolter.",
+          "bridge": "Ripples proves worldtext enters the body: browser motion becomes a medium for distant writing and ecological orchestration.",
+          "density": {"touches": 591, "size_kb": 149196, "maturity": "instrument"},
+          "elements": {
+            "collaborators": ["Terhi Marttila (LARSyS)", "Jay David Bolter"],
+            "venues": ["ELO 2026 (Un)Supervised"]
+          }
+        },
+        {
+          "id": "legos",
+          "title": "LEGOS",
+          "url": "https://hartswf0.github.io/LEGOS/",
+          "repo": "https://github.com/hartswf0/LEGOS",
+          "role": "NarrativeGrammar",
+          "kicker": "Narrative Grammar",
+          "thesis": "Location, Entity, Goal, Obstacle, Shift, Solution — a structural grammar for narrative that becomes executable inside generative pipelines.",
+          "bridge": "LEGOS proves worldtext has grammar: narrative components become compilable, not just describable.",
+          "density": {"size_kb": 233}
+        },
+        {
+          "id": "ethics_infrastructure",
+          "title": "Ethics Infrastructure",
+          "url": "https://hartswf0.github.io/ethics-infrastructure/",
+          "repo": "https://github.com/hartswf0/ethics-infrastructure",
+          "role": "EthicalWorkflowConstraint",
+          "kicker": "Ethics in Build System",
+          "thesis": "Prompts as executable specs. If prompts operate media systems, ethical constraints must be built into workflow and interface states.",
+          "bridge": "Ethics Infrastructure gives worldtext its accountability edge: the build system enforces what the theory claims.",
+          "density": {"size_kb": 57},
+          "elements": {
+            "collaborators": ["Richmond Wong (project studio)"]
+          }
+        },
+        {
+          "id": "twine_bridge",
+          "title": "Twine Bridge / Island Ecology",
+          "url": "https://hartswf0.github.io/island-ecology/ARCADE/twine-bridge.html",
+          "repo": "https://github.com/hartswf0/island-ecology",
+          "role": "HumanitiesAccess",
+          "kicker": "Humanities Access",
+          "thesis": "Do not administer unstructured narrative data if preservation of original poetic structure matters. A bridge between Twine-based interactive fiction and structured ecological narrative.",
+          "bridge": "Twine Bridge shows worldtext entering humanities: narrative ecology becomes an inspectable, playable, preservable system.",
+          "density": {"touches": 144, "size_kb": 28384, "maturity": "instrument"}
+        },
+        {
+          "id": "fourth_shield",
+          "title": "Fourth Shield",
+          "url": "https://hartswf0.github.io/fourth-shield/",
+          "repo": "https://github.com/hartswf0/fourth-shield",
+          "role": "NeurosymbolicSimulation",
+          "kicker": "Neurosymbolic Journey",
+          "thesis": "A neurosymbolic simulation journey from ancient poetry to executable code: exploring the Shield of Achilles as the original worldtext.",
+          "bridge": "Fourth Shield is the origin myth of the dissertation: ekphrastic description becoming operational inside a generative pipeline.",
+          "density": {"size_kb": 67008}
+        },
+        {
+          "id": "tractor_field_notes",
+          "title": "Tractor Field Notes",
+          "url": "https://hartswf0.github.io/tractor-field-notes/",
+          "repo": "https://github.com/hartswf0/tractor-field-notes",
+          "role": "GeometricFolkLogic",
+          "kicker": "Geometric Folk Logic",
+          "thesis": "Field notes for a geometric folk logic of circles, trade, and flux. The observational companion to TRACTOR's formal compilation.",
+          "bridge": "If TRACTOR compiles worlds, Field Notes documents the folk reasoning that feeds the compiler.",
+          "density": {"touches": 360, "size_kb": 9129, "maturity": "instrument"}
+        }
+      ]
+    },
+    {
+      "tier_id": "cultural_interfaces",
+      "tier_name": "Cultural Modeling Interfaces",
+      "color": "#2a9d8f",
+      "nodes": [
+        {
+          "id": "growing_entanglements",
+          "title": "Growing Entanglements",
+          "url": "https://hartswf0.github.io/growing-entanglements/",
+          "repo": "https://github.com/hartswf0/growing-entanglements",
+          "role": "CulturalTheoryInterface",
+          "kicker": "Cultural Modeling",
+          "thesis": "Cultural theory as digital interfaces: Sahlins, Obeyesekere, Captain Cook, resistance topology.",
+          "bridge": "Cultural interpretation becomes a navigable apparatus."
+        },
+        {
+          "id": "rosetta_protocol",
+          "title": "Rosetta Protocol",
+          "url": "https://hartswf0.github.io/rosetta-protocol/",
+          "repo": "https://github.com/hartswf0/rosetta-protocol",
+          "role": "ArchiveViewer",
+          "kicker": "Archive Infrastructure",
+          "thesis": "Terminal-like viewer turning scattered HTML artifacts into browsable research surface.",
+          "bridge": "The archive does not merely store worldtexts; it becomes a worldtext interface itself."
+        },
+        {
+          "id": "hyperclay",
+          "title": "Hyperclay / Uncontracting",
+          "url": "https://hartswf0.github.io/hyperclay/",
+          "repo": "https://github.com/hartswf0/hyperclay",
+          "role": "InteractivePhilosophy",
+          "kicker": "Interface Philosophy",
+          "thesis": "Interface as philosophical apparatus: boundaries, meanings, agreements dissolve through interaction.",
+          "bridge": "Interface behavior as meaning-making world rather than neutral container."
+        }
+      ]
+    },
+    {
+      "tier_id": "legacy_worldmaking",
+      "tier_name": "Legacy Participatory Worldmaking",
+      "color": "#264653",
+      "nodes": [
+        {
+          "id": "webflow_home",
+          "title": "Legacy Portfolio",
+          "url": "https://watson-hartsoe.webflow.io/",
+          "role": "LegacyIdentity",
+          "kicker": "Legacy Portfolio",
+          "thesis": "Earlier public identity: virtual environments, participatory design, museums, youth programs.",
+          "bridge": "Retained as lineage, not current front door."
+        },
+        {
+          "id": "hubs_cloud",
+          "title": "Hubs Cloud",
+          "url": "https://watson-hartsoe.webflow.io/nexus-soyuz",
+          "role": "SocialVR",
+          "kicker": "Social Virtual Reality",
+          "thesis": "Museum collections and histories becoming inhabitable social VR spaces.",
+          "bridge": "Museum collection becomes virtual place; intern becomes world-author.",
+          "elements": {
+            "partners": [
+              {"label": "Ivan Raster Software Lab", "url": "http://ivanraster.com/"},
+              {"label": "Narduli Studio", "url": "https://www.nardulistudio.com/"},
+              {"label": "Genesis Innovation Campus", "url": "https://genesiscampus.org/"},
+              {"label": "Hirshhorn Museum", "url": "https://hirshhorn.si.edu/"},
+              {"label": "Wende Museum", "url": "https://www.wendemuseum.org/"}
+            ],
+            "tools": ["Mozilla Hubs", "Mozilla Spoke", "Minecraft", "Blender", "Miro", "Discord", "AWS"]
+          }
+        },
+        {
+          "id": "future_oceans",
+          "title": "Future Oceans",
+          "url": "https://watson-hartsoe.webflow.io/future-oceans",
+          "role": "WebVR",
+          "kicker": "Web Virtual Reality",
+          "thesis": "Environmental futures as web VR worlds through tangible making and ocean robotics.",
+          "bridge": "Ocean problem becomes immersive scenario; tangible prototype becomes virtual environment.",
+          "elements": {
+            "partners": [
+              {"label": "Into the Now (Michael Muller)", "url": "https://www.intothenowvr.com/"},
+              {"label": "Glitch", "url": "https://glitch.com"}
+            ],
+            "tools": ["360 cameras", "PVC submersibles", "underwater robots", "laser cutters", "Tilt Brush", "Gravity Sketch", "Google Blocks", "A-Frame", "Glitch"],
+            "sub_projects": ["Chemical Contamination", "Oil Spill", "Oil Spill Fylter", "DIY Submarine"]
+          }
+        },
+        {
+          "id": "life_cycle",
+          "title": "Life Cycle",
+          "url": "https://watson-hartsoe.webflow.io/life-cycles",
+          "role": "NarrativeCode",
+          "kicker": "Narrative Code",
+          "thesis": "Myth, migration, cardboard, Scratch, and Makey Makey as computational storytelling.",
+          "bridge": "Mythic creature becomes computational avatar; cardboard becomes interface.",
+          "elements": {
+            "references": [
+              {"label": "Life Cycle Video", "url": "https://youtube.com/watch?v=Tm1uXQYw1II"}
+            ],
+            "tools": ["Scratch", "Makey Makey", "cardboard body parts", "digital shadow puppets"],
+            "concepts": ["Ai Weiwei", "Shan Hai Jing", "global refugee crisis", "MAF Los Angeles"]
+          }
+        },
+        {
+          "id": "pinball_sandbox",
+          "title": "Pinball Sandbox",
+          "url": "https://watson-hartsoe.webflow.io/tangible-computing",
+          "role": "TangibleComputation",
+          "kicker": "Tangible Computation",
+          "thesis": "Games, circuits, and recycled materials as tangible computing.",
+          "bridge": "Industrial excess becomes playable computation.",
+          "elements": {
+            "tools": ["Scratch", "Makey Makey", "Sphero", "pipe cleaners", "Python", "tangible electronics"]
+          }
+        },
+        {
+          "id": "future_scouts",
+          "title": "Future Scouts",
+          "url": "https://watson-hartsoe.webflow.io/future-scouts",
+          "role": "SpeculativeCivicWorldbuilding",
+          "kicker": "Speculative Civic Worldbuilding",
+          "thesis": "Youth development as civic futures prototyping through speculative design.",
+          "bridge": "Future language becomes artifact; youth become authors of possible worlds.",
+          "elements": {
+            "partners": [
+              {"label": "Future Scouts", "url": "http://futurescouts.co/"}
+            ],
+            "concepts": ["UN Sustainable Development Goals", "Buckminster Fuller", "Spaceship Earth", "speculative design", "rapid prototyping"]
+          }
+        },
+        {
+          "id": "leimert_phone",
+          "title": "Leimert Phone Company",
+          "url": "https://watson-hartsoe.webflow.io/leimert-telephone-company",
+          "role": "CivicImagination",
+          "kicker": "Rapid Prototyping",
+          "thesis": "Afrofuturist civic imagination through autonomous cars, AR, and community worldbuilding.",
+          "bridge": "Community narrative becomes speculative infrastructure.",
+          "elements": {
+            "partners": [
+              {"label": "Ben Caldwell / KAOS Network", "url": "https://www.kcet.org/shows/departures/the-father-of-leimert-park-or-the-octopus"},
+              {"label": "Karl Baumann", "url": "http://karlbaumann.com/"},
+              {"label": "Retro Poblano / Mobility Couture", "url": "https://www.mobilitycouture.com/"}
+            ],
+            "concepts": ["Leimert Park", "USC World Building Institute", "Afrofuturism", "Sankofa City"]
+          }
+        },
+        {
+          "id": "ojo_joven",
+          "title": "Ojo Joven",
+          "url": "https://watson-hartsoe.webflow.io/ojo-joven",
+          "role": "ParticipatoryMedia",
+          "kicker": "Participatory Media",
+          "thesis": "Youth photography as community narrative infrastructure in Honduras.",
+          "bridge": "Photograph becomes spark; spark becomes conversation; conversation becomes community narrative.",
+          "elements": {
+            "references": [
+              {"label": "NYT: Symbolic Epicenter", "url": "http://www.nytimes.com/2014/08/03/world/americas/hope-dwindles-for-hondurans-living-in-peril.html"}
+            ],
+            "concepts": ["Chamelecón", "No Más Calles Rojas", "media sparks", "capture-comment-share"]
+          }
+        },
+        {
+          "id": "artes_sin_fronteras",
+          "title": "Artes Sin Fronteras",
+          "url": "https://watson-hartsoe.webflow.io/sin-fronteras",
+          "role": "ParticipantObservation",
+          "kicker": "Ethnographic Research",
+          "thesis": "Participant observation and arts-based research in Central America.",
+          "bridge": "Fieldwork becomes a practice of witnessing how communities use media to contest violence.",
+          "elements": {
+            "references": [
+              {"label": "Writing Sample (PDF)", "url": "https://watsonhartsoedotcom.files.wordpress.com/2015/12/hartsoe_writing_sample.pdf"}
+            ]
+          }
+        },
+        {
+          "id": "hogares_sostenibles",
+          "title": "Hogares Sostenibles",
+          "url": "https://watson-hartsoe.webflow.io/hogares-sostenibles",
+          "role": "ServiceDesign",
+          "kicker": "Sustainable Infrastructure",
+          "thesis": "Household sanitation as ecological interface in Guatemala.",
+          "bridge": "A toilet becomes an interface; rainfall becomes resource; household routine becomes ecological design.",
+          "elements": {
+            "references": [
+              {"label": "Ecosan Paper (PDF)", "url": "https://idin.org/sites/default/files/resources/REPORTE%20FINAL_IDDS_Saneamiento.pdf"}
+            ],
+            "concepts": ["Sololá Guatemala", "Santa Catarina Palopó", "Lake Atitlán", "Ecosan", "dry toilet", "rainwater catchment"]
+          }
+        }
+      ]
+    },
+    {
+      "tier_id": "public_theory",
+      "tier_name": "Public Theory Layer",
+      "color": "#e9c46a",
+      "nodes": [
+        {
+          "id": "medium_essays",
+          "title": "Medium Essays",
+          "url": "https://medium.com/@Wfh.iii",
+          "role": "PublicArguments",
+          "kicker": "Public Theory",
+          "thesis": "Public-facing argument stream on AI culture, media theory, and worldtext-adjacent claims.",
+          "bridge": "Theory entering public conflict."
+        }
+      ]
+    },
+    {
+      "tier_id": "external_proof",
+      "tier_name": "External Collaborations",
+      "color": "#a8dadc",
+      "nodes": [
+        {
+          "id": "nushi",
+          "title": "Nushi",
+          "url": "https://www.gabrielshalom.com/nushi",
+          "role": "SyntheticMascot",
+          "kicker": "Synthetic Mascot",
+          "thesis": "Virtual character becomes robotic media creature: mascot, influencer, camera, livestream source.",
+          "bridge": "Fictional character becomes robot; robot becomes media channel; media channel becomes social world.",
+          "elements": {
+            "credits": {
+              "creative_director": "Ishan Shapiro",
+              "creative_producer": "Gabriel Shalom",
+              "creature_artist": "Salvatore J. Salamone",
+              "ai_artist": "Watson Hartsoe",
+              "3d_artist": "Shuruq Tramontini",
+              "worldbuilder": "Rachel Joy Victor"
+            },
+            "metrics": {"views": "55M+", "followers": "465K+", "timeframe": "10 days"},
+            "concepts": ["Xsolla", "Babka", "GDC 2023", "quadruped robot", "Unreal Engine", "TikTok"]
+          }
+        },
+        {
+          "id": "say_what_you_see",
+          "title": "Say What You See",
+          "url": "https://www.qiqiclaudiayang.com/swys",
+          "role": "CollaborativeInterface",
+          "kicker": "Collaborative Interface",
+          "thesis": "Collaborative drawing as interface for workplace conflict and shared visual starting points.",
+          "bridge": "Drawing becomes social interface; interface becomes conversation."
+        }
+      ]
+    }
+  ],
+  "cv_links": {
+    "accepted_work": [
+      {"title": "Ripples — ELO 2026", "url": "https://terhimarttila.com/ripples/site/"},
+      {"title": "Guided Missile Pigeons — HWID 2026", "venue": "IFIP WG 13.6, Univ. of West London"}
+    ],
+    "awards": [
+      {"title": "WAGYO Hackathon", "prize": "$10,000"},
+      {"title": "Guardian of Mercy — AI for GOOD 2024", "url": "https://youtu.be/7Uwx-2REk8M"},
+      {"title": "AI Love Archive — THEM 641", "url": "https://them641.github.io/ai-love-archive/"},
+      {"title": "MESA CHIP — Neu Wave", "url": "https://mesa-chip-gallery.glitch.me/"}
+    ],
+    "creative_work": [
+      {"title": "Where You Go When You Leave", "url": "https://www.youtube.com/watch?v=od7ipNquozg&t=1414s"},
+      {"title": "Resurrecting Atlantis — Fusion", "url": "https://hartswf0.github.io/arkadu/approach-fusion-voronoi.html"},
+      {"title": "Resurrecting Atlantis — Audit", "url": "https://them641.github.io/new-audit/"},
+      {"title": "Atlantis Video", "url": "https://www.youtube.com/watch?v=OGp5NDpYV6Y"},
+      {"title": "Hot Minute", "url": "https://www.youtube.com/watch?v=re72b7VuPbE"},
+      {"title": "Out of Life", "url": "https://www.youtube.com/watch?v=8NSzLAS_Uz8"},
+      {"title": "Blue Deli / Blue Belt Films", "url": "https://hartswf0.github.io/blue-deli/"}
+    ],
+    "instruments": [
+      {"title": "Operation-Describe", "url": "https://hartswf0.github.io/operation-describe/", "desc": "executable ekphrasis"},
+      {"title": "TRACTOR / WAG", "url": "https://hartswf0.github.io/tractor-dce-gyo/", "desc": "spatial compilation"},
+      {"title": "ABC-FLIX / ICARO", "url": "https://hartswf0.github.io/abc-flix/", "desc": "motion harness"},
+      {"title": "Pretext Field", "url": "https://hartswf0.github.io/pretext-field/jumpar/", "desc": "cognitive cartography"},
+      {"title": "Twine Bridge", "url": "https://hartswf0.github.io/island-ecology/ARCADE/twine-bridge.html", "desc": "humanities access"},
+      {"title": "MOTO", "url": "https://hartswf0.github.io/moto/", "desc": "sound / broadcast"},
+      {"title": "Ripples", "url": "https://hartswf0.github.io/ripples/", "desc": "browser motion"},
+      {"title": "Mythos Canon", "url": "https://hartswf0.github.io/mythos-canon/", "desc": "myth as OS"},
+      {"title": "Ecology of Media", "url": "https://hartswf0.github.io/ecology-of-media/", "desc": "philosophical core"},
+      {"title": "Sense Ritual", "url": "https://hartswf0.github.io/sense-ritual/aaa.html", "desc": "playable prompts"},
+      {"title": "LEGOS", "url": "https://hartswf0.github.io/LEGOS/", "desc": "narrative grammar"},
+      {"title": "Ethics Infrastructure", "url": "https://hartswf0.github.io/ethics-infrastructure/", "desc": "prompts as specs"},
+      {"title": "WAG", "url": "https://hartswf0.github.io/tractor-dce-gyo/wag-work.html", "desc": "words assemble geometry"},
+      {"title": "Growing Entanglements", "url": "https://hartswf0.github.io/growing-entanglements/", "desc": "cultural theory interface"}
+    ],
+    "profiles": {
+      "email": "whartsoe3@gatech.edu",
+      "github": "https://github.com/hartswf0",
+      "youtube": "https://www.youtube.com/@watsonhartsoe",
+      "medium": "https://medium.com/@Wfh.iii",
+      "webflow": "https://watson-hartsoe.webflow.io/",
+      "orange_grid": "https://hartswf0.github.io/wh-ripple/orange-grid-viewer.html",
+      "cv_pdf": "https://hartswf0.github.io/wh-ripple/hartsoe-cv-progress-2026.pdf"
+    }
+  }
+}

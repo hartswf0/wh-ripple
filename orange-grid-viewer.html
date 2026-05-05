@@ -854,6 +854,206 @@
     ::-webkit-scrollbar-track{background:transparent}
     ::-webkit-scrollbar-thumb{background:rgba(255,107,53,0.3);border-radius:4px}
 
+    /* ── PROGRAM THEORY: Orange Strip ── */
+    #pt-strip{
+      padding:12px 20px 10px;
+      border-bottom:1px solid rgba(255,107,53,0.15);
+      background:rgba(0,0,0,0.4);
+    }
+    .pt-header{
+      display:flex;align-items:center;gap:8px;
+      margin-bottom:8px;
+    }
+    .pt-label{
+      font-size:9px;font-weight:700;
+      text-transform:uppercase;letter-spacing:1.5px;
+      color:var(--accent);
+    }
+    .pt-count{
+      font-size:8px;font-weight:600;
+      color:var(--muted);opacity:0.4;
+    }
+    .pt-archive-link{
+      font-size:7px;font-weight:700;
+      text-transform:uppercase;letter-spacing:0.6px;
+      padding:3px 8px;
+      border:1px solid rgba(255,107,53,0.3);
+      color:var(--accent);text-decoration:none;
+      border-radius:3px;
+      transition:all 0.15s;
+      margin-left:auto;
+    }
+    .pt-archive-link:hover{
+      background:var(--accent);color:#000;
+    }
+    .pt-grove{
+      display:flex;
+      gap:8px;
+      overflow-x:auto;
+      overflow-y:hidden;
+      padding-bottom:6px;
+      scroll-behavior:smooth;
+      scroll-snap-type:x proximity;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+      mask-image:linear-gradient(90deg,transparent 0,#000 20px,#000 calc(100% - 20px),transparent 100%);
+      -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 20px,#000 calc(100% - 20px),transparent 100%);
+    }
+    .pt-grove::-webkit-scrollbar{display:none}
+
+    /* Individual orange assembly */
+    .pt-orange{
+      flex:0 0 auto;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 14px 6px 6px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,0.06);
+      background:rgba(255,255,255,0.03);
+      cursor:pointer;
+      transition:all 0.25s ease;
+      white-space:nowrap;
+      scroll-snap-align:start;
+    }
+    .pt-orange:hover{
+      border-color:rgba(255,107,53,0.4);
+      transform:translateY(-2px);
+      box-shadow:0 4px 16px rgba(0,0,0,0.3);
+    }
+
+    .pt-orb{
+      position:relative;
+      width:56px;height:56px;
+      flex:0 0 56px;
+    }
+    .pt-orb svg{
+      width:100%;height:100%;
+      filter:drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+      transition:filter 0.25s;
+    }
+    .pt-orange:hover .pt-orb svg{
+      filter:drop-shadow(0 4px 12px var(--hover-glow, rgba(255,107,53,0.5)));
+    }
+
+    /* Whole state */
+    .pt-whole{transition:opacity 0.25s}
+    .pt-orange:hover .pt-whole{opacity:0}
+
+    /* Sliced state */
+    .pt-sliced{opacity:0;transition:opacity 0.25s}
+    .pt-orange:hover .pt-sliced{opacity:1}
+
+    /* Density badge */
+    .pt-badge{
+      position:absolute;top:-3px;right:-3px;
+      background:rgba(0,0,0,0.85);
+      color:var(--accent);
+      font-size:7px;font-weight:700;
+      padding:1px 4px;
+      border-radius:4px;
+      letter-spacing:0.2px;
+      pointer-events:none;
+      z-index:3;
+      line-height:1.3;
+      border:1px solid rgba(255,107,53,0.2);
+    }
+
+    /* Label beside orb */
+    .pt-info{
+      display:flex;flex-direction:column;
+    }
+    .pt-name{
+      font-size:11px;font-weight:600;
+      line-height:1.2;
+      color:var(--text);
+    }
+    .pt-kicker{
+      font-size:7px;font-weight:600;
+      text-transform:uppercase;letter-spacing:0.6px;
+      color:var(--muted);opacity:0.45;
+      margin-top:2px;
+    }
+
+    /* Separator line between PT and grid */
+    .pt-divider{
+      height:1px;
+      background:linear-gradient(90deg,transparent 0%,rgba(255,107,53,0.2) 20%,rgba(255,107,53,0.2) 80%,transparent 100%);
+      margin:0;
+    }
+
+    /* ── IFRAME MODAL ── */
+    #cake-modal{
+      position:fixed;inset:0;
+      z-index:500;
+      display:none;
+      align-items:stretch;
+      justify-content:stretch;
+    }
+    #cake-modal.open{display:flex}
+    #cake-modal-bg{
+      position:absolute;inset:0;
+      background:rgba(0,0,0,0.88);
+      cursor:pointer;
+    }
+    #cake-modal-frame{
+      position:relative;
+      margin:40px;
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      background:var(--panel);
+      border:1px solid rgba(255,107,53,0.3);
+      border-radius:10px;
+      overflow:hidden;
+      z-index:1;
+    }
+    #cake-modal-bar{
+      display:flex;align-items:center;
+      padding:8px 14px;
+      background:rgba(0,0,0,0.6);
+      border-bottom:1px solid rgba(255,107,53,0.2);
+      gap:10px;
+    }
+    #cake-modal-title{
+      font-size:13px;font-weight:600;
+      color:var(--accent);flex:1;
+    }
+    #cake-modal-kicker{
+      font-size:8px;font-weight:700;
+      text-transform:uppercase;letter-spacing:0.8px;
+      color:var(--muted);opacity:0.5;
+    }
+    #cake-modal-bar a{
+      font-size:9px;font-weight:700;
+      text-transform:uppercase;letter-spacing:0.5px;
+      padding:4px 10px;
+      border:1px solid rgba(255,107,53,0.4);
+      color:var(--accent);text-decoration:none;
+      border-radius:4px;
+      transition:all 0.15s;
+    }
+    #cake-modal-bar a:hover{background:var(--accent);color:#000}
+    #cake-modal-close{
+      background:none;border:none;
+      color:var(--muted);font-size:22px;
+      cursor:pointer;padding:0 4px;
+      line-height:1;
+    }
+    #cake-modal-close:hover{color:var(--accent)}
+    #cake-modal-iframe{
+      flex:1;width:100%;border:none;
+      background:#0a0a0a;
+    }
+    @media(max-width:768px){
+      #cake-modal-frame{margin:10px}
+      .pt-grove{gap:6px}
+      .pt-name{font-size:9px}
+      .pt-orb{width:40px;height:40px;flex:0 0 40px}
+      .pt-orange{padding:4px 10px 4px 4px}
+      #pt-strip{padding:8px 12px 6px}
+    }
+
     /* Timeline view */
     #timeline-view{
       display:none;
@@ -1217,7 +1417,32 @@
   <div id="main">
     <!-- Grid View -->
     <div id="grid-view" class="active">
+      <!-- Program Theory: Orange Assemblies -->
+      <div id="pt-strip" style="display:none">
+        <div class="pt-header">
+          <span class="pt-label">Program Theory</span>
+          <span class="pt-count" id="pt-count"></span>
+          <a class="pt-archive-link" href="worldtext-archive.html">Full Archive →</a>
+        </div>
+        <div class="pt-grove" id="pt-grove"></div>
+      </div>
+      <div class="pt-divider"></div>
       <div class="grid" id="grid-container"></div>
+    </div>
+
+    <!-- Iframe Modal for Program Theory -->
+    <div id="cake-modal">
+      <div id="cake-modal-bg"></div>
+      <div id="cake-modal-frame">
+        <div id="cake-modal-bar">
+          <span id="cake-modal-kicker"></span>
+          <span id="cake-modal-title"></span>
+          <a id="cake-modal-open" href="#" target="_blank">Open ↗</a>
+          <a id="cake-modal-repo" href="#" target="_blank">Repo ↗</a>
+          <button id="cake-modal-close">×</button>
+        </div>
+        <iframe id="cake-modal-iframe" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+      </div>
     </div>
 
     <!-- Canvas View -->
@@ -1259,6 +1484,135 @@
   <div id="loading">
     <div class="spinner"></div>
   </div>
+
+  <!-- Program Theory: Inline Data Embed (CORS-proof for file:// protocol) -->
+  <script>
+  window.__PT_DATA={"program_theory_id":"WORLDTEXT_PRACTICE_ARCHIVE","version":"1.0","governing_claim":"Watson Hartsoe researches how language, media, and computation become worlds.","archive_tiers":[{"tier_id":"current_research","tier_name":"Current Research Gateway","color":"#ff6b35","nodes":[{"id":"operation_describe","title":"Operation Describe","url":"https://hartswf0.github.io/operation-describe/","repo":"https://github.com/hartswf0/operation-describe","role":"WorldtextCore","kicker":"Current Research Core","thesis":"Central research engine: ekphrasis, thick description, and generative AI converge into worldtext theory.","bridge":"Description no longer stands outside the world; it becomes a generative operation inside it."}]},{"tier_id":"synthetic_culture","tier_name":"Synthetic Culture Systems","color":"#e63946","nodes":[{"id":"metisim","title":"METISIM","url":"https://hartswf0.github.io/metisim/","repo":"https://github.com/hartswf0/metisim","role":"MythOperatingSystem","kicker":"Synthetic Culture Systems","thesis":"Myth as adaptive computation rather than static content.","bridge":"If Operation Describe asks how description becomes world, METISIM asks how myth becomes system behavior."},{"id":"mythos_canon","title":"Mythos Canon","url":"https://hartswf0.github.io/mythos-canon/","repo":"https://github.com/hartswf0/mythos-canon","role":"ArchiveOfArchives","kicker":"Archive Machine","thesis":"78 documents: chapters, viewers, manifestos, film systems, and defense materials as navigable research surface.","bridge":"The archive becomes a worldtext when its viewers and chapters become navigable parts of the argument.","density":{"touches":303,"size_kb":9129,"maturity":"instrument"}},{"id":"myth_as_os","title":"Myth as OS","url":"https://hartswf0.github.io/myth-as-os/","repo":"https://github.com/hartswf0/myth-as-os","role":"MythRootProcess","kicker":"Myth Root Process","thesis":"Language is the root process that scripts reality; media are the engines that run it.","bridge":"If METISIM simulates myth, Myth-as-OS declares myth IS the operating system.","density":{"size_kb":25634}},{"id":"arkadu","title":"Arkadu","url":"https://hartswf0.github.io/arkadu/","repo":"https://github.com/hartswf0/arkadu","role":"ArchiveXanadu","kicker":"Archive Cosmology","thesis":"Noah\u2019s Ark meets Nelson\u2019s Xanadu: a hyperlinked archive cosmology for AI filmmaking.","bridge":"Archive becomes cosmology when every artifact links to every other artifact.","density":{"touches":68,"size_kb":7612}}]},{"tier_id":"operative_pedagogy","tier_name":"Operative Media Pedagogy","color":"#f4a261","nodes":[{"id":"ecology_of_media","title":"Ecology of Media","url":"https://hartswf0.github.io/ecology-of-media/","repo":"https://github.com/hartswf0/ecology-of-media","role":"OperativeEkphrasisVideoSeries","kicker":"Operative Media","thesis":"Operative ekphrasis as public video practice: theory composed with AI across image, voice, and episode.","bridge":"Worldtext as media ecology: prompts, tools, voices, images form an inhabitable series."},{"id":"medium_as_operator","title":"The Medium as Operator","url":"https://hartswf0.github.io/medium-as-operator/","repo":"https://github.com/hartswf0/medium-as-operator","role":"PedagogicalDeck","kicker":"Teaching Surface","thesis":"Carey vs Kittler, operative ekphrasis, AI text-image systems, prompt rewriting.","bridge":"Worldtext is teachable as a media practice."},{"id":"abc_flix","title":"ABC-FLIX / ICARO","url":"https://hartswf0.github.io/abc-flix/","repo":"https://github.com/hartswf0/abc-flix","role":"UnifiedProductionBus","kicker":"Operative Animation","thesis":"BEFLIX-128 lineage: a unified production bus that harnesses cross-iframe instruments through a hardened message router.","bridge":"The harness proves worldtext is a production architecture: engine, tunnel, bus, cursor, sync, and frame patch.","density":{"touches":269,"size_kb":43651,"maturity":"instrument"},"elements":{"sub_instruments":["icaro-pro-bus.html","c-bus.html","icaro-flow.html","icaro-achilles.html","sand-plate.html","icaro-all-time.html"],"bus_protocol":["FRAMES_SYNC","FRAME_PATCH","CURSOR_MOVE","GOTO_FRAME","PLAY_SYNC","CLIP_SELECT","REQUEST_SYNC","RIP_PROGRESS","VIEW_CYCLE"],"views":["BARREL","INSIDE","OUTSIDE","SIDE","BENCH"]}}]},{"tier_id":"operative_instruments","tier_name":"Operative Instruments","color":"#e76f51","nodes":[{"id":"moto","title":"MOTO","url":"https://hartswf0.github.io/moto/","repo":"https://github.com/hartswf0/moto","role":"SoundBroadcastInstrument","kicker":"Sound / Broadcast","thesis":"The highest-density instrument in the constellation (1541 touches). Sound, broadcast, and media deck infrastructure.","bridge":"MOTO proves worldtext also operates through sound, broadcast, and rhythmic structure.","density":{"touches":1541,"maturity":"instrument"}},{"id":"sense_ritual","title":"Sense Ritual","url":"https://hartswf0.github.io/sense-ritual/aaa.html","repo":"https://github.com/hartswf0/sense-ritual","role":"PlayablePrompts","kicker":"Playable Prompts","thesis":"Digital architectures that condition cognition through ritual repetition: prompts become playable instruments.","bridge":"Ritual transforms prompt from instruction into inhabited practice.","density":{"touches":207,"size_kb":175310,"maturity":"instrument"}},{"id":"pretext_field","title":"Pretext Field","url":"https://hartswf0.github.io/pretext-field/jumpar/","repo":"https://github.com/hartswf0/pretext-field","role":"CognitiveCartography","kicker":"Cognitive Cartography","thesis":"Spatial scholarship instrument: mapping how urban environments are manufactured, stratified, and perceived.","bridge":"The city becomes a worldtext when its spatial logic is made inspectable through cartographic instruments."},{"id":"blue_deli","title":"Blue Deli / Blue Belt Films","url":"https://hartswf0.github.io/blue-deli/","repo":"https://github.com/hartswf0/blue-deli","role":"AIFilmmakingInfrastructure","kicker":"AI Filmmaking","thesis":"Collaborative AI filmmaking infrastructure: matrix editor, world prompt, emergent narrative as operative media production.","bridge":"Film becomes worldtext when its production pipeline is prompt-driven, inspectable, and revisable."}]},{"tier_id":"research_lineage","tier_name":"Research Lineage","color":"#457b9d","nodes":[{"id":"tractor_wag","title":"TRACTOR / WAG","url":"https://hartswf0.github.io/tractor-dce-gyo/","repo":"https://github.com/hartswf0/tractor-dce-gyo","role":"SpatialCompilation","kicker":"Spatial Compilation","thesis":"Words Assemble Geometry: language as executable spatial specification.","bridge":"WAG is the strongest practice-based evidence that description becomes construction.","density":{"touches":403,"size_kb":445110,"maturity":"instrument"},"elements":{"sub_pages":[{"label":"WAG Work","url":"https://hartswf0.github.io/tractor-dce-gyo/wag-work.html"}]}},{"id":"ripples","title":"Ripples","url":"https://hartswf0.github.io/ripples/","repo":"https://github.com/hartswf0/ripples","role":"BrowserMotion","kicker":"Browser Motion","thesis":"Relational Imagination of Perspective, Presence, and Latent Ecologies in Space. Accepted at ELO 2026.","bridge":"Ripples proves worldtext enters the body: browser motion becomes a medium for distant writing.","density":{"touches":591,"size_kb":149196,"maturity":"instrument"},"elements":{"collaborators":["Terhi Marttila (LARSyS)","Jay David Bolter"],"venues":["ELO 2026 (Un)Supervised"]}},{"id":"legos","title":"LEGOS","url":"https://hartswf0.github.io/LEGOS/","repo":"https://github.com/hartswf0/LEGOS","role":"NarrativeGrammar","kicker":"Narrative Grammar","thesis":"Location, Entity, Goal, Obstacle, Shift, Solution \u2014 a structural grammar for narrative.","bridge":"LEGOS proves worldtext has grammar: narrative components become compilable.","density":{"size_kb":233}},{"id":"ethics_infrastructure","title":"Ethics Infrastructure","url":"https://hartswf0.github.io/ethics-infrastructure/","repo":"https://github.com/hartswf0/ethics-infrastructure","role":"EthicalWorkflowConstraint","kicker":"Ethics in Build System","thesis":"Prompts as executable specs. Ethical constraints built into workflow and interface states.","bridge":"Ethics Infrastructure gives worldtext its accountability edge.","density":{"size_kb":57},"elements":{"collaborators":["Richmond Wong (project studio)"]}},{"id":"twine_bridge","title":"Twine Bridge / Island Ecology","url":"https://hartswf0.github.io/island-ecology/ARCADE/twine-bridge.html","repo":"https://github.com/hartswf0/island-ecology","role":"HumanitiesAccess","kicker":"Humanities Access","thesis":"A bridge between Twine-based interactive fiction and structured ecological narrative.","bridge":"Twine Bridge shows worldtext entering humanities as an inspectable, playable, preservable system.","density":{"touches":144,"size_kb":28384,"maturity":"instrument"}},{"id":"fourth_shield","title":"Fourth Shield","url":"https://hartswf0.github.io/fourth-shield/","repo":"https://github.com/hartswf0/fourth-shield","role":"NeurosymbolicSimulation","kicker":"Neurosymbolic Journey","thesis":"A neurosymbolic simulation journey from ancient poetry to executable code.","bridge":"Fourth Shield is the origin myth of the dissertation.","density":{"size_kb":67008}}]},{"tier_id":"cultural_interfaces","tier_name":"Cultural Modeling Interfaces","color":"#2a9d8f","nodes":[{"id":"growing_entanglements","title":"Growing Entanglements","url":"https://hartswf0.github.io/growing-entanglements/","repo":"https://github.com/hartswf0/growing-entanglements","role":"CulturalTheoryInterface","kicker":"Cultural Modeling","thesis":"Cultural theory as digital interfaces: Sahlins, Obeyesekere, Captain Cook, resistance topology.","bridge":"Cultural interpretation becomes a navigable apparatus."},{"id":"rosetta_protocol","title":"Rosetta Protocol","url":"https://hartswf0.github.io/rosetta-protocol/","repo":"https://github.com/hartswf0/rosetta-protocol","role":"ArchiveViewer","kicker":"Archive Infrastructure","thesis":"Terminal-like viewer turning scattered HTML artifacts into browsable research surface.","bridge":"The archive becomes a worldtext interface itself."},{"id":"hyperclay","title":"Hyperclay / Uncontracting","url":"https://hartswf0.github.io/hyperclay/","repo":"https://github.com/hartswf0/hyperclay","role":"InteractivePhilosophy","kicker":"Interface Philosophy","thesis":"Interface as philosophical apparatus: boundaries, meanings, agreements dissolve through interaction.","bridge":"Interface behavior as meaning-making world rather than neutral container."}]},{"tier_id":"legacy_worldmaking","tier_name":"Legacy Participatory Worldmaking","color":"#264653","nodes":[{"id":"webflow_home","title":"Legacy Portfolio","url":"https://watson-hartsoe.webflow.io/","role":"LegacyIdentity","kicker":"Legacy Portfolio","thesis":"Earlier public identity: virtual environments, participatory design, museums, youth programs.","bridge":"Retained as lineage, not current front door."},{"id":"hubs_cloud","title":"Hubs Cloud","url":"https://watson-hartsoe.webflow.io/nexus-soyuz","role":"SocialVR","kicker":"Social Virtual Reality","thesis":"Museum collections becoming inhabitable social VR spaces.","bridge":"Museum collection becomes virtual place."},{"id":"future_oceans","title":"Future Oceans","url":"https://watson-hartsoe.webflow.io/future-oceans","role":"WebVR","kicker":"Web Virtual Reality","thesis":"Environmental futures as web VR worlds through tangible making and ocean robotics.","bridge":"Ocean problem becomes immersive scenario."},{"id":"life_cycle","title":"Life Cycle","url":"https://watson-hartsoe.webflow.io/life-cycles","role":"NarrativeCode","kicker":"Narrative Code","thesis":"Myth, migration, cardboard, Scratch, and Makey Makey as computational storytelling.","bridge":"Mythic creature becomes computational avatar."},{"id":"pinball_sandbox","title":"Pinball Sandbox","url":"https://watson-hartsoe.webflow.io/tangible-computing","role":"TangibleComputation","kicker":"Tangible Computation","thesis":"Games, circuits, and recycled materials as tangible computing.","bridge":"Industrial excess becomes playable computation."},{"id":"future_scouts","title":"Future Scouts","url":"https://watson-hartsoe.webflow.io/future-scouts","role":"SpeculativeCivicWorldbuilding","kicker":"Speculative Civic Worldbuilding","thesis":"Youth development as civic futures prototyping through speculative design.","bridge":"Youth become authors of possible worlds."},{"id":"leimert_phone","title":"Leimert Phone Company","url":"https://watson-hartsoe.webflow.io/leimert-telephone-company","role":"CivicImagination","kicker":"Rapid Prototyping","thesis":"Afrofuturist civic imagination through autonomous cars, AR, and community worldbuilding.","bridge":"Community narrative becomes speculative infrastructure."},{"id":"ojo_joven","title":"Ojo Joven","url":"https://watson-hartsoe.webflow.io/ojo-joven","role":"ParticipatoryMedia","kicker":"Participatory Media","thesis":"Youth photography as community narrative infrastructure in Honduras.","bridge":"Photograph becomes spark; spark becomes conversation."},{"id":"artes_sin_fronteras","title":"Artes Sin Fronteras","url":"https://watson-hartsoe.webflow.io/sin-fronteras","role":"ParticipantObservation","kicker":"Ethnographic Research","thesis":"Participant observation and arts-based research in Central America.","bridge":"Fieldwork becomes witnessing how communities use media to contest violence."},{"id":"hogares_sostenibles","title":"Hogares Sostenibles","url":"https://watson-hartsoe.webflow.io/hogares-sostenibles","role":"ServiceDesign","kicker":"Sustainable Infrastructure","thesis":"Household sanitation as ecological interface in Guatemala.","bridge":"A toilet becomes an interface; rainfall becomes resource."}]},{"tier_id":"public_theory","tier_name":"Public Theory Layer","color":"#e9c46a","nodes":[{"id":"medium_essays","title":"Medium Essays","url":"https://medium.com/@Wfh.iii","role":"PublicArguments","kicker":"Public Theory","thesis":"Public-facing argument stream on AI culture, media theory, and worldtext-adjacent claims.","bridge":"Theory entering public conflict."}]},{"tier_id":"external_proof","tier_name":"External Collaborations","color":"#a8dadc","nodes":[{"id":"nushi","title":"Nushi","url":"https://www.gabrielshalom.com/nushi","role":"SyntheticMascot","kicker":"Synthetic Mascot","thesis":"Virtual character becomes robotic media creature: mascot, influencer, camera, livestream source.","bridge":"Fictional character becomes robot; robot becomes media channel."},{"id":"say_what_you_see","title":"Say What You See","url":"https://www.qiqiclaudiayang.com/swys","role":"CollaborativeInterface","kicker":"Collaborative Interface","thesis":"Collaborative drawing as interface for workplace conflict and shared visual starting points.","bridge":"Drawing becomes social interface; interface becomes conversation."}]}]};
+  </script>
+
+  <!-- Program Theory Orange Assemblies Loader -->
+  <script>
+  (function loadProgramTheory(){
+    function boot(pt){
+      const grove = document.getElementById('pt-grove');
+      const strip = document.getElementById('pt-strip');
+      const countEl = document.getElementById('pt-count');
+      if(!grove || !pt || !pt.archive_tiers) return;
+
+      const skipTiers = new Set(['legacy_worldmaking','public_theory','external_proof']);
+      const nodes = [];
+      pt.archive_tiers.forEach(tier=>{
+        if(skipTiers.has(tier.tier_id)) return;
+        tier.nodes.forEach(node=>{
+          nodes.push({...node, _tierName:tier.tier_name, _tierColor:tier.color});
+        });
+      });
+
+      nodes.sort((a,b)=>{
+        const at = a.density?.touches||0, bt = b.density?.touches||0;
+        return bt - at || (a.title||'').localeCompare(b.title||'');
+      });
+
+      countEl.textContent = nodes.length + ' instruments';
+
+      nodes.forEach((node, idx)=>{
+        const el = document.createElement('div');
+        el.className = 'pt-orange';
+        const tc = node._tierColor || '#ff6b35';
+        el.style.setProperty('--hover-glow', tc + '80');
+        el.style.background = `linear-gradient(135deg, ${tc}08 0%, transparent 60%)`;
+        let badge = '';
+        if(node.density?.touches){
+          badge = node.density.touches + 't';
+        } else if(node.density?.size_kb){
+          const kb = node.density.size_kb;
+          badge = kb >= 1000 ? (kb/1000|0)+'MB' : kb+'KB';
+        }
+
+        // SVG orange with tier-colored slices
+        const sliceAngles = [0, 60, 120, 180, 240, 300];
+        let slicePaths = '';
+        sliceAngles.forEach((deg, i)=>{
+          const a1 = (deg - 90) * Math.PI / 180;
+          const a2 = ((deg + 60) - 90) * Math.PI / 180;
+          const x1 = 50 + 38 * Math.cos(a1);
+          const y1 = 50 + 38 * Math.sin(a1);
+          const x2 = 50 + 38 * Math.cos(a2);
+          const y2 = 50 + 38 * Math.sin(a2);
+          slicePaths += `<path d="M50,50 L${x1},${y1} A38,38 0 0,1 ${x2},${y2} Z" fill="${i%2===0 ? tc : 'rgba(255,255,255,0.08)'}" stroke="rgba(0,0,0,0.3)" stroke-width="0.5"/>`;
+        });
+
+        el.innerHTML = `
+          <div class="pt-orb">
+            ${badge ? '<div class="pt-badge">'+badge+'</div>' : ''}
+            <svg viewBox="0 0 100 100">
+              <!-- Whole state -->
+              <g class="pt-whole">
+                <circle cx="50" cy="50" r="42" fill="${tc}" stroke="rgba(0,0,0,0.4)" stroke-width="1.5"/>
+                <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+                <ellipse cx="38" cy="38" rx="12" ry="8" fill="rgba(255,255,255,0.15)" transform="rotate(-30 38 38)"/>
+              </g>
+              <!-- Sliced state -->
+              <g class="pt-sliced">
+                <circle cx="50" cy="50" r="42" fill="rgba(40,40,40,0.9)" stroke="rgba(0,0,0,0.5)" stroke-width="1.5"/>
+                ${slicePaths}
+                <circle cx="50" cy="50" r="10" fill="${tc}" stroke="rgba(0,0,0,0.4)" stroke-width="1"/>
+              </g>
+            </svg>
+          </div>
+          <div class="pt-info">
+            <div class="pt-name">${node.title}</div>
+            <div class="pt-kicker">${node.kicker || ''}</div>
+          </div>
+        `;
+
+        el.addEventListener('click', ()=> openCakeModal(node));
+        grove.appendChild(el);
+      });
+
+      strip.style.display = 'block';
+    }
+
+    // Data is inline — always available, no fetch/CORS needed
+    boot(window.__PT_DATA);
+
+    // Modal logic
+    const modal = document.getElementById('cake-modal');
+    const modalBg = document.getElementById('cake-modal-bg');
+    const modalClose = document.getElementById('cake-modal-close');
+    const modalIframe = document.getElementById('cake-modal-iframe');
+    const modalTitle = document.getElementById('cake-modal-title');
+    const modalKicker = document.getElementById('cake-modal-kicker');
+    const modalOpen = document.getElementById('cake-modal-open');
+    const modalRepo = document.getElementById('cake-modal-repo');
+
+    function openCakeModal(node){
+      modalTitle.textContent = node.title;
+      if(modalKicker) modalKicker.textContent = node.kicker || '';
+      modalIframe.src = node.url || '';
+      modalOpen.href = node.url || '#';
+      if(node.repo){
+        modalRepo.href = node.repo;
+        modalRepo.style.display = '';
+      } else {
+        modalRepo.style.display = 'none';
+      }
+      modal.classList.add('open');
+    }
+    window.openCakeModal = openCakeModal;
+
+    function closeCakeModal(){
+      modal.classList.remove('open');
+      modalIframe.src = '';
+    }
+
+    modalBg.addEventListener('click', closeCakeModal);
+    modalClose.addEventListener('click', closeCakeModal);
+    document.addEventListener('keydown', e=>{
+      if(e.key==='Escape' && modal.classList.contains('open')) closeCakeModal();
+    });
+  })();
+  </script>
 
   <!-- Legend overlay -->
   <div class="legend" id="legend">
@@ -1473,8 +1827,10 @@
         animate();
       }catch(err){
         console.error('Failed to load:', err);
-        document.getElementById('loading').innerHTML = 
-          '<div style="color:#888">Failed to load<br><small>Run: python3 analyze-themes.py</small></div>';
+        const isFile = location.protocol === 'file:';
+        document.getElementById('loading').innerHTML = isFile
+          ? '<div style="color:var(--accent);text-align:center;padding:40px"><div style="font-size:14px;font-weight:700;margin-bottom:8px">311 REPOS NEED HTTP</div><div style="font-size:11px;color:#888;max-width:360px;margin:0 auto;line-height:1.5">The repository grid requires an HTTP server to load data files.<br><code style="background:rgba(255,107,53,0.15);padding:2px 6px;border-radius:3px">python3 -m http.server 8080</code><br><br>The <b>Program Theory</b> section above works on file:// protocol.<br>On <b>GitHub Pages</b>, everything loads automatically.</div></div>'
+          : '<div style="color:#888">Failed to load data<br><small>Run: python3 analyze-themes.py</small></div>';
       }
     }
 

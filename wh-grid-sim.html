@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>WORLDTEXT // UNIFIED ASSEMBLY</title>
+    <style>
+        /* ── INVARIANTS: BRUTALIST AESTHETIC & THE ACCORDION ── */
+        :root {
+            --ink: #000000;
+            --bg: #f47a45;
+            --cream: #fff6df;
+            --muted: rgba(0, 0, 0, 0.58);
+            --active: #000000;
+            --activeText: #fff6df;
+
+            --line: 3px solid var(--ink);
+            --thin: 2px solid var(--ink);
+
+            --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --font-mono: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--font-sans);
+            -webkit-text-size-adjust: 100%;
+        }
+
+        button,
+        a {
+            font: inherit;
+            color: inherit;
+            border: 0;
+            background: none;
+            text-decoration: none;
+            cursor: pointer;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* ── APP SHELL ── */
+        .app {
+            width: 100%;
+            max-width: 960px;
+            height: 100vh;
+            height: 100svh;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 0 1px var(--ink);
+        }
+
+        /* ── TOP BAR (PERSISTENT HEADER) ── */
+        .topbar {
+            flex-shrink: 0;
+            padding: 6px 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: var(--line);
+            background: var(--bg);
+            z-index: 10;
+        }
+
+        .topDisc {
+            width: 44px;
+            height: 44px;
+            border: var(--line);
+            border-radius: 50%;
+            background: #fff;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            transition: all .15s;
+            overflow: hidden;
+            padding: 3px;
+            flex-shrink: 0;
+        }
+
+        .topDisc:hover {
+            box-shadow: 0 0 0 3px var(--ink);
+        }
+
+        .topDisc svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .topMeta {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .topName {
+            font-size: clamp(22px, 5vw, 48px);
+            line-height: 0.88;
+            font-weight: 1000;
+            letter-spacing: -0.06em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .topAddr {
+            font: 900 9px/1.1 var(--font-mono);
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            opacity: .65;
+        }
+
+        .openTop {
+            width: 44px;
+            height: 44px;
+            border: var(--line);
+            border-radius: 50%;
+            background: var(--cream);
+            display: grid;
+            place-items: center;
+            font-size: 20px;
+            font-weight: 1000;
+            transition: all .15s;
+            flex-shrink: 0;
+        }
+
+        .openTop:hover {
+            background: var(--ink);
+            color: var(--cream);
+        }
+
+        .openTop:active {
+            transform: scale(.9);
+        }
+
+        /* ── ACCORDION STAGE ── */
+        .stage {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            background: var(--bg);
+        }
+
+        .rail {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background: var(--cream);
+            border-right: var(--line);
+            overflow: hidden;
+            /* Core physical transition for the spatial accordion */
+            transition: flex 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .rail:last-child {
+            border-right: none;
+        }
+
+        .track {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            transition: opacity 0.3s;
+        }
+
+        .track::-webkit-scrollbar {
+            display: none;
+        }
+
+        .track {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Spatial Orientation Anchors */
+        .rail-summary {
+            position: absolute;
+            inset: 0;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            padding: 20px 0;
+            background: var(--ink);
+            color: var(--cream);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            cursor: pointer;
+        }
+
+        .rail-summary:hover {
+            background: #222;
+        }
+
+        /* ── CELLS ── */
+        .cell {
+            min-height: 54px;
+            border-bottom: var(--line);
+            background: var(--cream);
+            display: grid;
+            grid-template-columns: 30px 1fr;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            line-height: 1.1;
+            font-weight: 900;
+            color: var(--ink);
+            text-align: left;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .cell:hover {
+            background: #fdf3d8;
+        }
+
+        .cell.active {
+            background: var(--active);
+            color: var(--activeText);
+        }
+
+        /* Address glyph stamped on each cell */
+        .cell-glyph {
+            width: 30px;
+            height: 30px;
+            flex-shrink: 0;
+        }
+
+        .cell-glyph svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .cell-info {
+            min-width: 0;
+        }
+
+        .cell-info .kicker {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 2px;
+            color: var(--muted);
+        }
+
+        .cell.active .kicker {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .tCell .cell-info {
+            font-size: clamp(16px, 2.2vw, 22px);
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+        }
+
+        .nCell .cell-info {
+            font-size: clamp(14px, 1.8vw, 20px);
+            letter-spacing: -0.03em;
+        }
+
+        /* ── PAYLOAD APERTURE ── */
+        .detail {
+            display: flex;
+            flex-direction: column;
+            background: var(--cream);
+            overflow: hidden;
+            transition: flex 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+
+
+        .payload-content {
+            flex: 1;
+            background: var(--cream);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .payloadText {
+            width: 100%;
+            padding: 20px 24px;
+            flex-shrink: 0;
+            font-size: clamp(18px, 2.2vw, 28px);
+            line-height: 1.2;
+            font-weight: 800;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .payloadText .line {
+            display: grid;
+            grid-template-columns: 3.5ch minmax(0, 1fr);
+            gap: 16px;
+        }
+
+        .payloadText .lineNo {
+            color: var(--muted);
+            font-size: 0.6em;
+            font-family: var(--mono);
+            font-weight: 1000;
+            padding-top: 0.4em;
+        }
+
+        .frameBox {
+            flex: 1;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            border-top: 3px solid var(--ink);
+            background: #fff;
+        }
+
+        .iframeSlot {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background: #fff;
+            min-height: 0;
+        }
+
+        .emptyVessel {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            place-items: center;
+            font-size: 14px;
+            font-weight: 800;
+            font-family: var(--mono);
+            color: var(--muted);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 24px;
+        }
+
+        /* Controls */
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1fr;
+            border-top: var(--line);
+            background: var(--cream);
+            flex-shrink: 0;
+        }
+
+        .control {
+            min-height: 50px;
+            border-right: var(--thin);
+            font-size: 13px;
+            font-weight: 1000;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: 0.1s;
+        }
+
+        .control:last-child {
+            border-right: none;
+        }
+
+        .control:active {
+            background: var(--ink);
+            color: var(--cream);
+            transform: translateY(2px);
+        }
+
+        /* ── STATE TRANSITIONS (CSS LOGIC) ── */
+        .stage[data-state="navigating"] #rail-tiers {
+            flex: 1;
+        }
+
+        .stage[data-state="navigating"] #rail-nodes {
+            flex: 1.5;
+        }
+
+        .stage[data-state="navigating"] #detail-payload {
+            flex: 0;
+            opacity: 0;
+            pointer-events: none;
+            border-left: none;
+        }
+
+        .stage[data-state="viewing"] #rail-tiers {
+            flex: 0 0 54px;
+        }
+
+        .stage[data-state="viewing"] #rail-nodes {
+            flex: 0 0 54px;
+        }
+
+        .stage[data-state="viewing"] #detail-payload {
+            flex: 1;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .stage[data-state="viewing"] #rail-tiers .track,
+        .stage[data-state="viewing"] #rail-nodes .track {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .stage[data-state="viewing"] #rail-tiers .rail-summary,
+        .stage[data-state="viewing"] #rail-nodes .rail-summary {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ── RESPONSIVE MOBILE ── */
+        @media (max-width: 768px) {
+            .topbar {
+                padding: 5px 6px;
+                gap: 6px;
+            }
+
+            .topDisc {
+                width: 38px;
+                height: 38px;
+                padding: 2px;
+            }
+
+            .topName {
+                font-size: clamp(18px, 6vw, 30px);
+                white-space: nowrap;
+            }
+
+            .topAddr {
+                font-size: 8px;
+            }
+
+            .openTop {
+                width: 38px;
+                height: 38px;
+                font-size: 18px;
+            }
+
+            .stage {
+                flex-direction: column;
+            }
+
+            .rail {
+                border-right: none;
+                border-bottom: var(--line);
+            }
+
+            .rail:last-child {
+                border-bottom: none;
+            }
+
+            .stage[data-state="viewing"] #rail-tiers,
+            .stage[data-state="viewing"] #rail-nodes {
+                display: none;
+            }
+
+            .stage[data-state="viewing"] #detail-payload {
+                flex: 1;
+            }
+
+            .rail-summary {
+                writing-mode: horizontal-tb;
+                transform: none;
+                flex-direction: row;
+                justify-content: flex-start;
+                padding: 0 16px;
+                font-size: 16px;
+            }
+
+            .payloadText {
+                padding: 10px 14px;
+                font-size: 14px;
+                gap: 8px;
+            }
+
+            .payloadText .line {
+                grid-template-columns: 3ch minmax(0, 1fr);
+                gap: 8px;
+            }
+
+            .payloadText .lineNo {
+                font-size: 0.7em
+            }
+
+            .frameBox {
+                min-height: 100px
+            }
+
+            .control {
+                font-size: 10px;
+                min-height: 38px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <script src="wh-grid-data-bridge.js"></script>
+
+
+    <main class="app" aria-label="Unified Architecture Index">
+        <header class="topbar">
+            <div class="topDisc" id="topDisc"></div>
+            <div class="topMeta">
+                <div class="topName" id="topPayloadTitle">WORLDTEXT ARCHIVE</div>
+                <div class="topAddr" id="topAddr"></div>
+            </div>
+            <button class="openTop" id="openBtn" type="button" aria-label="Launch Payload">↗</button>
+        </header>
+
+        <div class="stage" id="stage" data-state="navigating">
+
+            <div class="rail" id="rail-tiers">
+                <div class="rail-summary" id="summary-tiers" title="Return to Tiers">TIERS</div>
+                <div class="track" id="track-tiers"></div>
+            </div>
+
+            <div class="rail" id="rail-nodes">
+                <div class="rail-summary" id="summary-nodes" title="Return to Nodes">NODES</div>
+                <div class="track" id="track-nodes"></div>
+            </div>
+
+            <div class="detail" id="detail-payload">
+                <div class="payload-content" id="payload-content"></div>
+                <div class="controls">
+                    <button class="control" id="btn-prev">PREV</button>
+                    <button class="control" id="btn-mode">MODE: TEXT</button>
+                    <button class="control" id="btn-next">NEXT</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        'use strict';
+        whBridge.boot(function (bridgeData) {
+            // Inject live PT data from bridge fetch
+            window.__PT_DATA = bridgeData._rawPT;
+
+
+            // ── STATE & DATABASE (live from bridge) ──
+            const DB = window.__PT_DATA;
+            const State = {
+                tierIndex: 0,
+                nodeIndex: -1,
+                view: 'navigating',
+                mode: 'text'
+            };
+
+            // ── DATA GLYPH: stark black/white concentric address fingerprint ──
+            // Inspired by iPod pathfinder: selected=SOLID BLACK, unselected=WHITE outline
+            function createGlyph(tierCount, tierIdx, nodeCount, nodeIdx) {
+                const S = 'http://www.w3.org/2000/svg';
+                const svg = document.createElementNS(S, 'svg');
+                svg.setAttribute('viewBox', '0 0 100 100');
+
+                // White background
+                const bg = document.createElementNS(S, 'circle');
+                bg.setAttribute('cx', '50'); bg.setAttribute('cy', '50'); bg.setAttribute('r', '49');
+                bg.setAttribute('fill', '#fff'); bg.setAttribute('stroke', '#000'); bg.setAttribute('stroke-width', '2');
+                svg.appendChild(bg);
+
+                // OUTER RING: tier segments — stark black/white
+                const tc = Math.max(tierCount, 1);
+                const outerGap = tc <= 4 ? 4 : 2;
+                for (let i = 0; i < tc; i++) {
+                    const span = 360 / tc;
+                    const sA = i * span + outerGap / 2 - 90;
+                    const eA = (i + 1) * span - outerGap / 2 - 90;
+                    const a0 = sA * Math.PI / 180, a1 = eA * Math.PI / 180;
+                    const rO = 47, rI = 32;
+                    const lg = (eA - sA) > 180 ? 1 : 0;
+                    const p = document.createElementNS(S, 'path');
+                    p.setAttribute('d', `M${(50 + rO * Math.cos(a0)).toFixed(1)} ${(50 + rO * Math.sin(a0)).toFixed(1)} A${rO} ${rO} 0 ${lg} 1 ${(50 + rO * Math.cos(a1)).toFixed(1)} ${(50 + rO * Math.sin(a1)).toFixed(1)} L${(50 + rI * Math.cos(a1)).toFixed(1)} ${(50 + rI * Math.sin(a1)).toFixed(1)} A${rI} ${rI} 0 ${lg} 0 ${(50 + rI * Math.cos(a0)).toFixed(1)} ${(50 + rI * Math.sin(a0)).toFixed(1)} Z`);
+                    p.setAttribute('fill', i === tierIdx ? '#000' : '#fff');
+                    p.setAttribute('stroke', '#000');
+                    p.setAttribute('stroke-width', i === tierIdx ? '2' : '1');
+                    svg.appendChild(p);
+                }
+
+                // Separator ring
+                const sep = document.createElementNS(S, 'circle');
+                sep.setAttribute('cx', '50'); sep.setAttribute('cy', '50'); sep.setAttribute('r', '29');
+                sep.setAttribute('fill', 'none'); sep.setAttribute('stroke', '#000'); sep.setAttribute('stroke-width', '1');
+                svg.appendChild(sep);
+
+                // INNER RING: node segments — stark black/white
+                const nc = Math.max(nodeCount, 1);
+                const innerGap = nc > 24 ? 1 : nc > 12 ? 2 : 3;
+                for (let i = 0; i < nc; i++) {
+                    const span = 360 / nc;
+                    const sA = i * span + innerGap / 2 - 90;
+                    const eA = (i + 1) * span - innerGap / 2 - 90;
+                    const a0 = sA * Math.PI / 180, a1 = eA * Math.PI / 180;
+                    const rO = 28, rI = 14;
+                    const lg = (eA - sA) > 180 ? 1 : 0;
+                    const p = document.createElementNS(S, 'path');
+                    p.setAttribute('d', `M${(50 + rO * Math.cos(a0)).toFixed(1)} ${(50 + rO * Math.sin(a0)).toFixed(1)} A${rO} ${rO} 0 ${lg} 1 ${(50 + rO * Math.cos(a1)).toFixed(1)} ${(50 + rO * Math.sin(a1)).toFixed(1)} L${(50 + rI * Math.cos(a1)).toFixed(1)} ${(50 + rI * Math.sin(a1)).toFixed(1)} A${rI} ${rI} 0 ${lg} 0 ${(50 + rI * Math.cos(a0)).toFixed(1)} ${(50 + rI * Math.sin(a0)).toFixed(1)} Z`);
+                    p.setAttribute('fill', i === nodeIdx ? '#000' : '#fff');
+                    p.setAttribute('stroke', '#000');
+                    p.setAttribute('stroke-width', i === nodeIdx ? '1.5' : '0.4');
+                    svg.appendChild(p);
+                }
+
+                // Center core: orange when address is locked, white when browsing
+                const core = document.createElementNS(S, 'circle');
+                core.setAttribute('cx', '50'); core.setAttribute('cy', '50'); core.setAttribute('r', '11');
+                core.setAttribute('fill', nodeIdx >= 0 ? '#f47a45' : '#fff');
+                core.setAttribute('stroke', '#000'); core.setAttribute('stroke-width', '2');
+                svg.appendChild(core);
+
+                return svg;
+            }
+
+            // ── RENDER ENGINE ──
+            function render() {
+                const activeTier = DB.archive_tiers[State.tierIndex];
+                const activeNode = activeTier && State.nodeIndex !== -1 ? activeTier.nodes[State.nodeIndex] : null;
+
+                // Topbar: glyph shows address fingerprint
+                const topTitle = document.getElementById('topPayloadTitle');
+                const topDisc = document.getElementById('topDisc');
+                const topAddr = document.getElementById('topAddr');
+                const tierCount = DB.archive_tiers.length;
+                const nodeCount = activeTier ? activeTier.nodes.length : 0;
+
+                topDisc.innerHTML = '';
+                topDisc.appendChild(createGlyph(tierCount, State.tierIndex, nodeCount, State.nodeIndex));
+
+                if (State.view === 'viewing' && activeNode) {
+                    topTitle.textContent = activeNode.title;
+                    topDisc.title = '← Back to ' + activeTier.tier_name;
+                    topAddr.textContent = 'T' + (State.tierIndex + 1) + ' › N' + (State.nodeIndex + 1) + ' of ' + nodeCount;
+                } else {
+                    topTitle.textContent = activeTier ? activeTier.tier_name : 'WORLDTEXT ARCHIVE';
+                    topDisc.title = 'Tier ' + (State.tierIndex + 1) + ' of ' + tierCount;
+                    topAddr.textContent = 'Tier ' + (State.tierIndex + 1) + ' of ' + tierCount + ' · ' + nodeCount + ' artifacts';
+                }
+
+                // CSS State
+                document.getElementById('stage').setAttribute('data-state', State.view);
+
+                // Render Rail 1: Tiers (with address glyphs)
+                const trackTiers = document.getElementById('track-tiers');
+                trackTiers.innerHTML = '';
+                DB.archive_tiers.forEach((tier, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = `cell tCell ${idx === State.tierIndex ? 'active' : ''}`;
+                    const g = document.createElement('span');
+                    g.className = 'cell-glyph';
+                    g.appendChild(createGlyph(tierCount, idx, tier.nodes.length, -1));
+                    const info = document.createElement('div');
+                    info.className = 'cell-info';
+                    info.innerHTML = `<span class="kicker">${tier.nodes.length} artifacts · T${idx + 1}</span>${tier.tier_name}`;
+                    btn.appendChild(g);
+                    btn.appendChild(info);
+                    btn.onclick = () => { State.tierIndex = idx; State.nodeIndex = -1; State.view = 'navigating'; render(); };
+                    trackTiers.appendChild(btn);
+                });
+
+                // Render Rail 2: Nodes (with address glyphs)
+                const trackNodes = document.getElementById('track-nodes');
+                trackNodes.innerHTML = '';
+                if (activeTier) {
+                    activeTier.nodes.forEach((node, idx) => {
+                        const btn = document.createElement('button');
+                        btn.className = `cell nCell ${idx === State.nodeIndex && State.view === 'viewing' ? 'active' : ''}`;
+                        const g = document.createElement('span');
+                        g.className = 'cell-glyph';
+                        g.appendChild(createGlyph(tierCount, State.tierIndex, nodeCount, idx));
+                        const info = document.createElement('div');
+                        info.className = 'cell-info';
+                        let densityStr = node.kicker || 'Artifact';
+                        if (node.density && node.density.touches) densityStr = `${node.density.touches} tch`;
+                        info.innerHTML = `<span class="kicker">${densityStr} · N${idx + 1}</span>${node.title}`;
+                        btn.appendChild(g);
+                        btn.appendChild(info);
+                        btn.onclick = () => { State.nodeIndex = idx; State.view = 'viewing'; State.mode = 'text'; render(); };
+                        trackNodes.appendChild(btn);
+                    });
+                }
+
+                // Render Breadcrumbs (Orientation Anchors — shows tier/node name in collapsed sidebar)
+                document.getElementById('summary-tiers').textContent = activeTier ? activeTier.tier_name : 'TIERS';
+                document.getElementById('summary-nodes').textContent = activeNode ? activeNode.title : 'NODES';
+
+                // Render Payload Aperture
+                const content = document.getElementById('payload-content');
+                content.innerHTML = ''; // Aggressive Garbage Collection for iframes
+
+                if (State.view === 'viewing' && activeNode) {
+
+                    // ── TEXT LINES (always shown) ──
+                    const textDiv = document.createElement('div');
+                    textDiv.className = 'payloadText';
+                    textDiv.style.flexShrink = '0';
+
+                    const lines = [];
+                    if (activeNode.thesis) lines.push({ no: 'THS', text: activeNode.thesis });
+                    if (activeNode.bridge) lines.push({ no: 'BRG', text: activeNode.bridge });
+                    if (activeNode.density && activeNode.density.touches) {
+                        lines.push({ no: 'MTA', text: `NETWORK DENSITY: ${activeNode.density.touches} TOUCHES` });
+                    }
+
+                    lines.forEach(l => {
+                        const row = document.createElement('div');
+                        row.className = 'line';
+                        row.innerHTML = `<span class="lineNo">${l.no}</span><span class="lineText">${l.text}</span>`;
+                        textDiv.appendChild(row);
+                    });
+                    content.appendChild(textDiv);
+
+                    // ── IFRAME (fills remaining space, ↗ is in topbar) ──
+                    const box = document.createElement('div');
+                    box.className = 'frameBox';
+                    if (activeNode.url) {
+                        const iframe = document.createElement('iframe');
+                        iframe.className = 'iframeSlot';
+                        iframe.src = activeNode.url;
+                        box.appendChild(iframe);
+                    } else {
+                        box.innerHTML = '<div style="flex:1;display:grid;place-items:center;color:var(--muted);font:900 11px var(--mono);text-transform:uppercase">Text payload only</div>';
+                    }
+                    content.appendChild(box);
+
+                    // Setup Runtime Controls
+                    const btnMode = document.getElementById('btn-mode');
+                    btnMode.textContent = `MODE: ${State.mode}`;
+                    btnMode.style.opacity = activeNode.url ? '1' : '0.4';
+                }
+            }
+
+            // ── BINDINGS ──
+            // Disc = back navigation (replaces hidden rail summaries on mobile)
+            document.getElementById('topDisc').onclick = () => {
+                if (State.view === 'viewing') { State.view = 'navigating'; render(); }
+            };
+            document.getElementById('summary-tiers').onclick = () => { State.view = 'navigating'; render(); };
+            document.getElementById('summary-nodes').onclick = () => { State.view = 'navigating'; render(); };
+
+            document.getElementById('btn-prev').onclick = () => {
+                if (State.view !== 'viewing') return;
+                const nodes = DB.archive_tiers[State.tierIndex].nodes;
+                State.nodeIndex = (State.nodeIndex - 1 + nodes.length) % nodes.length;
+                State.mode = 'text';
+                render();
+            };
+
+            document.getElementById('btn-next').onclick = () => {
+                if (State.view !== 'viewing') return;
+                const nodes = DB.archive_tiers[State.tierIndex].nodes;
+                State.nodeIndex = (State.nodeIndex + 1) % nodes.length;
+                State.mode = 'text';
+                render();
+            };
+
+            document.getElementById('btn-mode').onclick = () => {
+                if (State.view !== 'viewing') return;
+                const node = DB.archive_tiers[State.tierIndex].nodes[State.nodeIndex];
+                if (!node.url) return;
+                State.mode = State.mode === 'text' ? 'iframe' : 'text';
+                render();
+            };
+
+            document.getElementById('openBtn').onclick = () => {
+                if (State.view === 'viewing' && State.nodeIndex !== -1) {
+                    const node = DB.archive_tiers[State.tierIndex].nodes[State.nodeIndex];
+                    if (node.url) window.open(node.url, '_blank');
+                    else if (node.repo) window.open(node.repo, '_blank');
+                }
+            };
+
+            // ── BOOT ──
+            render();
+
+
+        }); // end whBridge.boot
+    </script>
+</body>
+
+</html>

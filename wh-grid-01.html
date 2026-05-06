@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Orange Assembly Antikythera Index</title>
+  <style>
+    :root{
+      /* Fused Color Palette */
+      --bg:#f47a45;
+      --orange:#FF6A00;
+      --seg-inner:#F99F2A;
+      --cream:#fff6df;
+      --ink:#000;
+      --muted:rgba(0,0,0,.56);
+      --active:#000;
+      --activeText:#fff6df;
+      --line:3px solid var(--ink);
+      --thin:1px solid rgba(0,0,0,0.3);
+      --gap:7px;
+      --font:Inter, 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0; width:100%; height:100%; overflow:hidden;
+      background:var(--bg); color:var(--ink); font-family:var(--font);
+      -webkit-text-size-adjust:100%; -webkit-font-smoothing: antialiased; 
+      -moz-osx-font-smoothing: grayscale; cursor: crosshair;
+    }
+
+    ::-webkit-scrollbar { width: 12px; height: 12px; }
+    ::-webkit-scrollbar-track { background: var(--bg); border-left: var(--line); border-top: var(--line); }
+    ::-webkit-scrollbar-thumb { background: var(--orange); border: var(--line); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--seg-inner); }
+    * { scrollbar-width: thin; scrollbar-color: var(--orange) var(--bg); }
+
+    button,a{ font:inherit; color:inherit; border:0; background:none; text-decoration:none; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+
+    /* --- INTRO SEQUENCE --- */
+    .intro {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      text-align: center; z-index: 2000; background: var(--bg);
+      padding: 2rem; border-radius: 20px; border: var(--line);
+      max-width: 400px; transition: all 0.5s ease;
+    }
+    .intro.hidden { opacity: 0; pointer-events: none; transform: translate(-50%, -50%) scale(0.8); }
+    .intro h1 { font-size: 1.5rem; margin-bottom: 1rem; text-transform: uppercase; }
+    .intro p { font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.5; }
+    
+    .btn-action {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 0.5rem; font-size: 0.85rem; font-weight: bold; font-family: inherit;
+      text-decoration: none; color: var(--ink); background: var(--orange);
+      padding: 0.6rem 1.2rem; border-radius: 20px; border: 2px solid var(--ink);
+      text-transform: uppercase; cursor: pointer; transition: all 0.2s ease;
+    }
+    .btn-action:hover { transform: scale(1.05); background: var(--seg-inner); }
+
+    /* --- MATRIX STAGE --- */
+    .app{ width:100vw; height:100vh; height:100svh; display:grid; grid-template-rows:auto minmax(0,1fr); overflow:hidden; background:var(--bg); }
+
+    .topbar{
+      min-height:62px; padding:7px 8px; display:grid; grid-template-columns:50px minmax(0,1fr) 54px;
+      gap:8px; align-items:center; border-bottom:var(--line); background:var(--bg);
+    }
+
+    .topDisc{ width:50px; height:50px; border:var(--line); background:var(--cream); display:grid; place-items:center; overflow:hidden; }
+    .topDisc svg{ width:40px; height:40px; display:block; animation:spinDisc 12s linear infinite; transform-origin:50% 50%; }
+    @keyframes spinDisc{to{transform:rotate(360deg)}}
+
+    .topTitleWrap{ min-width:0; display:grid; align-content:center; gap:2px; cursor:pointer; transition: opacity 0.2s; }
+    .topTitleWrap:hover{ opacity: 0.7; }
+    .topMeta{ min-width:0; font-size:10px; line-height:1; font-weight:1000; letter-spacing:.075em; text-transform:uppercase; color:rgba(0,0,0,.62); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .topName{ min-width:0; font-size:clamp(18px,2.5vw,28px); line-height:1.02; font-weight:900; letter-spacing:-.03em; text-transform:uppercase; white-space:normal; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+
+    .openTop{ width:50px; height:50px; border:var(--line); background:var(--cream); display:grid; place-items:center; font-size:24px; line-height:1; font-weight:1000; transition: background 0.2s ease; }
+    .openTop:hover { background: var(--orange); }
+
+    .stage{
+      min-height:0; display:grid;
+      grid-template-columns:.6fr .6fr .5fr .45fr 2.3fr;
+      gap:var(--gap); padding:var(--gap); overflow:hidden; transition: all 0.3s ease;
+    }
+
+    /* --- THE DIALS (RAILS) --- */
+    .rail{ min-width:0; min-height:0; display:grid; grid-template-rows:minmax(0,1fr); overflow:hidden; }
+    
+    .track{
+      position:relative; min-height:0; height:100%; border-left:var(--line); border-right:var(--line); border-top:var(--line);
+      display:grid; overflow:hidden; background:var(--bg);
+      background-image:
+        repeating-linear-gradient(to bottom, rgba(0,0,0,0.5) 0px, rgba(0,0,0,0.5) 1px, transparent 1px, transparent 15px),
+        repeating-linear-gradient(to bottom, rgba(0,0,0,0.5) 0px, rgba(0,0,0,0.5) 1px, transparent 1px, transparent 15px);
+      background-size: 6px 100%, 6px 100%;
+      background-position: left, right;
+      background-repeat: no-repeat;
+    }
+
+    .track::before{
+      content:""; position:absolute; inset:0; z-index:0; pointer-events:none; opacity:.1;
+      background: linear-gradient(90deg, rgba(0,0,0,0.3) 0%, transparent 10%, transparent 90%, rgba(0,0,0,0.3) 100%);
+    }
+
+    /* --- DIAL SEGMENTS (CELLS) --- */
+    .cell{
+      min-width:0; min-height:0; position:relative; z-index:1; border-bottom:var(--thin);
+      background:var(--bg); display:grid; overflow:hidden; padding: 6px;
+      line-height:1; font-weight:1000;
+      transition: all 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+      border-top: 1px solid rgba(255,255,255,0.4);
+      border-left: 6px solid transparent; 
+      border-right: 6px solid transparent;
+    }
+
+    .cellInner{
+      min-width:0; width:100%; height:100%; display:grid;
+      grid-template-rows: auto minmax(0,1fr) auto;
+      align-items:center; justify-items: center; gap:4px;
+    }
+
+    /* DYNAMIC SVG DIAL MARKER */
+    .dialMark {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 800;
+      color: currentColor; opacity: 0.6; letter-spacing: 0.05em; width: 100%;
+      writing-mode: horizontal-tb; transform: none; /* Always upright */
+    }
+    .dialIcon { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; }
+    .dialIcon svg { width: 100%; height: 100%; }
+    .dialDeg { font-size: 9px; opacity: 0.8; }
+    
+    /* INACTIVE LABELS: Stacked Vertically */
+    .cellLabel {
+      display:block;
+      writing-mode: vertical-rl; transform: rotate(180deg);
+      font-size: clamp(10px, 1.2vw, 14px);
+      font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase;
+      opacity: 0.7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      text-align: center; height: 100%;
+    }
+    
+    .cellRole, .cellSub { display: none; } 
+
+    /* THE READ HEAD: ACTIVE LABELS */
+    .cell.active {
+      background:var(--active); color:var(--activeText);
+      outline: 2px solid var(--cream); outline-offset: -2px;
+      border-left: 6px solid var(--orange); border-right: 6px solid var(--orange);
+      z-index:10; opacity:1; transform: scale(1.03); box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+    }
+
+    .cell.active .dialMark { flex-direction: row; opacity: 1; color: var(--cream); }
+    .cell.active .dialIcon { width: 14px; height: 14px; color: var(--orange); }
+    .cell.active .dialDeg { color: var(--cream); }
+
+    .cell.active .cellInner { grid-template-rows: auto auto minmax(0,1fr) auto auto; justify-items: start; padding: 4px; }
+
+    .cell.active .cellLabel {
+      writing-mode: horizontal-tb; transform: none; height: auto;
+      font-size: clamp(15px, 2vw, 24px); letter-spacing: -0.02em; line-height: 1.05;
+      white-space: normal; word-wrap: break-word; opacity: 1; text-align: left;
+    }
+
+    .cell.active .cellRole { display: block; font-size: 9px; letter-spacing: 0.1em; color: var(--orange); margin-bottom: 2px; opacity: 1; text-transform: uppercase; }
+    .cell.active .cellSub { display: block; font-size: 10px; font-weight: 600; opacity: 0.8; margin-top: 4px; white-space: normal; }
+
+    /* PUNCHED HOLE DOTS */
+    .cellDots{ display:flex; align-items:center; justify-content:center; gap:4px; flex-wrap:wrap; opacity:0.6; }
+    .cell.active .cellDots{ justify-content:flex-start; opacity:1; margin-top: 6px; }
+    .dot{ width:6px; height:6px; border: 1px solid currentColor; background: transparent; flex:0 0 auto; border-radius: 0; }
+    .dot.filled{background:currentColor}
+    .countBadge{ min-width:18px; height:14px; padding:1px 3px; border:1px solid currentColor; display:inline-grid; place-items:center; font-size:9px; line-height:1; font-weight:1000; }
+
+    .cell:hover:not(.active){ background:rgba(255,255,255,.15); }
+    .cell.muted{ opacity:.4; }
+    .cell.near{ opacity:.85; }
+    .cell.inPath{ box-shadow:inset 0 0 0 3px rgba(255,246,223,.4); }
+
+    /* --- FUSED PAYLOAD AREA --- */
+    .detail{ min-width:0; min-height:0; display:grid; grid-template-rows:44px minmax(0,1fr) auto; gap:var(--gap); overflow:hidden; }
+    .selectionBar{ min-width:0; border:var(--line); background:var(--cream); display:grid; grid-template-columns:1fr auto; align-items:center; gap:8px; padding:6px 9px; overflow:hidden; }
+    .selectionTitle{ min-width:0; font-size:clamp(14px,1.7vw,23px); line-height:.95; font-weight:1000; letter-spacing:-.055em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .selectionCount{ min-width:42px; height:28px; border:var(--line); display:grid; place-items:center; font-size:12px; line-height:1; font-weight:1000; text-transform:uppercase; background:var(--paper); }
+    
+    .payloadScroll { min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: var(--gap); overflow-y: auto; overflow-x: hidden; padding-right: 4px; }
+    .payloadText { flex-shrink: 0; border: var(--line); background: var(--cream); padding: 20px; display: flex; flex-direction: column; gap: 10px; font-size: clamp(20px, 2.5vw, 36px); line-height: 1.15; font-weight: 820; }
+    .payloadText .line { display: grid; grid-template-columns: 3.25ch minmax(0,1fr); gap: 12px; min-width: 0; padding-bottom: 8px; border-bottom: 1px solid rgba(0,0,0,0.1); }
+    .payloadText .line:last-child { border-bottom: none; padding-bottom: 0; }
+    .payloadText .lineNo { color: var(--muted); font-size: .72em; font-weight: 1000; line-height: 1.4; }
+    .payloadText .lineText { min-width: 0; word-wrap: break-word; }
+
+    .payloadIframeWrapper { flex-grow: 1; min-height: 50vh; border: var(--line); background: var(--paper); }
+    .iframeSlot { width: 100%; height: 100%; border: 0; display: block; }
+    .mediaSlot { width: 100%; min-height: 50vh; display: grid; place-items: center; padding: 18px; border: var(--line); background: var(--bg); }
+    .mediaSlot svg { width: min(100%, 380px); height: min(100%, 260px); display: block; }
+
+    .controls{ display:grid; grid-template-columns:1fr 1fr 1fr; border:var(--line); background:var(--cream); }
+    .control{ min-height:48px; border-right:var(--line); font-size:13px; font-weight:1000; text-transform:uppercase; letter-spacing:.06em; transition: background 0.2s; }
+    .control:hover { background: rgba(0,0,0,0.05); }
+    .control.modeControl{ background:var(--active); color:var(--activeText); letter-spacing:.04em; }
+    .control.modeControl:hover { background: var(--ink); }
+    .control:last-child{border-right:0}
+    .control:active,.openTop:active{transform:translateY(2px)}
+
+    /* --- SEMANTIC ZOOM: GRID VIEW --- */
+    body[data-view="grid"] .stage { grid-template-columns: 1fr; overflow-y: auto; display: block; }
+    body[data-view="grid"] .railD, body[data-view="grid"] .railC, body[data-view="grid"] .railL, body[data-view="grid"] .detail { display: none; }
+    body[data-view="grid"] .railB { display: block; }
+    body[data-view="grid"] .railB .track { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); grid-auto-rows: min-content; gap: 3rem; padding: 4rem; background: transparent; border: none; overflow: visible; background-image: none; }
+    body[data-view="grid"] .railB .track::before { display: none; }
+    body[data-view="grid"] .bCell { border: none; background: transparent; aspect-ratio: 1; outline: none; box-shadow: none; padding:0; transform:none; }
+    body[data-view="grid"] .bCell .cellInner { display: flex; text-align: center; } /* Keep pattern visible */
+    body[data-view="grid"] .bCell .dialMark { display: none; } /* Hide raw degrees in grid view */
+    body[data-view="grid"] .bCell .cellLabel { writing-mode: horizontal-tb; transform: none; white-space: normal; height: auto; }
+    body[data-view="grid"] .bCell .orangeWrap { display: flex; width: 100%; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; }
+    body[data-view="grid"] .orangeWrap svg { width: clamp(100px, 80%, 140px); height: auto; filter: drop-shadow(0 6px 0 rgba(0,0,0,0.2)); transition: transform 0.2s; color: var(--ink); }
+    body[data-view="grid"] .bCell:hover .orangeWrap svg { transform: translateY(-5px); }
+
+    /* --- SEMANTIC ZOOM: TIMELINE VIEW --- */
+    body[data-view="timeline"] .stage { grid-template-columns: 1fr; display: block; overflow-y: hidden; }
+    body[data-view="timeline"] .railD, body[data-view="timeline"] .railC, body[data-view="timeline"] .railB, body[data-view="timeline"] .detail { display: none; }
+    body[data-view="timeline"] .railL { display: block; height: 100%; }
+    body[data-view="timeline"] .railL .track { display: flex; flex-direction: row; overflow-x: auto; overflow-y: hidden; align-items: center; gap: 4rem; padding: 4rem; background: transparent; border: none; background-image: none; }
+    body[data-view="timeline"] .railL .track::before { display: none; }
+    body[data-view="timeline"] .leafCell { flex: 0 0 160px; height: 160px; border-radius: 50%; border: var(--line); background: var(--cream); outline: none; box-shadow: none; overflow: visible; padding:10px; transform:none; }
+    body[data-view="timeline"] .leafCell::after { content: ""; position: absolute; right: -4rem; top: 50%; width: 4rem; height: 4px; background: var(--ink); z-index: -1; }
+    body[data-view="timeline"] .leafCell:last-child::after { display: none; }
+    body[data-view="timeline"] .leafCell.active { background: var(--active); color: var(--activeText); transform: scale(1.15); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+    body[data-view="timeline"] .leafCell .cellInner { align-items: center; text-align: center; }
+    body[data-view="timeline"] .leafCell .cellLabel { display: block; writing-mode: horizontal-tb; transform: none; font-size: 14px; -webkit-line-clamp: 3; text-align: center; }
+    body[data-view="timeline"] .leafCell .dialMark { flex-direction: row; margin-bottom: 8px; }
+    body[data-view="timeline"] .leafCell .cellDots { display: none; }
+
+    @media (max-width:760px){
+      :root{--gap:5px}
+      .topbar{display:grid; grid-template-columns:38px minmax(0,1fr) 42px; gap:6px; min-height: 60px; padding: 6px; }
+      .topDisc{width:38px; height:38px;}
+      .topDisc svg{width:30px; height:30px;}
+      .topName{ font-size:clamp(16px,4.5vw,22px); line-height:1.1; }
+      .openTop{height:38px; font-size:21px;}
+
+      .stage{
+        grid-template-columns:.55fr .5fr .44fr .62fr;
+        grid-template-rows:minmax(224px,42svh) minmax(0,1fr);
+      }
+      .detail{ grid-column:1 / -1; grid-row:1; grid-template-rows:36px minmax(0,1fr) 38px; }
+      
+      .rail{grid-row:2;min-height:0}
+      .rail:nth-of-type(1){grid-column:1}
+      .rail:nth-of-type(2){grid-column:2}
+      .rail:nth-of-type(3){grid-column:3}
+      .rail:nth-of-type(4){grid-column:4}
+      
+      /* Mobile Antikythera Tuning */
+      .track { background-size: 4px 100%, 4px 100%; border-width: 2px; }
+      .cell{padding:2px; border-left-width:4px; border-right-width:4px; }
+      .dialMark { font-size: 8px; flex-direction: column; gap: 2px; }
+      .dialIcon { width: 12px; height: 12px; }
+      .cellLabel { font-size: 9px; } 
+      
+      .cell.active .cellInner { padding: 2px; }
+      .cell.active .dialMark { flex-direction: column; }
+      .cell.active .cellLabel { font-size: clamp(12px, 3.5vw, 16px); } 
+      
+      .dot{width:5px;height:5px;}
+      .countBadge{min-width:14px;height:12px;font-size:7px;padding:0 2px;}
+
+      body[data-view="grid"] .railB .track { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); padding: 2rem; gap: 2rem; }
+      body[data-view="timeline"] .railL .track { padding: 2rem; gap: 2rem; }
+      body[data-view="timeline"] .leafCell { flex: 0 0 100px; height: 100px; }
+      body[data-view="timeline"] .leafCell::after { right: -2rem; width: 2rem; }
+    }
+
+    @media (max-height:690px){
+      .stage{grid-template-rows:minmax(196px,40svh) minmax(0,1fr)}
+      .detail{grid-template-rows:32px minmax(0,1fr) 34px}
+    }
+  </style>
+</head>
+<body data-view="rails">
+    <script src="wh-grid-data-bridge.js"></script>
+  
+  <div class="intro" id="intro">
+    <h1>Orange Assemblies</h1>
+    <p>A high-potency citrus matrix. Spin the dials to locate coordinates across the grid.</p>
+    <button class="btn-action" onclick="closeIntro()">ENGAGE DIALS</button>
+  </div>
+
+  <main class="app" aria-label="Orange Assembly Payload Index">
+    <header class="topbar">
+      <div class="topDisc" id="topDisc" aria-hidden="true" title="Absolute Process Indicator"></div>
+      <div class="topTitleWrap" id="topTitleWrap" title="Click to Cycle View (Zoom)">
+        <div class="topMeta" id="topMeta">Research / Worldtext / Theory</div>
+        <div class="topName" id="topPayloadTitle">From Imagetext to Worldtext</div>
+      </div>
+      <button class="openTop" id="openBtn" type="button" aria-label="Open payload in new window">↗</button>
+    </header>
+
+    <section class="stage">
+      <section class="rail" aria-label="D rail" id="containerD"><div class="track" id="railD"></div></section>
+      <section class="rail" aria-label="C rail" id="containerC"><div class="track" id="railC"></div></section>
+      <section class="rail" aria-label="B rail" id="containerB"><div class="track" id="railB"></div></section>
+      <section class="rail" aria-label="Leaf rail" id="containerL"><div class="track" id="railL"></div></section>
+
+      <section class="detail" aria-label="Selected payload">
+        <div class="selectionBar" id="selectionBar">
+          <div class="selectionTitle" id="selectionTitle">Research</div>
+          <div class="selectionCount" id="selectionCount">3</div>
+        </div>
+        
+        <article class="payloadShell" id="payloadShell"></article>
+
+        <div class="controls">
+          <button class="control" id="prevBtn" type="button">prev</button>
+          <button class="control modeControl" id="zoomBtn" type="button">Zoom: Rails</button>
+          <button class="control" id="nextBtn" type="button">next</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    'use strict';
+
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+    const views = ['rails', 'grid', 'timeline'];
+    let globalAudioCtx = null;
+
+    function pulse(freq = 800) {
+      if(window.navigator && typeof window.navigator.vibrate === 'function') window.navigator.vibrate(8);
+      try {
+        if (!globalAudioCtx) globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (globalAudioCtx.state === 'suspended') globalAudioCtx.resume();
+        const osc = globalAudioCtx.createOscillator();
+        const gain = globalAudioCtx.createGain();
+        osc.connect(gain); gain.connect(globalAudioCtx.destination);
+        osc.type = 'sine'; osc.frequency.setValueAtTime(freq, globalAudioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, globalAudioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, globalAudioCtx.currentTime + 0.15);
+        osc.start(globalAudioCtx.currentTime); osc.stop(globalAudioCtx.currentTime + 0.15);
+      } catch (e) {}
+    }
+
+    // --- DATA ---
+            // ═══ LIVE DATA FROM wh-grid-data-bridge.js ═══
+        // Data fetched from worldtext-program-theory.json + github-ripple-index.json
+        var __bridgeData = null;
+        var archiveTiers, archiveClusters, archiveBlocks, leafTemplates;
+        var blocks, leaves;
+        var domains, clusters, blocks, leaves;
+
+
+    const state = { view: 'rails', d:'D1', c:'C1', b:'B1', l:'01' };
+    const el = {};
+
+    ['railD','railC','railB','railL','containerD','containerC','containerB','containerL','topDisc','topMeta','topPayloadTitle','topTitleWrap','openBtn','payloadShell','prevBtn','zoomBtn','nextBtn','selectionTitle','selectionCount'].forEach(function(id){
+      el[id] = document.getElementById(id);
+    });
+
+    function byId(list,id){ return list.find(function(x){ return x.id === id; }) || list[0]; }
+    function domain(){ return byId(domains,state.d); }
+    function cluster(){ return byId(clusters,state.c); }
+    function block(){ return byId(blocks,state.b); }
+    function leaf(){ return byId(leaves,state.l); }
+    function clear(node){ while(node.firstChild) node.removeChild(node.firstChild); }
+    
+    function svgEl(tag, attrs){
+      const node = document.createElementNS(SVG_NS, tag);
+      Object.keys(attrs || {}).forEach(function(key){ node.setAttribute(key, attrs[key]); });
+      return node;
+    }
+
+    function clampState(){
+      const d = domain();
+      if(!d.clusters.includes(state.c)) state.c = d.clusters[0];
+      const c = cluster();
+      if(!c.blocks.includes(state.b)) state.b = c.blocks[0];
+      const b = block();
+      if(!b.leaves.includes(state.l)) state.l = b.leaves[0];
+    }
+
+    function selectD(id){ pulse(400); state.d = id; state.c = domain().clusters[0]; state.b = cluster().blocks[0]; state.l = block().leaves[0]; render(); }
+    function selectC(id){ pulse(600); state.c = id; state.d = cluster().domain; state.b = cluster().blocks[0]; state.l = block().leaves[0]; render(); }
+    function selectB(id){ pulse(800); state.b = id; state.c = block().cluster; state.d = cluster().domain; state.l = block().leaves[0]; render(); }
+    function selectL(id){ pulse(1000); state.l = id; state.b = leaf().block; state.c = block().cluster; state.d = cluster().domain; render(); }
+
+    function closeIntro() { document.getElementById('intro').classList.add('hidden'); pulse(1500); }
+
+    function cycleZoom(){
+      pulse(1200);
+      const idx = views.indexOf(state.view);
+      state.view = views[(idx + 1) % views.length];
+      document.body.setAttribute('data-view', state.view);
+      el.zoomBtn.textContent = 'Zoom: ' + state.view;
+      
+      setTimeout(function() {
+        if(state.view === 'grid') {
+            const activeNode = el.railB.querySelector('.active');
+            if(activeNode) activeNode.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+        } else if (state.view === 'timeline') {
+            const activeNode = el.railL.querySelector('.active');
+            if(activeNode) activeNode.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+        }
+      }, 100);
+    }
+
+    function nextLeaf(delta){
+      pulse(900);
+      const index = leaves.findIndex(function(x){ return x.id === state.l; });
+      const next = leaves[(index + delta + leaves.length) % leaves.length];
+      selectL(next.id);
+      
+      if(state.view === 'timeline') {
+          setTimeout(function() {
+              const activeNode = el.railL.querySelector('.active');
+              if(activeNode) activeNode.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+          }, 50);
+      }
+    }
+
+    // --- ANTIKYTHERA DIAL SPIN LOGIC (Touch & Wheel Safe) ---
+    let spinAccumulators = { D: 0, C: 0, B: 0, L: 0 };
+    function bindDialSpin(containerEl, trackId, getListFn, currentIdFn, selectCallback) {
+        let isTouching = false;
+        let lastY = 0;
+
+        containerEl.addEventListener('wheel', (e) => {
+            if (state.view !== 'rails') return; 
+            e.preventDefault();
+            spinAccumulators[trackId] += e.deltaY;
+            processSpin(trackId, getListFn, currentIdFn, selectCallback);
+        }, { passive: false });
+
+        containerEl.addEventListener('touchstart', (e) => {
+            if (state.view !== 'rails') return;
+            isTouching = true;
+            lastY = e.touches[0].clientY;
+        }, { passive: true });
+
+        containerEl.addEventListener('touchmove', (e) => {
+            if (state.view !== 'rails' || !isTouching) return;
+            e.preventDefault();
+            const y = e.touches[0].clientY;
+            spinAccumulators[trackId] += (lastY - y) * 1.5; // Drag multiplier
+            lastY = y;
+            processSpin(trackId, getListFn, currentIdFn, selectCallback);
+        }, { passive: false });
+
+        containerEl.addEventListener('touchend', () => { isTouching = false; });
+        containerEl.addEventListener('touchcancel', () => { isTouching = false; });
+    }
+
+    function processSpin(trackId, getListFn, currentIdFn, selectCallback) {
+        const thresh = 40;
+        if (Math.abs(spinAccumulators[trackId]) > thresh) {
+            const dir = spinAccumulators[trackId] > 0 ? 1 : -1;
+            spinAccumulators[trackId] = 0;
+            
+            const list = getListFn();
+            const currentId = currentIdFn();
+            const idx = list.findIndex(x => x.id === currentId);
+            if (idx === -1) return;
+            const nextIdx = (idx + dir + list.length) % list.length;
+            
+            pulse(150 + (nextIdx * 20)); 
+            selectCallback(list[nextIdx].id);
+        }
+    }
+
+    bindDialSpin(el.containerD, 'D', () => domains, () => state.d, selectD);
+    bindDialSpin(el.containerC, 'C', () => clusters.filter(c => c.domain === state.d), () => state.c, selectC);
+    bindDialSpin(el.containerB, 'B', () => blocks.filter(b => b.cluster === state.c), () => state.b, selectB);
+    bindDialSpin(el.containerL, 'L', () => leaves.filter(l => l.block === state.b), () => state.l, selectL);
+
+
+    function makeCell(model, cls, active, muted, marker, handler, near, inPath, index, total){
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'cell ' + cls + (active ? ' active' : '') + (muted ? ' muted' : '') + (near ? ' near' : '') + (inPath ? ' inPath' : '') + (marker ? ' ' + marker : '');
+      button.setAttribute('aria-label', model.role + ': ' + model.label);
+
+      const inner = document.createElement('span');
+      inner.className = 'cellInner';
+
+      // 1. Dial Mark (Dynamic SVG & Degree/Index)
+      const dialMark = document.createElement('span');
+      dialMark.className = 'dialMark';
+      
+      const dialIcon = document.createElement('span');
+      dialIcon.className = 'dialIcon';
+      dialIcon.appendChild(createOrangeSvg(index, total));
+      
+      const dialDeg = document.createElement('span');
+      dialDeg.className = 'dialDeg';
+      dialDeg.textContent = Math.round((index / total) * 360).toString().padStart(3, '0') + '°';
+      
+      dialMark.appendChild(dialIcon);
+      dialMark.appendChild(dialDeg);
+      inner.appendChild(dialMark);
+
+      const role = document.createElement('span'); role.className = 'cellRole'; role.textContent = model.role;
+      inner.appendChild(role);
+
+      const label = document.createElement('span'); label.className = 'cellLabel'; label.textContent = model.label;
+      inner.appendChild(label);
+
+      const sub = document.createElement('span'); sub.className = 'cellSub'; sub.textContent = model.sub || '';
+      if(model.sub) inner.appendChild(sub);
+
+      const dots = document.createElement('span'); dots.className = 'cellDots';
+      addDots(dots, model.count || 1, active || inPath);
+      inner.appendChild(dots);
+
+      button.appendChild(inner);
+      
+      // Polymorphic Orange Injection (Grid View)
+      if (cls === 'bCell') {
+          const orangeWrap = document.createElement('div');
+          orangeWrap.className = 'orangeWrap';
+          // In Grid View, Block represents leaves inside it
+          orangeWrap.appendChild(createOrangeSvg(0, model.count));
+          button.appendChild(orangeWrap);
+      }
+
+      button.addEventListener('click', handler);
+      return button;
+    }
+
+    function addDots(target, count, filled){
+      const maxDots = 6;
+      const visible = Math.min(count, maxDots);
+      for(let i = 0; i < visible; i++){
+        const dot = document.createElement('span');
+        dot.className = 'dot' + (filled ? ' filled' : '');
+        target.appendChild(dot);
+      }
+      if(count > maxDots){
+        const badge = document.createElement('span');
+        badge.className = 'countBadge';
+        badge.textContent = String(count);
+        target.appendChild(badge);
+      }
+    }
+
+    function proportionalWeights(length, activeIndex, pathPredicate){
+      return Array.from({length}, function(_, index){
+        if(index === activeIndex) return 5.5; // Large magnifying reticle effect
+        if(typeof pathPredicate === 'function' && pathPredicate(index)) return 1.5;
+        if(Math.abs(index - activeIndex) === 1) return 1.2;
+        return 1;
+      });
+    }
+
+    function applyGridRows(target, weights){
+      target.style.gridTemplateRows = weights.map(function(weight){ return 'minmax(0,' + weight + 'fr)'; }).join(' ');
+    }
+
+    function renderRail(target, items, weights, make){
+      clear(target);
+      applyGridRows(target, weights);
+      items.forEach(function(item, index){ target.appendChild(make(item, index, items.length)); });
+    }
+
+    function renderRails(){
+      const activeDIndex = domains.findIndex(function(d){ return d.id === state.d; });
+      renderRail(el.railD, domains, proportionalWeights(domains.length, activeDIndex), function(d, index, total){
+        return makeCell({id:d.id, role:'tier', label:d.name, sub:d.id + ' · ' + d.clusters.length + ' themes', count:d.clusters.length}, 'dCell', d.id === state.d, false, '', function(){ selectD(d.id); }, Math.abs(index - activeDIndex) === 1, d.id === state.d, index, total);
+      });
+
+      const activeCIndex = clusters.findIndex(function(c){ return c.id === state.c; });
+      renderRail(el.railC, clusters, proportionalWeights(clusters.length, activeCIndex, function(index){ return clusters[index].domain === state.d; }), function(c, index, total){
+        return makeCell({id:c.id, role:'theme', label:c.name, sub:c.id + ' · ' + c.blocks.length + ' projects', count:c.blocks.length}, 'cCell', c.id === state.c, c.domain !== state.d, index % 3 === 0 ? 'groupStart' : '', function(){ selectC(c.id); }, Math.abs(index - activeCIndex) === 1, c.domain === state.d, index, total);
+      });
+
+      const activeBIndex = blocks.findIndex(function(b){ return b.id === state.b; });
+      renderRail(el.railB, blocks, proportionalWeights(blocks.length, activeBIndex, function(index){ return blocks[index].cluster === state.c; }), function(b, index, total){
+        return makeCell({id:b.id, role:'project', label:b.name, sub:b.title, count:b.leaves.length}, 'bCell', b.id === state.b, b.cluster !== state.c, index % 2 === 0 ? 'groupStart' : '', function(){ selectB(b.id); }, Math.abs(index - activeBIndex) === 1, b.cluster === state.c, index, total);
+      });
+
+      const activeLIndex = leaves.findIndex(function(l){ return l.id === state.l; });
+      renderRail(el.railL, leaves, proportionalWeights(leaves.length, activeLIndex, function(index){ return leaves[index].block === state.b; }), function(l, index, total){
+        return makeCell({id:l.id, role:'state', label:l.kind || String(Number(l.id)), sub:String(Number(l.id)), count:l.lines.length + 1}, 'leafCell', l.id === state.l, l.block !== state.b, index % 2 === 0 ? 'pairStart' : '', function(){ selectL(l.id); }, Math.abs(index - activeLIndex) <= 1, l.block === state.b, index, total);
+      });
+    }
+
+    function renderDetail(){
+      const l = leaf(); const b = block(); const c = cluster(); const d = domain();
+      if(el.topMeta) el.topMeta.textContent = d.name + ' / ' + c.name + ' / ' + b.name;
+      if(el.topPayloadTitle) el.topPayloadTitle.textContent = b.title || l.title;
+      el.selectionTitle.textContent = d.name + ' / ' + c.name + ' / ' + b.title + ' / ' + l.kind;
+      el.selectionCount.textContent = b.leaves.length + ' states';
+      
+      // Top Disc becomes absolute position indicator
+      if(el.topDisc){ 
+          clear(el.topDisc); 
+          const absoluteLeafIndex = leaves.findIndex(x => x.id === state.l);
+          el.topDisc.appendChild(createOrangeSvg(absoluteLeafIndex, leaves.length)); 
+      }
+      renderPayload();
+    }
+
+    function pathLine(){
+      const d = domain(); const c = cluster(); const b = block(); const l = leaf();
+      return d.id + ' ' + d.name + ' / ' + c.id + ' ' + c.name + ' / ' + b.id + ' ' + b.name + ' / ' + String(Number(l.id));
+    }
+
+    function renderPayload(){
+      const l = leaf(); const b = block();
+      clear(el.payloadShell);
+
+      const scrollContainer = document.createElement('div');
+      scrollContainer.className = 'payloadScroll';
+
+      const infoBox = document.createElement('div');
+      infoBox.className = 'payloadText';
+      [pathLine()].concat(l.lines).forEach(function(line, index){
+        const row = document.createElement('div'); row.className = 'line';
+        const no = document.createElement('span'); no.className = 'lineNo'; no.textContent = index === 0 ? 'LOC' : String(index).padStart(2,'0');
+        const body = document.createElement('span'); body.className = 'lineText'; body.textContent = line;
+        row.appendChild(no); row.appendChild(body); infoBox.appendChild(row);
+      });
+      scrollContainer.appendChild(infoBox);
+
+      if(l.art) {
+         const mediaWrapper = document.createElement('div');
+         mediaWrapper.className = 'mediaSlot';
+         mediaWrapper.appendChild(createMiniArt(l.art));
+         scrollContainer.appendChild(mediaWrapper);
+      }
+
+      const frameWrapper = document.createElement('div');
+      frameWrapper.className = 'payloadIframeWrapper';
+      const frame = document.createElement('iframe');
+      frame.className = 'iframeSlot'; frame.title = l.title;
+      
+      if(b && b.url && b.url.startsWith('http')) { frame.src = b.url; } 
+      else { frame.srcdoc = iframeDocument(l); }
+      
+      frameWrapper.appendChild(frame); scrollContainer.appendChild(frameWrapper);
+      el.payloadShell.appendChild(scrollContainer);
+    }
+
+    function iframeDocument(l){
+      return '<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>html,body{margin:0;height:100%;font-family:Inter,system-ui,sans-serif;background:#FFE15D;color:#000}body{display:grid;place-items:center;padding:18px}.box{width:100%;height:100%;border:3px solid #000;background:#fff;display:grid;place-items:center;text-align:center;padding:18px}h1{margin:0;font-size:clamp(34px,8vw,80px);line-height:.82;letter-spacing:-.08em;text-transform:uppercase}.path{margin-top:12px;font-weight:900;text-transform:uppercase;font-size:12px;letter-spacing:.05em;color:rgba(0,0,0,.55)}</style></head><body><main class="box"><div><h1>' + escapeHtml(l.title) + '</h1><div class="path">' + escapeHtml(pathLine()) + '</div></div></main></body></html>';
+    }
+
+    function escapeHtml(value){ return String(value).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]; }); }
+
+    function openPayload(){
+      pulse(1800);
+      const l = leaf(); const b = block();
+      if(b && b.url && b.url !== '#' && b.url.startsWith('http')){ window.open(b.url, '_blank', 'noopener,noreferrer'); return; }
+      const opened = window.open('', '_blank', 'noopener,noreferrer');
+      if(!opened) return;
+      const title = escapeHtml(l.title);
+      const lines = [pathLine()].concat(l.lines).map(function(line, index){
+        const label = index === 0 ? 'LOC' : String(index).padStart(2,'0');
+        return '<div style="display:grid;grid-template-columns:4ch 1fr;gap:12px;margin:8px 0"><b>' + label + '</b><span>' + escapeHtml(line) + '</span></div>';
+      }).join('');
+      opened.document.write('<!doctype html><html><head><title>' + title + '</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;padding:24px;background:#FFE15D;color:#000;font-family:Inter,system-ui,sans-serif}h1{font-size:clamp(42px,8vw,96px);line-height:.8;letter-spacing:-.09em;text-transform:uppercase}main{border:3px solid #000;padding:18px;min-height:70vh;background:#fff}</style></head><body><h1>' + title + '</h1><main>' + lines + '</main></body></html>');
+      opened.document.close();
+    }
+
+    // Dynamic Segment Visualizer Factory
+    function createOrangeSvg(activeIndex, totalSegments){
+      totalSegments = Math.max(1, totalSegments || 6);
+      const svg = svgEl('svg', {viewBox:'0 0 100 100', 'aria-hidden':'true'});
+      svg.appendChild(svgEl('circle', {cx:'50', cy:'50', r:'46', fill:'var(--cream)', stroke:'currentColor', 'stroke-width':'4'}));
+      
+      if(totalSegments === 1) {
+          svg.appendChild(svgEl('circle', {cx:'50', cy:'50', r:'46', fill:'currentColor'}));
+      } else {
+          for(let i=0; i<totalSegments; i++){
+            const angleStep = 360 / totalSegments;
+            const a0 = (i * angleStep - 90) * Math.PI / 180;
+            const a1 = ((i + 1) * angleStep - 90) * Math.PI / 180;
+            const r = 46;
+            const x0 = 50 + r * Math.cos(a0);
+            const y0 = 50 + r * Math.sin(a0);
+            const x1 = 50 + r * Math.cos(a1);
+            const y1 = 50 + r * Math.sin(a1);
+            const largeArc = angleStep > 180 ? 1 : 0;
+            
+            svg.appendChild(svgEl('path', {
+              d:`M50 50 L${x0.toFixed(2)} ${y0.toFixed(2)} A${r} ${r} 0 ${largeArc} 1 ${x1.toFixed(2)} ${y1.toFixed(2)} Z`,
+              fill: activeIndex === i ? 'currentColor' : 'var(--cream)',
+              stroke:'currentColor', 'stroke-width':'2'
+            }));
+          }
+      }
+      svg.appendChild(svgEl('circle', {cx:'50', cy:'50', r:'14', fill:'var(--bg)', stroke:'currentColor', 'stroke-width':'3'}));
+      return svg;
+    }
+
+    function createMiniArt(kind){
+      const svg = svgEl('svg', {viewBox:'0 0 220 140', 'aria-hidden':'true'});
+      svg.appendChild(svgEl('rect', {width:'220', height:'140', fill:'var(--bg)'}));
+      if(kind === 'grid'){
+        svg.appendChild(svgEl('rect', {x:'40', y:'25', width:'140', height:'90', fill:'none', stroke:'var(--border)', 'stroke-width':'3'}));
+        svg.appendChild(svgEl('path', {d:'M40 25 L180 115 M180 25 L40 115', fill:'none', stroke:'var(--border)', 'stroke-width':'3'}));
+        svg.appendChild(svgEl('circle', {cx:'110', cy:'70', r:'20', fill:'var(--cream)', stroke:'var(--border)', 'stroke-width':'3'}));
+      }else if(kind === 'synth'){
+        svg.appendChild(svgEl('circle', {cx:'70', cy:'55', r:'22', fill:'var(--cream)', stroke:'var(--border)', 'stroke-width':'3'}));
+        svg.appendChild(svgEl('circle', {cx:'150', cy:'55', r:'22', fill:'var(--cream)', stroke:'var(--border)', 'stroke-width':'3'}));
+        svg.appendChild(svgEl('rect', {x:'62', y:'92', width:'96', height:'24', fill:'var(--orange)', stroke:'var(--border)', 'stroke-width':'3'}));
+      }else if(kind === 'poster'){
+        svg.appendChild(svgEl('rect', {x:'42', y:'24', width:'136', height:'92', fill:'none', stroke:'var(--border)', 'stroke-width':'3'}));
+        svg.appendChild(svgEl('path', {d:'M110 24 L110 116 M42 70 L178 70', stroke:'var(--border)', 'stroke-width':'2'}));
+        svg.appendChild(svgEl('rect', {x:'58', y:'38', width:'42', height:'28', fill:'var(--orange)', stroke:'var(--border)', 'stroke-width':'2'}));
+        svg.appendChild(svgEl('rect', {x:'120', y:'76', width:'42', height:'28', fill:'var(--seg-inner)', stroke:'var(--border)', 'stroke-width':'2'}));
+      }else if(kind === 'curve'){
+        svg.appendChild(svgEl('path', {d:'M26 108 Q110 18 194 108', fill:'none', stroke:'var(--border)', 'stroke-width':'5'}));
+        svg.appendChild(svgEl('circle', {cx:'26', cy:'108', r:'6', fill:'var(--border)'}));
+        svg.appendChild(svgEl('circle', {cx:'110', cy:'36', r:'6', fill:'var(--border)'}));
+        svg.appendChild(svgEl('circle', {cx:'194', cy:'108', r:'6', fill:'var(--border)'}));
+      }else if(kind === 'type'){
+        svg.appendChild(svgEl('rect', {x:'44', y:'24', width:'132', height:'92', fill:'none', stroke:'var(--border)', 'stroke-width':'3'}));
+        const text = svgEl('text', {x:'110', y:'94', 'text-anchor':'middle', 'font-size':'76', 'font-weight':'950', fill:'var(--border)', 'font-family':'system-ui'});
+        text.textContent = 'T'; svg.appendChild(text);
+      }else if(kind === 'color'){
+        [36,72,108,144].forEach(function(x, idx){ svg.appendChild(svgEl('rect', {x:String(x), y:'24', width:'28', height:'92', fill: idx % 2 === 0 ? 'var(--orange)' : 'var(--seg-inner)', stroke:'var(--border)', 'stroke-width':'2'})); });
+      }
+      return svg;
+    }
+
+    function render(){ clampState(); renderRails(); renderDetail(); }
+
+    el.prevBtn.addEventListener('click', function(){ nextLeaf(-1); });
+    el.nextBtn.addEventListener('click', function(){ nextLeaf(1); });
+    el.zoomBtn.addEventListener('click', cycleZoom);
+    el.topTitleWrap.addEventListener('click', cycleZoom);
+    el.openBtn.addEventListener('click', openPayload);
+
+    window.addEventListener('keydown', function(e){
+      if(e.key === 'ArrowLeft') nextLeaf(-1);
+      if(e.key === 'ArrowRight') nextLeaf(1);
+      if(e.key.toLowerCase() === 'z') cycleZoom();
+      if(e.key.toLowerCase() === 'o') openPayload();
+      if(/^[1-9]$/.test(e.key)) selectC('C' + e.key);
+    });
+
+    whBridge.boot(function(data) {
+            __bridgeData = data;
+            archiveTiers = data.archiveTiers;
+            archiveClusters = data.archiveClusters;
+            archiveBlocks = data.archiveBlocks;
+            leafTemplates = data.leafTemplates;
+            if (typeof domains !== 'undefined' || true) { try { domains = archiveTiers; } catch(e){} }
+            if (typeof clusters !== 'undefined' || true) { try { clusters = archiveClusters; } catch(e){} }
+            if (typeof blocks !== 'undefined' || true) { try { blocks = archiveBlocks; } catch(e){} }
+            if (typeof works !== 'undefined' || true) {
+                try { works = archiveBlocks.map(function(b){ return b.name; }); } catch(e){}
+            }
+            if (typeof repos !== 'undefined' || true) { try { repos = data.repos || []; } catch(e){} }
+            if (typeof leaves !== 'undefined' || true) {
+                try {
+                    leaves = leafTemplates.map(function(pair, i) {
+                        var id = String(i + 1).padStart(2, '0');
+                        var owner = archiveBlocks.find(function(bl) { return bl.leaves && bl.leaves.includes(id); });
+                        return { id: id, block: owner ? owner.id : 'B1', b: owner ? owner.id : 'B1', title: pair[0] + ' · ' + (owner ? owner.title : 'Worldtext'), art: ['grid','synth','poster','curve','type','color'][i % 6], url: owner && owner.url ? owner.url : '#', date: '2026-01-' + id, lines: [pair[1], owner ? owner.title : 'Worldtext Practice Archive', owner && owner.url ? owner.url : 'payload://local', 'Mode button cycles text, media, iframe, empty.'] };
+                    });
+                } catch(e){}
+            }
+            render();
+        });
+  </script>
+</body>
+</html>

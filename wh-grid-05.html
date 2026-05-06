@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Worldtext Repository Field</title>
+    <style>
+        :root {
+            --bg: #f47a45;
+            --orange: #ff6a00;
+            --cream: #fff6df;
+            --paper: #fff;
+            --ink: #000;
+            --muted: rgba(0, 0, 0, .58);
+            --line: 3px solid var(--ink);
+            --thin: 1px solid rgba(0, 0, 0, .35);
+            --gap: 7px;
+            --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--font);
+            -webkit-text-size-adjust: 100%
+        }
+
+        button,
+        a {
+            font: inherit;
+            color: inherit;
+            border: 0;
+            background: none;
+            text-decoration: none;
+            cursor: pointer;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent
+        }
+
+        .app {
+            width: 100vw;
+            height: 100vh;
+            height: 100svh;
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr);
+            overflow: hidden;
+            background: var(--bg)
+        }
+
+        /* top */
+        .topbar {
+            min-height: 58px;
+            padding: 6px 8px;
+            display: grid;
+            grid-template-columns: 92px minmax(0, 1fr) 54px;
+            gap: 8px;
+            align-items: center;
+            border-bottom: var(--line);
+            background: var(--bg);
+            z-index: 5
+        }
+
+        .topDial {
+            width: 92px;
+            height: 46px;
+            border: var(--line);
+            background: var(--cream);
+            display: grid;
+            grid-template-columns: 38px minmax(0, 1fr);
+            align-items: center;
+            gap: 4px;
+            padding: 3px;
+            overflow: hidden
+        }
+
+        .topDial svg {
+            width: 34px;
+            height: 34px;
+            display: block;
+            animation: spinDisc 12s linear infinite;
+            transform-origin: 50% 50%
+        }
+
+        @keyframes spinDisc {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .coordReadout {
+            min-width: 0;
+            font: 1000 7px/1 var(--mono);
+            letter-spacing: .015em;
+            text-transform: uppercase;
+            overflow: hidden
+        }
+
+        .coordReadout b {
+            display: block;
+            font-size: 9px;
+            line-height: .95;
+            letter-spacing: -.03em
+        }
+
+        .coordReadout span {
+            display: block;
+            color: var(--muted);
+            margin-top: 2px
+        }
+
+        .titleWrap {
+            min-width: 0;
+            display: grid;
+            align-content: center;
+            gap: 2px;
+            text-align: left
+        }
+
+        .coordLine {
+            min-width: 0;
+            font: 1000 9px/1 var(--mono);
+            letter-spacing: .055em;
+            text-transform: uppercase;
+            color: rgba(0, 0, 0, .62);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .onlyTitle {
+            min-width: 0;
+            font-size: clamp(17px, 2.15vw, 28px);
+            line-height: 1;
+            font-weight: 1000;
+            letter-spacing: -.04em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .openTop {
+            width: 54px;
+            height: 46px;
+            border: var(--line);
+            background: var(--cream);
+            display: grid;
+            place-items: center;
+            font-size: 24px;
+            line-height: 1;
+            font-weight: 1000
+        }
+
+        .openTop:hover {
+            background: var(--orange)
+        }
+
+        /* views */
+        .stage {
+            min-height: 0;
+            display: grid;
+            grid-template-columns: .58fr .54fr .5fr .48fr 2.65fr;
+            gap: var(--gap);
+            padding: var(--gap);
+            overflow: hidden
+        }
+
+        .rail {
+            min-width: 0;
+            min-height: 0;
+            display: grid;
+            grid-template-rows: minmax(0, 1fr);
+            overflow: hidden
+        }
+
+        .track {
+            position: relative;
+            min-height: 0;
+            height: 100%;
+            border-left: var(--line);
+            border-right: var(--line);
+            border-top: var(--line);
+            display: grid;
+            overflow: hidden;
+            background: var(--bg);
+            background-image: repeating-linear-gradient(to bottom, rgba(0, 0, 0, .44) 0, rgba(0, 0, 0, .44) 1px, transparent 1px, transparent 15px);
+            background-size: 6px 100%;
+            background-position: left;
+            background-repeat: repeat-y
+        }
+
+        .cell {
+            min-width: 0;
+            min-height: 0;
+            position: relative;
+            z-index: 1;
+            border-bottom: var(--thin);
+            border-top: 1px solid rgba(255, 255, 255, .35);
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            background: var(--bg);
+            display: grid;
+            overflow: hidden;
+            padding: 6px;
+            line-height: 1;
+            font-weight: 1000;
+            transition: all .14s cubic-bezier(.2, .8, .2, 1)
+        }
+
+        .cellInner {
+            min-width: 0;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr) auto;
+            align-items: center;
+            justify-items: center;
+            gap: 4px
+        }
+
+        .angleMark {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            font: 900 9px/1 var(--mono);
+            opacity: .62;
+            letter-spacing: .02em
+        }
+
+        .angleMark svg {
+            width: 17px;
+            height: 17px
+        }
+
+        .cellLabel {
+            display: block;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            font-size: clamp(10px, 1.12vw, 14px);
+            font-weight: 1000;
+            letter-spacing: .035em;
+            text-transform: uppercase;
+            opacity: .74;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+            height: 100%
+        }
+
+        .cellSub {
+            display: none
+        }
+
+        .cellDots {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            flex-wrap: wrap;
+            opacity: .55
+        }
+
+        .dotMini {
+            width: 6px;
+            height: 6px;
+            border: 1px solid currentColor;
+            background: transparent;
+            flex: 0 0 auto
+        }
+
+        .dotMini.filled {
+            background: currentColor
+        }
+
+        .cell.muted {
+            opacity: .32
+        }
+
+        .cell.near {
+            opacity: .78
+        }
+
+        .cell.inPath {
+            box-shadow: inset 0 0 0 3px rgba(255, 246, 223, .38)
+        }
+
+        .cell.groupStart {
+            border-top: var(--line)
+        }
+
+        .cell.active {
+            background: #000;
+            color: var(--cream);
+            outline: 2px solid var(--cream);
+            outline-offset: -2px;
+            border-left-color: var(--orange);
+            border-right-color: var(--orange);
+            transform: scale(1.025);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, .38);
+            z-index: 10;
+            opacity: 1
+        }
+
+        .cell.active .cellInner {
+            grid-template-rows: auto minmax(0, 1fr) auto auto;
+            justify-items: start;
+            padding: 4px
+        }
+
+        .cell.active .angleMark {
+            flex-direction: row;
+            opacity: 1;
+            color: var(--cream)
+        }
+
+        .cell.active .angleMark svg {
+            width: 15px;
+            height: 15px;
+            color: var(--orange)
+        }
+
+        .cell.active .cellLabel {
+            writing-mode: horizontal-tb;
+            transform: none;
+            height: auto;
+            white-space: normal;
+            font-size: clamp(16px, 2vw, 25px);
+            letter-spacing: -.025em;
+            line-height: 1.02;
+            opacity: 1;
+            text-align: left
+        }
+
+        .cell.active .cellSub {
+            display: block;
+            font: 800 10px/1.15 var(--mono);
+            opacity: .78;
+            text-transform: uppercase
+        }
+
+        .cell.active .cellDots {
+            justify-content: flex-start;
+            opacity: 1;
+            margin-top: 4px
+        }
+
+        /* payload */
+        .detail {
+            min-width: 0;
+            min-height: 0;
+            display: grid;
+            grid-template-rows: minmax(0, 1fr) auto;
+            gap: var(--gap);
+            overflow: hidden
+        }
+
+        .payloadShell {
+            min-width: 0;
+            min-height: 0;
+            display: grid;
+            overflow: hidden
+        }
+
+        .payload {
+            min-width: 0;
+            min-height: 0;
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr);
+            gap: var(--gap);
+            overflow: hidden
+        }
+
+        .blurb {
+            border: var(--line);
+            background: var(--cream);
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: start;
+            gap: 12px;
+            padding: 12px 14px
+        }
+
+        .blurbText {
+            min-width: 0;
+            font-size: clamp(18px, 2.2vw, 34px);
+            line-height: 1.08;
+            font-weight: 850;
+            overflow-wrap: anywhere
+        }
+
+        .blurbMeta {
+            border: var(--line);
+            background: var(--paper);
+            padding: 6px 8px;
+            font: 1000 10px/1 var(--mono);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            white-space: nowrap
+        }
+
+        .frameBlock {
+            min-width: 0;
+            min-height: 0;
+            border: var(--line);
+            background: var(--paper);
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr);
+            overflow: hidden
+        }
+
+        .frameBar {
+            border-bottom: var(--thin);
+            background: var(--cream);
+            padding: 8px 10px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            font: 1000 9px/1 var(--mono);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: var(--muted);
+            min-width: 0
+        }
+
+        .frameBar span {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .iframeSlot {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            background: var(--paper)
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            border: var(--line);
+            background: var(--cream)
+        }
+
+        .control {
+            min-height: 48px;
+            border-right: var(--line);
+            font-size: 13px;
+            font-weight: 1000;
+            text-transform: uppercase;
+            letter-spacing: .06em
+        }
+
+        .control.modeControl {
+            background: #000;
+            color: var(--cream)
+        }
+
+        .control:last-child {
+            border-right: 0
+        }
+
+        /* persistent dock */
+        .viewDock {
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            bottom: 10px;
+            transform: translateX(-50%);
+            display: grid;
+            grid-template-columns: repeat(4, auto);
+            gap: 5px;
+            padding: 5px;
+            border: var(--line);
+            background: var(--cream);
+            box-shadow: 0 8px 0 rgba(0, 0, 0, .18)
+        }
+
+        .viewDock button {
+            min-width: 72px;
+            min-height: 34px;
+            padding: 6px 9px;
+            border: var(--thin);
+            background: var(--paper);
+            font: 1000 10px/1 var(--mono);
+            letter-spacing: .055em;
+            text-transform: uppercase
+        }
+
+        .viewDock button.active {
+            background: #000;
+            color: var(--cream)
+        }
+
+        /* actual repo grid */
+        body[data-view="grid"] {
+            background: #080808
+        }
+
+        body[data-view="grid"] .stage {
+            display: block;
+            overflow: auto;
+            background: radial-gradient(circle at 50% 30%, #171717, #080808 62%);
+            padding: 0 0 64px
+        }
+
+        body[data-view="grid"] .rail,
+        body[data-view="grid"] .detail {
+            display: none
+        }
+
+        .repoGrid {
+            display: none
+        }
+
+        body[data-view="grid"] .repoGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 34px 36px;
+            align-content: start;
+            padding: 56px 8vw 80px;
+            background: transparent
+        }
+
+        .repoOrb {
+            aspect-ratio: 1;
+            border-radius: 50%;
+            border: 0;
+            position: relative;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            color: #fff;
+            background: radial-gradient(circle at 40% 28%, rgba(255, 255, 255, .22), transparent 24%), var(--orb, #f46034);
+            box-shadow: 0 0 28px rgba(255, 110, 40, .32), inset -18px -22px 28px rgba(0, 0, 0, .2);
+            font-weight: 1000
+        }
+
+        .repoOrb.active {
+            outline: 5px solid var(--cream);
+            box-shadow: 0 0 0 8px var(--orange), 0 0 40px rgba(255, 120, 0, .55), inset -18px -22px 28px rgba(0, 0, 0, .2)
+        }
+
+        .repoNum {
+            position: absolute;
+            right: 8%;
+            top: 6%;
+            min-width: 34px;
+            height: 30px;
+            padding: 5px 8px;
+            border-radius: 12px;
+            background: rgba(255, 246, 223, .28);
+            color: #000;
+            font: 1000 16px/1 var(--mono);
+            box-shadow: 6px 6px 0 rgba(0, 0, 0, .16)
+        }
+
+        .repoName {
+            font-size: 12px;
+            line-height: 1.05;
+            max-width: 72%;
+            text-transform: lowercase;
+            text-shadow: 0 2px 0 rgba(0, 0, 0, .18)
+        }
+
+        .repoLang {
+            margin-top: 6px;
+            font: 800 9px/1 var(--mono);
+            opacity: .85
+        }
+
+        /* timeline cards */
+        body[data-view="timeline"] {
+            background: #080808
+        }
+
+        body[data-view="timeline"] .stage {
+            display: block;
+            overflow: auto;
+            background: #080808;
+            padding: 0 0 64px
+        }
+
+        body[data-view="timeline"] .rail,
+        body[data-view="timeline"] .detail {
+            display: none
+        }
+
+        .timelineView {
+            display: none
+        }
+
+        body[data-view="timeline"] .timelineView {
+            display: grid;
+            grid-template-columns: 1fr 4px 1fr;
+            gap: 22px;
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 56px 28px 90px;
+            color: #ddd
+        }
+
+        .timelineLine {
+            grid-column: 2;
+            grid-row: 1 / span 999;
+            background: var(--orange);
+            min-height: 100%
+        }
+
+        .monthTag {
+            grid-column: 2;
+            justify-self: center;
+            align-self: start;
+            z-index: 2;
+            background: #000;
+            color: #fff;
+            border: 2px solid var(--orange);
+            border-radius: 999px;
+            padding: 8px 14px;
+            font: 1000 13px/1 var(--mono)
+        }
+
+        .timeCard {
+            min-height: 110px;
+            border: 1px solid var(--orange);
+            border-radius: 10px;
+            background: #181818;
+            padding: 18px;
+            color: #aaa;
+            display: grid;
+            align-content: center;
+            gap: 8px;
+            text-align: left
+        }
+
+        .timeCard:nth-child(odd) {
+            grid-column: 1;
+            text-align: right
+        }
+
+        .timeCard:nth-child(even) {
+            grid-column: 3
+        }
+
+        .timeCard.active {
+            border-width: 2px;
+            box-shadow: 0 0 0 3px rgba(255, 106, 0, .2)
+        }
+
+        .timeTitle {
+            font-size: 18px;
+            font-weight: 1000;
+            color: var(--orange);
+            text-transform: lowercase
+        }
+
+        .timeDate {
+            font: 800 11px/1 var(--mono);
+            color: #999
+        }
+
+        .timeClaim {
+            font-size: 12px;
+            line-height: 1.35;
+            color: #aaa
+        }
+
+        /* mobile */
+        @media(max-width:760px) {
+            :root {
+                --gap: 5px
+            }
+
+            .topbar {
+                min-height: 58px;
+                padding: 6px;
+                grid-template-columns: 76px minmax(0, 1fr) 42px;
+                gap: 6px
+            }
+
+            .topDial {
+                width: 76px;
+                height: 38px;
+                grid-template-columns: 28px minmax(0, 1fr);
+                padding: 3px
+            }
+
+            .topDial svg {
+                width: 26px;
+                height: 26px
+            }
+
+            .coordReadout {
+                font-size: 6px
+            }
+
+            .coordReadout b {
+                font-size: 8px
+            }
+
+            .coordLine {
+                font-size: 7px
+            }
+
+            .onlyTitle {
+                font-size: clamp(15px, 4.5vw, 21px);
+                line-height: 1.05
+            }
+
+            .openTop {
+                width: 42px;
+                height: 38px;
+                font-size: 21px
+            }
+
+            .stage {
+                grid-template-columns: .55fr .5fr .44fr .62fr;
+                grid-template-rows: minmax(245px, 44svh) minmax(0, 1fr)
+            }
+
+            .detail {
+                grid-column: 1 / -1;
+                grid-row: 1;
+                grid-template-rows: minmax(0, 1fr) 38px
+            }
+
+            .rail {
+                grid-row: 2
+            }
+
+            .domainRail {
+                grid-column: 1
+            }
+
+            .clusterRail {
+                grid-column: 2
+            }
+
+            .projectRail {
+                grid-column: 3
+            }
+
+            .leafRail {
+                grid-column: 4
+            }
+
+            .cell {
+                padding: 2px;
+                border-left-width: 4px;
+                border-right-width: 4px
+            }
+
+            .angleMark {
+                font-size: 7px;
+                gap: 2px
+            }
+
+            .angleMark svg {
+                width: 12px;
+                height: 12px
+            }
+
+            .cellLabel {
+                font-size: 9px
+            }
+
+            .cell.active .cellLabel {
+                font-size: clamp(12px, 3.5vw, 16px)
+            }
+
+            .blurb {
+                grid-template-columns: 1fr;
+                padding: 9px 10px;
+                gap: 7px
+            }
+
+            .blurbText {
+                font-size: clamp(15px, 4.7vw, 22px)
+            }
+
+            .blurbMeta {
+                justify-self: start;
+                font-size: 8px;
+                border-width: 2px
+            }
+
+            .frameBar {
+                padding: 6px 8px;
+                font-size: 7px
+            }
+
+            .control {
+                min-height: 38px;
+                font-size: 11px
+            }
+
+            .viewDock {
+                left: 5px;
+                right: 5px;
+                bottom: 5px;
+                transform: none;
+                grid-template-columns: repeat(4, 1fr)
+            }
+
+            .viewDock button {
+                min-width: 0;
+                min-height: 32px;
+                font-size: 9px;
+                padding: 5px 4px
+            }
+
+            body[data-view="grid"] .repoGrid {
+                grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+                gap: 22px;
+                padding: 28px 18px 70px
+            }
+
+            .repoNum {
+                min-width: 25px;
+                height: 23px;
+                font-size: 12px
+            }
+
+            .repoName {
+                font-size: 10px
+            }
+
+            .repoLang {
+                font-size: 7px
+            }
+
+            body[data-view="timeline"] .timelineView {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                padding: 28px 18px 70px
+            }
+
+            .timelineLine,
+            .monthTag {
+                display: none
+            }
+
+            .timeCard,
+            .timeCard:nth-child(odd),
+            .timeCard:nth-child(even) {
+                grid-column: 1;
+                text-align: left
+            }
+        }
+    </style>
+</head>
+
+<body data-view="rails">
+    <script src="wh-grid-data-bridge.js"></script>
+    <main class="app" aria-label="Worldtext Repository Field">
+        <header class="topbar">
+            <div class="topDial" id="topDial" aria-label="coordinate dial"></div>
+            <button class="titleWrap" id="topTitleWrap" type="button" title="Cycle view">
+                <div class="coordLine" id="coordLine">D000 · C000 · B000 · N000</div>
+                <div class="onlyTitle" id="topTitle">Worldtext</div>
+            </button>
+            <button class="openTop" id="openBtn" type="button" aria-label="Open payload">↗</button>
+        </header>
+
+        <section class="stage" id="stage">
+            <section class="rail domainRail" id="containerD">
+                <div class="track" id="railD"></div>
+            </section>
+            <section class="rail clusterRail" id="containerC">
+                <div class="track" id="railC"></div>
+            </section>
+            <section class="rail projectRail" id="containerB">
+                <div class="track" id="railB"></div>
+            </section>
+            <section class="rail leafRail" id="containerL">
+                <div class="track" id="railL"></div>
+            </section>
+            <section class="detail">
+                <article class="payloadShell" id="payloadShell"></article>
+                <div class="controls"><button class="control" id="prevBtn">prev</button><button
+                        class="control modeControl" id="zoomBtn">zoom: rails</button><button class="control"
+                        id="nextBtn">next</button></div>
+            </section>
+            <section class="repoGrid" id="repoGrid"></section>
+            <section class="timelineView" id="timelineView"></section>
+        </section>
+
+        <nav class="viewDock" aria-label="View switcher">
+            <button type="button" id="viewRails">Rails</button>
+            <button type="button" id="viewGrid">Grid</button>
+            <button type="button" id="viewTimeline">Timeline</button>
+            <button type="button" id="viewOpen">Open</button>
+        </nav>
+    </main>
+    <script>
+        'use strict';
+        const SVG_NS = 'http://www.w3.org/2000/svg';
+        const views = ['rails', 'grid', 'timeline'];
+        var repos = [];
+        var domains = [];
+        var clusters = [];
+        var works = [];
+        const state = { view: 'rails', index: 60 };
+        const el = {};
+        ['topDial', 'coordLine', 'topTitle', 'topTitleWrap', 'openBtn', 'payloadShell', 'prevBtn', 'zoomBtn', 'nextBtn', 'repoGrid', 'timelineView', 'railD', 'railC', 'railB', 'railL', 'viewRails', 'viewGrid', 'viewTimeline', 'viewOpen'].forEach(id => el[id] = document.getElementById(id));
+
+        function current() { return repos[state.index] || repos[0] }
+        function bySlug(slug) { return repos.findIndex(r => r.slug === slug) }
+        function svgEl(tag, attrs) { const n = document.createElementNS(SVG_NS, tag); Object.keys(attrs || {}).forEach(k => n.setAttribute(k, attrs[k])); return n }
+        function clear(n) { while (n.firstChild) n.removeChild(n.firstChild) }
+        function pulse() { if (navigator.vibrate) navigator.vibrate(8) }
+        function pad3(n) { return String(n).padStart(3, '0') }
+        function uniqueAngles() { const r = current(); const di = domains.indexOf(r.domain), ci = clusters.indexOf(r.cluster), wi = works.indexOf(r.work), ni = state.index; let arr = [di * 120, (ci * 40) % 360, (wi * 20 + 10) % 360, (ni * 5 + 14) % 360]; let out = []; arr.forEach(v => { while (out.includes(v)) v = (v + 3) % 360; out.push(v) }); return out }
+        function address() { const a = uniqueAngles(); return { d: a[0], c: a[1], b: a[2], n: a[3], compact: `D${pad3(a[0])} · C${pad3(a[1])} · B${pad3(a[2])} · N${pad3(a[3])}`, short: `D${pad3(a[0])}.C${pad3(a[1])}.B${pad3(a[2])}.N${pad3(a[3])}` } }
+        function setView(v) { if (!views.includes(v)) v = 'rails'; pulse(); state.view = v; document.body.setAttribute('data-view', v); el.zoomBtn.textContent = 'zoom: ' + v; updateDock(); render(); }
+        function cycleZoom() { setView(views[(views.indexOf(state.view) + 1) % views.length]) }
+        function selectIndex(i, returnRails = true) { pulse(); state.index = Math.max(0, Math.min(repos.length - 1, i)); if (returnRails) state.view = 'rails'; render() }
+        function step(d) { selectIndex((state.index + d + repos.length) % repos.length, false) }
+        function updateDock() { el.viewRails.classList.toggle('active', state.view === 'rails'); el.viewGrid.classList.toggle('active', state.view === 'grid'); el.viewTimeline.classList.toggle('active', state.view === 'timeline') }
+        function itemsForLevel(level) {
+            const r = current(); if (level === 'D') return domains.map((d, i) => ({ id: d, label: d, count: repos.filter(x => x.domain === d).length, active: d === r.domain, muted: false, angle: i * 120 }));
+            if (level === 'C') return clusters.map((c, i) => ({ id: c, label: c, count: repos.filter(x => x.cluster === c).length, active: c === r.cluster, muted: !repos.some(x => x.domain === r.domain && x.cluster === c), angle: (i * 40) % 360 }));
+            if (level === 'B') return works.map((w, i) => ({ id: w, label: w, count: repos.filter(x => x.work === w).length, active: w === r.work, muted: !repos.some(x => x.cluster === r.cluster && x.work === w), angle: (i * 20 + 10) % 360 }));
+            return repos.map((x, i) => ({ id: String(i), label: 'N' + String(i + 1).padStart(2, '0'), sub: x.slug, count: 1, active: i === state.index, muted: x.work !== r.work, angle: (i * 5 + 14) % 360 }));
+        }
+        function renderRail(target, level) { clear(target); const items = itemsForLevel(level); const activeIndex = items.findIndex(x => x.active); target.style.gridTemplateRows = items.map((x, i) => `minmax(0,${i === activeIndex ? 5.5 : (!x.muted ? 1.45 : (Math.abs(i - activeIndex) === 1 ? 1.18 : 1))}fr)`).join(' '); items.forEach((it, i) => { const btn = document.createElement('button'); btn.className = 'cell ' + (level === 'D' ? 'dCell' : level === 'C' ? 'cCell' : level === 'B' ? 'bCell' : 'leafCell') + (it.active ? ' active' : '') + (it.muted ? ' muted' : '') + (!it.muted ? ' inPath' : ''); btn.innerHTML = `<span class="cellInner"><span class="angleMark"></span><span class="cellLabel">${it.label}</span><span class="cellSub">${it.sub || it.count + ' items'}</span><span class="cellDots"></span></span>`; btn.querySelector('.angleMark').appendChild(createOrangeSvg(i, items.length)); btn.querySelector('.angleMark').appendChild(document.createTextNode(pad3(it.angle) + '°')); const dots = btn.querySelector('.cellDots'); for (let k = 0; k < Math.min(6, it.count); k++) { const d = document.createElement('span'); d.className = 'dotMini ' + (!it.muted ? 'filled' : ''); dots.appendChild(d) } btn.addEventListener('click', () => { if (level === 'D') selectIndex(repos.findIndex(r => r.domain === it.id)); else if (level === 'C') selectIndex(repos.findIndex(r => r.cluster === it.id)); else if (level === 'B') selectIndex(repos.findIndex(r => r.work === it.id)); else selectIndex(Number(it.id)); }); target.appendChild(btn) }) }
+        function renderPayload() { const r = current(), a = address(); clear(el.payloadShell); const p = document.createElement('div'); p.className = 'payload'; p.innerHTML = `<div class="blurb"><div class="blurbText">${escapeHtml(r.claim)}</div><div class="blurbMeta">${a.short}</div></div><div class="frameBlock"><div class="frameBar"><span>wireframe iframe</span><span>${r.url && r.url !== '#' ? 'public page' : 'local fallback'}</span></div></div>`; const frame = document.createElement('iframe'); frame.className = 'iframeSlot'; if (r.url && r.url !== '#' && r.url.startsWith('http')) frame.src = r.url; else frame.srcdoc = iframeDoc(r, a); p.querySelector('.frameBlock').appendChild(frame); el.payloadShell.appendChild(p) }
+        function renderGrid() { clear(el.repoGrid); repos.forEach((r, i) => { const b = document.createElement('button'); b.className = 'repoOrb ' + (i === state.index ? 'active' : ''); b.style.setProperty('--orb', r.color); b.innerHTML = `<span class="repoNum">${i + 1}</span><span><span class="repoName">${escapeHtml(r.slug)}</span><br><span class="repoLang">${escapeHtml(r.lang)}</span></span>`; b.addEventListener('click', () => selectIndex(i, true)); el.repoGrid.appendChild(b) }) }
+        function renderTimeline() { clear(el.timelineView); const line = document.createElement('div'); line.className = 'timelineLine'; el.timelineView.appendChild(line); let lastMonth = ''; repos.forEach((r, i) => { if (r.date.slice(0, 7) !== lastMonth) { lastMonth = r.date.slice(0, 7); const m = document.createElement('div'); m.className = 'monthTag'; m.textContent = new Date(r.date + 'T00:00:00').toLocaleString('en-US', { month: 'long' }); el.timelineView.appendChild(m) } const c = document.createElement('button'); c.className = 'timeCard ' + (i === state.index ? 'active' : ''); c.innerHTML = `<div class="timeTitle">${escapeHtml(r.slug)}</div><div class="timeDate">${escapeHtml(r.date)}</div><div class="timeClaim">${escapeHtml(r.claim)}</div>`; c.addEventListener('click', () => selectIndex(i, true)); el.timelineView.appendChild(c) }) }
+        function renderTop() { const r = current(), a = address(); el.coordLine.textContent = a.compact + ' · ' + r.domain + ' / ' + r.cluster; el.topTitle.textContent = r.title; clear(el.topDial); el.topDial.appendChild(createOrangeSvg(state.index, repos.length)); const ro = document.createElement('span'); ro.className = 'coordReadout'; ro.innerHTML = `<b>${a.short}</b><span>${pad3(a.n)}° active</span>`; el.topDial.appendChild(ro) }
+        function openPayload() { const r = current(); if (r.url && r.url !== '#' && r.url.startsWith('http')) { window.open(r.url, '_blank', 'noopener,noreferrer'); return } const w = window.open('', '_blank', 'noopener,noreferrer'); if (!w) return; w.document.write(iframeDoc(r, address())); w.document.close() }
+        function iframeDoc(r, a) { return `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>html,body{margin:0;height:100%;font-family:Inter,system-ui,sans-serif;background:#fff6df;color:#000}body{display:grid;place-items:center;padding:18px}.box{width:100%;height:100%;border:3px solid #000;background:#fff;display:grid;place-items:center;text-align:center;padding:18px}h1{margin:0;font-size:clamp(34px,8vw,80px);line-height:.82;letter-spacing:-.08em;text-transform:uppercase}p{font-size:clamp(16px,3vw,26px);font-weight:850;line-height:1.1}.path{margin-top:12px;font-weight:900;text-transform:uppercase;font-size:12px;letter-spacing:.05em;color:rgba(0,0,0,.55)}</style></head><body><main class="box"><div><h1>${escapeHtml(r.title)}</h1><p>${escapeHtml(r.claim)}</p><div class="path">${escapeHtml(a.compact)}</div></div></main></body></html>` }
+        function escapeHtml(v) { return String(v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c])) }
+        function createOrangeSvg(activeIndex, totalSegments) { totalSegments = Math.max(1, totalSegments || 6); activeIndex = ((activeIndex % totalSegments) + totalSegments) % totalSegments; const svg = svgEl('svg', { viewBox: '0 0 100 100', 'aria-hidden': 'true' }); svg.appendChild(svgEl('circle', { cx: '50', cy: '50', r: '46', fill: 'var(--cream)', stroke: 'currentColor', 'stroke-width': '4' })); for (let i = 0; i < totalSegments; i++) { const step = 360 / totalSegments, a0 = (i * step - 90) * Math.PI / 180, a1 = ((i + 1) * step - 90) * Math.PI / 180, r = 46, x0 = 50 + r * Math.cos(a0), y0 = 50 + r * Math.sin(a0), x1 = 50 + r * Math.cos(a1), y1 = 50 + r * Math.sin(a1), large = step > 180 ? 1 : 0; svg.appendChild(svgEl('path', { d: `M50 50 L${x0.toFixed(2)} ${y0.toFixed(2)} A${r} ${r} 0 ${large} 1 ${x1.toFixed(2)} ${y1.toFixed(2)} Z`, fill: activeIndex === i ? 'currentColor' : 'var(--cream)', stroke: 'currentColor', 'stroke-width': '2' })) } svg.appendChild(svgEl('circle', { cx: '50', cy: '50', r: '14', fill: 'var(--bg)', stroke: 'currentColor', 'stroke-width': '3' })); return svg }
+        function render() { document.body.setAttribute('data-view', state.view); renderTop(); renderRail(el.railD, 'D'); renderRail(el.railC, 'C'); renderRail(el.railB, 'B'); renderRail(el.railL, 'L'); renderPayload(); renderGrid(); renderTimeline(); updateDock() }
+        function updateDock() { el.viewRails.classList.toggle('active', state.view === 'rails'); el.viewGrid.classList.toggle('active', state.view === 'grid'); el.viewTimeline.classList.toggle('active', state.view === 'timeline') }
+        el.prevBtn.onclick = () => step(-1); el.nextBtn.onclick = () => step(1); el.zoomBtn.onclick = cycleZoom; el.topTitleWrap.onclick = cycleZoom; el.openBtn.onclick = openPayload; el.viewRails.onclick = () => setView('rails'); el.viewGrid.onclick = () => setView('grid'); el.viewTimeline.onclick = () => setView('timeline'); el.viewOpen.onclick = openPayload;
+        window.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') step(-1); if (e.key === 'ArrowRight') step(1); if (e.key.toLowerCase() === 'r') setView('rails'); if (e.key.toLowerCase() === 'g') setView('grid'); if (e.key.toLowerCase() === 't') setView('timeline'); if (e.key.toLowerCase() === 'z') cycleZoom(); if (e.key.toLowerCase() === 'o') openPayload(); });
+        whBridge.boot(function(data) {
+            repos = data.repos;
+            domains = data.domains;
+            clusters = data.clusters;
+            works = data.works;
+            render();
+        });
+    </script>
+</body>
+
+</html>

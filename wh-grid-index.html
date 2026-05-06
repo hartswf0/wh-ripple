@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WH-GRID — Instrument Index</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23ff6b35'/></svg>">
+<style>
+  :root{
+    --bg:#0a0a0a;
+    --text:#f5f3ef;
+    --accent:#ff6b35;
+    --muted:#666;
+    --panel:#151515;
+    --border:rgba(255,107,53,0.15);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font:13px/1.5 -apple-system,system-ui,sans-serif;
+    display:grid;
+    grid-template-columns:280px 1fr;
+    grid-template-rows:1fr;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar{
+    background:var(--panel);
+    border-right:1px solid var(--border);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .sidebar-head{
+    padding:16px 18px 12px;
+    border-bottom:1px solid var(--border);
+    flex-shrink:0;
+  }
+  .sidebar-head h1{
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:-0.3px;
+    color:var(--text);
+  }
+  .sidebar-head h1 span{color:var(--accent)}
+  .sidebar-head p{
+    font-size:10px;
+    color:var(--muted);
+    margin-top:2px;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+  }
+  .sidebar-list{
+    flex:1;
+    overflow-y:auto;
+    overflow-x:hidden;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  /* section label */
+  .sec{
+    padding:14px 18px 5px;
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:1.2px;
+    text-transform:uppercase;
+    color:var(--muted);
+    position:sticky;top:0;
+    background:var(--panel);
+    z-index:2;
+  }
+
+  /* row */
+  .row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 18px;
+    cursor:pointer;
+    border-left:3px solid transparent;
+    transition:all .1s;
+  }
+  .row:hover{background:rgba(255,107,53,0.06)}
+  .row.active{
+    background:rgba(255,107,53,0.08);
+    border-left-color:var(--accent);
+  }
+  .row-num{
+    width:22px;
+    font-size:11px;
+    font-weight:700;
+    color:var(--accent);
+    text-align:center;
+    flex-shrink:0;
+    opacity:.6;
+  }
+  .row.active .row-num{opacity:1}
+  .row-info{flex:1;min-width:0}
+  .row-name{
+    font-size:12px;
+    font-weight:600;
+    color:var(--text);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .row-role{
+    font-size:9px;
+    color:var(--muted);
+    letter-spacing:.3px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .row-pill{
+    font-size:8px;
+    font-weight:700;
+    letter-spacing:.6px;
+    text-transform:uppercase;
+    padding:2px 6px;
+    border-radius:2px;
+    flex-shrink:0;
+  }
+  .row-pill.live{background:var(--accent);color:#000}
+  .row-pill.src{background:rgba(255,255,255,.06);color:var(--muted)}
+
+  /* ── MAIN FRAME ── */
+  .main{
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+    min-height:0;
+    background:var(--bg);
+  }
+  .frame-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:6px 14px;
+    border-bottom:1px solid var(--border);
+    background:rgba(10,10,10,0.98);
+    backdrop-filter:blur(12px);
+    flex-shrink:0;
+    gap:10px;
+    min-height:38px;
+  }
+  .frame-title{
+    font-size:12px;
+    font-weight:600;
+    color:var(--text);
+    flex:1;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    opacity:.7;
+  }
+  .frame-btn{
+    border:1px solid rgba(255,107,53,0.3);
+    background:transparent;
+    color:var(--accent);
+    font-size:10px;
+    font-weight:700;
+    padding:5px 12px;
+    cursor:pointer;
+    border-radius:3px;
+    letter-spacing:.4px;
+    text-transform:uppercase;
+    flex-shrink:0;
+    transition:all .12s;
+  }
+  .frame-btn:hover{background:var(--accent);color:#000;border-color:var(--accent)}
+  .live-frame{
+    flex:1;
+    min-height:0;
+    border:0;
+    background:#fff;
+  }
+
+  /* ── MOBILE ── */
+  @media(max-width:700px){
+    body{
+      grid-template-columns:1fr;
+      grid-template-rows:auto 1fr;
+    }
+    .sidebar{
+      max-height:45vh;
+      border-right:none;
+      border-bottom:1px solid var(--border);
+    }
+    .sidebar-head{padding:10px 14px 8px}
+    .sidebar-head h1{font-size:13px}
+    .row{padding:6px 14px}
+    .frame-bar{padding:5px 10px;min-height:34px}
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-head">
+    <h1><span>WH</span>-Grid Index</h1>
+    <p>16 instruments · all live pipe</p>
+  </div>
+  <div class="sidebar-list" id="sidebar-list"></div>
+</aside>
+
+<main class="main">
+  <div class="frame-bar">
+    <span class="frame-title" id="frame-title">wh-grid-pipe</span>
+    <button class="frame-btn" id="btn-newtab">↗ New Tab</button>
+  </div>
+  <iframe class="live-frame" id="live-frame" src="wh-grid-pipe.html"></iframe>
+</main>
+
+<script>
+'use strict';
+const items = [
+  {s:'GRID INSTRUMENTS'},
+  {n:1,  f:'wh-grid.html',            nm:'wh-grid',            rl:'Canonical Baseline',       st:'live'},
+  {n:2,  f:'wh-grid-00.html',         nm:'wh-grid-00',         rl:'Selector Drawer',          st:'live'},
+  {n:3,  f:'wh-grid-01.html',         nm:'wh-grid-01',         rl:'Antikythera Matrix',       st:'live'},
+  {n:4,  f:'wh-grid-003.html',        nm:'wh-grid-003',        rl:'Dark Explorer',            st:'live'},
+  {n:5,  f:'wh-grid-004.html',        nm:'wh-grid-004',        rl:'Semantic Zoom',            st:'live'},
+  {n:6,  f:'wh-grid-05.html',         nm:'wh-grid-05',         rl:'Repository Field',         st:'live'},
+  {n:7,  f:'wh-grid-ant.html',        nm:'wh-grid-ant',        rl:'Antikythera Archive',      st:'live'},
+  {n:8,  f:'wh-grid-ant-01.html',     nm:'wh-grid-ant-01',     rl:'Orange Wireframe',         st:'live'},
+  {n:9,  f:'wh-grid-sim.html',        nm:'wh-grid-sim',        rl:'Accordion',                st:'live'},
+  {n:10, f:'wh-pathfinder.html',      nm:'wh-pathfinder',      rl:'Concentric Pathfinder',    st:'live'},
+  {n:11, f:'wh-grid-pipe.html',       nm:'wh-grid-pipe',       rl:'Data Pipe Engine',         st:'live'},
+  {s:'SIBLING VIEWERS'},
+  {n:12, f:'orange-grid-viewer.html',  nm:'orange-grid-viewer',  rl:'311 Repo Cosmos',        st:'src'},
+  {n:13, f:'orange-ripple-viewer.html',nm:'orange-ripple-viewer',rl:'Ripple Rings',            st:'src'},
+  {n:14, f:'orange-wire-00.html',      nm:'orange-wire-00',      rl:'Orange Wire',            st:'src'},
+  {n:15, f:'live-demos.html',          nm:'live-demos',          rl:'Demo Index',             st:'src'},
+  {n:16, f:'index.html',               nm:'index',               rl:'Repository Root',        st:'src'},
+];
+
+const list = document.getElementById('sidebar-list');
+const frame = document.getElementById('live-frame');
+const title = document.getElementById('frame-title');
+const btnNew = document.getElementById('btn-newtab');
+let activeRow = null;
+let currentFile = 'wh-grid-pipe.html';
+
+items.forEach(it => {
+  if (it.s) {
+    const d = document.createElement('div');
+    d.className = 'sec';
+    d.textContent = it.s;
+    list.appendChild(d);
+    return;
+  }
+  const r = document.createElement('div');
+  r.className = 'row' + (it.f === 'wh-grid-pipe.html' ? ' active' : '');
+  r.innerHTML = `<span class="row-num">${String(it.n).padStart(2,'0')}</span><div class="row-info"><div class="row-name">${it.nm}</div><div class="row-role">${it.rl}</div></div><span class="row-pill ${it.st}">${it.st === 'live' ? 'LIVE' : 'SRC'}</span>`;
+  r.addEventListener('click', () => {
+    if (activeRow) activeRow.classList.remove('active');
+    r.classList.add('active');
+    activeRow = r;
+    currentFile = it.f;
+    frame.src = it.f;
+    title.textContent = it.nm;
+  });
+  if (it.f === 'wh-grid-pipe.html') activeRow = r;
+  list.appendChild(r);
+});
+
+btnNew.addEventListener('click', () => { if (currentFile) window.open(currentFile, '_blank'); });
+</script>
+</body>
+</html>

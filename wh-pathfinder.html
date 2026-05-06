@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WORLDTEXT // CONCENTRIC PATHFINDER</title>
+    <style>
+        :root {
+            --ink: #000;
+            --bg: #f47a45;
+            --cream: #fff6df;
+            --line: 3px solid #000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            width: 100%;
+            background: #fff;
+            color: var(--ink);
+            font-family: 'Courier New', monospace;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            overflow-y: auto;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            user-select: none;
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* ── THE DEVICE ── */
+        .device {
+            position: relative;
+            width: 440px;
+            max-width: 100%;
+            border: 8px solid var(--ink);
+            border-radius: 40px;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 36px 0 40px;
+            box-shadow: 20px 20px 0 0 var(--ink);
+        }
+
+        /* ── SCREEN ── */
+        .screen {
+            width: 360px;
+            max-width: calc(100% - 40px);
+            border: 6px solid var(--ink);
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .screen-status {
+            background: var(--ink);
+            color: #fff;
+            padding: 3px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            border-bottom: 4px solid var(--ink);
+        }
+
+        .screen-info {
+            padding: 6px 10px 4px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            line-height: 1.4;
+            border-bottom: 4px solid var(--ink);
+        }
+
+        .screen-info .row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .screen-info .lbl {
+            width: 28px;
+            flex-shrink: 0;
+            opacity: .4;
+        }
+
+        /* Menu rows */
+        .screen-menu {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: stretch;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .menu-row {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2px 8px;
+            cursor: pointer;
+            transition: background .1s, color .1s;
+            border: none;
+            background: none;
+            font: inherit;
+            color: inherit;
+            text-align: left;
+            width: 100%;
+        }
+
+        .menu-row:hover {
+            background: #eee;
+        }
+
+        .menu-row.active {
+            background: var(--ink);
+            color: #fff;
+        }
+
+        .menu-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .menu-arrow {
+            width: 12px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .menu-label {
+            letter-spacing: .08em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .menu-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .menu-val {
+            width: 42px;
+            text-align: right;
+            font-family: inherit;
+        }
+
+        /* Data blocks */
+        .data-blocks {
+            display: flex;
+            gap: 2px;
+        }
+
+        .data-block {
+            width: 8px;
+            height: 8px;
+            border: 2px solid currentColor;
+        }
+
+        .data-block.filled {
+            background: currentColor;
+        }
+
+        .data-bar {
+            width: 72px;
+            height: 8px;
+            border: 2px solid currentColor;
+            position: relative;
+        }
+
+        .data-bar-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: currentColor;
+            transition: width .1s;
+        }
+
+        /* Scrubber / Copy */
+        .screen-scrubber {
+            border-top: 4px solid var(--ink);
+            cursor: pointer;
+            transition: background .1s, color .1s;
+        }
+
+        .screen-scrubber:hover {
+            background: var(--ink);
+            color: #fff;
+        }
+
+        .scrubber-track {
+            width: 100%;
+            height: 10px;
+            background: #fff;
+            position: relative;
+            border-bottom: 4px solid var(--ink);
+        }
+
+        .scrubber-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: var(--ink);
+            transition: width .1s;
+        }
+
+        .screen-scrubber:hover .scrubber-fill {
+            background: #fff;
+        }
+
+        .scrubber-text {
+            text-align: center;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .1em;
+            padding: 6px 8px 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ── WHEEL ── */
+        .wheel-wrap {
+            margin-top: 32px;
+            width: 360px;
+            max-width: calc(100% - 40px);
+            aspect-ratio: 1;
+            position: relative;
+        }
+
+        .wheel-wrap svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* SVG interactivity */
+        .seg-btn {
+            cursor: pointer;
+        }
+
+        .seg-btn:hover path {
+            filter: brightness(.85);
+        }
+
+        .hw-btn {
+            cursor: pointer;
+        }
+
+        .hw-btn path {
+            transition: fill .1s;
+        }
+
+        .hw-btn:hover path {
+            fill: var(--ink) !important;
+        }
+
+        .hw-btn text {
+            transition: fill .1s;
+        }
+
+        .hw-btn:hover text {
+            fill: #fff !important;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 480px) {
+            .device {
+                border-width: 5px;
+                border-radius: 28px;
+                padding: 20px 0 24px;
+                box-shadow: 12px 12px 0 0 var(--ink);
+            }
+
+            .screen {
+                border-width: 4px;
+            }
+
+            .wheel-wrap {
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <script src="wh-grid-data-bridge.js"></script>
+
+    <div class="device">
+
+        <!-- SCREEN -->
+        <div class="screen">
+            <div class="screen-status">
+                <div id="play-icon" style="width:14px;height:14px;cursor:pointer" onclick="togglePlay()">
+                    <svg viewBox="0 0 24 24" fill="white">
+                        <rect x="6" y="4" width="4" height="16"></rect>
+                        <rect x="14" y="4" width="4" height="16"></rect>
+                    </svg>
+                </div>
+                <span>PATHFINDER</span>
+                <div style="width:18px;height:18px">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="7" width="16" height="10" rx="2"></rect>
+                        <rect x="4" y="9" width="12" height="6" fill="currentColor"></rect>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="screen-info" id="screen-info">
+                <div class="row"><span class="lbl">THS</span><span>Loading archive data...</span></div>
+                <div class="row"><span class="lbl">MTA</span><span>DENSITY: — COMBINATIONS</span></div>
+            </div>
+
+            <div class="screen-menu" id="menu-container"></div>
+
+            <div class="screen-scrubber" id="copy-btn" title="Click to Copy Address">
+                <div class="scrubber-track">
+                    <div class="scrubber-fill" id="progress-bar" style="width:0%"></div>
+                </div>
+                <div class="scrubber-text" id="address-readout">—</div>
+            </div>
+        </div>
+
+        <!-- WHEEL -->
+        <div class="wheel-wrap">
+            <svg id="matrix-svg" viewBox="0 0 600 600">
+                <line x1="300" y1="50" x2="300" y2="550" stroke="#000" stroke-width="1" stroke-dasharray="4 4" />
+                <line x1="50" y1="300" x2="550" y2="300" stroke="#000" stroke-width="1" stroke-dasharray="4 4" />
+                <g id="svg-clockface"></g>
+                <g id="svg-hardware-ring"></g>
+                <g id="svg-data-rings"></g>
+                <!-- Center core -->
+                <g class="hw-btn" onclick="randomizeState()">
+                    <circle cx="300" cy="300" r="100" fill="#FFFFFF" stroke="#000" stroke-width="4" />
+                    <foreignObject x="230" y="230" width="140" height="140">
+                        <div
+                            style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;pointer-events:none">
+                            <img id="qr-core" src="" alt="QR" style="width:100%;height:100%;image-rendering:pixelated">
+                        </div>
+                    </foreignObject>
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        'use strict';
+
+        // ── MATH ──
+        const polar = (cx, cy, r, deg) => {
+            const rad = (deg - 90) * Math.PI / 180;
+            return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+        };
+
+        const arc = (x, y, ri, ro, sa, ea, gap = 1) => {
+            const s = sa + gap / 2, e = ea - gap / 2;
+            const so = polar(x, y, ro, e), eo = polar(x, y, ro, s);
+            const si = polar(x, y, ri, e), ei = polar(x, y, ri, s);
+            const lg = e - s <= 180 ? '0' : '1';
+            return `M${so.x} ${so.y} A${ro} ${ro} 0 ${lg} 0 ${eo.x} ${eo.y} L${ei.x} ${ei.y} A${ri} ${ri} 0 ${lg} 1 ${si.x} ${si.y} Z`;
+        };
+
+        // ── STATE ──
+        let DB = null; // populated by bridge
+        let state = { d: 1, c: 1, b: 1, a: 1, activeLayer: 'D', isPlaying: false, copied: false };
+        let autoPlayInterval = null;
+
+        const config = {
+            layers: ['D', 'C', 'B', 'A'],
+            maxValues: { D: 3, C: 9, B: 18, A: 36 }
+        };
+        const totalPermutations = 3 * 9 * 18 * 36; // 17,496
+
+        // ── RESOLVE CURRENT ADDRESS TO LIVE DATA ──
+        function resolveAddress() {
+            if (!DB) return { domain: '—', cluster: '—', block: '—', leaf: '—', thesis: '' };
+            const domains = DB.archiveTiers;
+            const clusters = DB.archiveClusters;
+            const blocks = DB.archiveBlocks;
+            const leaves = DB.leafTemplates;
+
+            const di = Math.min(state.d - 1, domains.length - 1);
+            const ci = Math.min(state.c - 1, clusters.length - 1);
+            const bi = Math.min(state.b - 1, blocks.length - 1);
+            const li = Math.min(state.a - 1, leaves.length - 1);
+
+            return {
+                domain: domains[di] ? domains[di].name : 'D' + state.d,
+                cluster: clusters[ci] ? clusters[ci].name : 'C' + state.c,
+                block: blocks[bi] ? blocks[bi].name : 'B' + state.b,
+                leaf: leaves[li] ? leaves[li][0] : 'A' + state.a,
+                thesis: leaves[li] ? leaves[li][1] : ''
+            };
+        }
+
+        // ── ACTUATORS ──
+        window.incrementState = () => {
+            const max = config.maxValues[state.activeLayer];
+            const k = state.activeLayer.toLowerCase();
+            state[k] = state[k] >= max ? 1 : state[k] + 1;
+            render();
+        };
+
+        window.decrementState = () => {
+            const max = config.maxValues[state.activeLayer];
+            const k = state.activeLayer.toLowerCase();
+            state[k] = state[k] <= 1 ? max : state[k] - 1;
+            render();
+        };
+
+        window.moveLayerUp = () => {
+            const idx = config.layers.indexOf(state.activeLayer);
+            state.activeLayer = config.layers[(idx - 1 + 4) % 4];
+            render();
+        };
+
+        window.moveLayerDown = () => {
+            const idx = config.layers.indexOf(state.activeLayer);
+            state.activeLayer = config.layers[(idx + 1) % 4];
+            render();
+        };
+
+        window.setLayerValue = (layer, val) => {
+            state.activeLayer = layer;
+            state[layer.toLowerCase()] = val;
+            render();
+        };
+
+        window.randomizeState = () => {
+            state.d = Math.floor(Math.random() * config.maxValues.D) + 1;
+            state.c = Math.floor(Math.random() * config.maxValues.C) + 1;
+            state.b = Math.floor(Math.random() * config.maxValues.B) + 1;
+            state.a = Math.floor(Math.random() * config.maxValues.A) + 1;
+            render();
+        };
+
+        window.togglePlay = () => {
+            state.isPlaying = !state.isPlaying;
+            if (state.isPlaying) {
+                autoPlayInterval = setInterval(() => {
+                    if (state.a >= 36) {
+                        state.a = 1;
+                        state.b = state.b >= 18 ? 1 : state.b + 1;
+                    } else {
+                        state.a += 1;
+                    }
+                    render();
+                }, 100);
+            } else {
+                clearInterval(autoPlayInterval);
+            }
+            render();
+        };
+
+        // ── ADDRESS STRING ──
+        const getAddress = () => `WH-D${state.d}-C${state.c}-B${state.b}-A${state.a}`;
+
+        // ── RENDER: SCREEN ──
+        function renderScreen() {
+            const addr = resolveAddress();
+            const currentIndex = (state.d - 1) * (9 * 18 * 36) + (state.c - 1) * (18 * 36) + (state.b - 1) * 36 + state.a;
+            const pct = (currentIndex / totalPermutations) * 100;
+
+            // Play/pause icon
+            document.getElementById('play-icon').innerHTML = state.isPlaying
+                ? `<svg viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`
+                : `<svg viewBox="0 0 24 24" fill="white"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+
+            // Info bar
+            document.getElementById('screen-info').innerHTML =
+                `<div class="row"><span class="lbl">THS</span><span>${addr.thesis || 'Concentric address pathfinder'}</span></div>` +
+                `<div class="row"><span class="lbl">MTA</span><span>DENSITY: ${totalPermutations.toLocaleString()} COMBINATIONS</span></div>`;
+
+            // Menu rows
+            const labels = { D: addr.domain, C: addr.cluster, B: addr.block, A: addr.leaf };
+            const menuItems = [
+                { id: 'D', label: labels.D, val: state.d, max: config.maxValues.D },
+                { id: 'C', label: labels.C, val: state.c, max: config.maxValues.C },
+                { id: 'B', label: labels.B, val: state.b, max: config.maxValues.B },
+                { id: 'A', label: labels.A, val: state.a, max: config.maxValues.A }
+            ];
+
+            let menuHTML = '';
+            menuItems.forEach(item => {
+                const active = state.activeLayer === item.id ? ' active' : '';
+                let blocksHTML;
+                if (item.max <= 9) {
+                    blocksHTML = '<div class="data-blocks">';
+                    for (let i = 0; i < item.max; i++) {
+                        blocksHTML += `<div class="data-block${i < item.val ? ' filled' : ''}"></div>`;
+                    }
+                    blocksHTML += '</div>';
+                } else {
+                    blocksHTML = `<div class="data-bar"><div class="data-bar-fill" style="width:${(item.val / item.max) * 100}%"></div></div>`;
+                }
+
+                menuHTML += `<button class="menu-row${active}" onclick="window.setActiveLayer_('${item.id}')">
+                    <div class="menu-left">
+                        <span class="menu-arrow">${state.activeLayer === item.id ? '▶' : ''}</span>
+                        <span class="menu-label">${item.label} [${item.id}]</span>
+                    </div>
+                    <div class="menu-right">
+                        ${blocksHTML}
+                        <span class="menu-val">${String(item.val).padStart(2, '0')}/${String(item.max).padStart(2, '0')}</span>
+                    </div>
+                </button>`;
+            });
+            document.getElementById('menu-container').innerHTML = menuHTML;
+
+            // Scrubber
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+            document.getElementById('address-readout').textContent = state.copied ? '>>> DATA SECURED <<<' : `${getAddress()} [COPY]`;
+
+            // QR core
+            document.getElementById('qr-core').src = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${getAddress()}&color=000000&bgcolor=ffffff&margin=0`;
+        }
+
+        window.setActiveLayer_ = (layer) => {
+            state.activeLayer = layer;
+            render();
+        };
+
+        // ── RENDER: SVG WHEEL ──
+        function renderSVG() {
+            const cx = 300, cy = 300;
+
+            // Clockface
+            let clockHTML = '';
+            for (let i = 1; i <= 12; i++) {
+                const a = i * 30;
+                const t0 = polar(cx, cy, 221, a), t1 = polar(cx, cy, 225, a);
+                clockHTML += `<line x1="${t0.x}" y1="${t0.y}" x2="${t1.x}" y2="${t1.y}" stroke="#000" stroke-width="2" />`;
+            }
+            document.getElementById('svg-clockface').innerHTML = clockHTML;
+
+            // Hardware ring
+            const hwBtns = [
+                { s: 315, e: 405, lbl: '▲', fn: 'moveLayerUp()' },
+                { s: 45, e: 135, lbl: '+', fn: 'incrementState()' },
+                { s: 135, e: 225, lbl: '▼', fn: 'moveLayerDown()' },
+                { s: 225, e: 315, lbl: '-', fn: 'decrementState()' }
+            ];
+            let hwHTML = '';
+            hwBtns.forEach(b => {
+                const tp = polar(cx, cy, 260, (b.s + b.e) / 2);
+                hwHTML += `<g onclick="${b.fn}" class="hw-btn">
+                    <path d="${arc(cx, cy, 225, 295, b.s, b.e, 6)}" fill="#fff" stroke="#000" stroke-width="4" />
+                    <text x="${tp.x}" y="${tp.y}" text-anchor="middle" alignment-baseline="middle" font-size="32" font-weight="900" fill="#000" style="pointer-events:none">${b.lbl}</text>
+                </g>`;
+            });
+            document.getElementById('svg-hardware-ring').innerHTML = hwHTML;
+
+            // Data rings
+            const rings = [
+                { id: 'A', ri: 195, ro: 220, n: 36, val: state.a },
+                { id: 'B', ri: 165, ro: 190, n: 18, val: state.b },
+                { id: 'C', ri: 135, ro: 160, n: 9, val: state.c },
+                { id: 'D', ri: 105, ro: 130, n: 3, val: state.d }
+            ];
+
+            let ringsHTML = '';
+            rings.forEach(r => {
+                const step = 360 / r.n;
+                for (let i = 1; i <= r.n; i++) {
+                    const sa = (i - 1) * step, ea = i * step;
+                    const ca = (sa + ea) / 2;
+                    const sel = r.val === i;
+                    const layerActive = state.activeLayer === r.id;
+                    const tp = polar(cx, cy, (r.ri + r.ro) / 2, ca);
+                    let rot = ca;
+                    if (rot > 90 && rot < 270) rot += 180;
+
+                    ringsHTML += `<g onclick="setLayerValue('${r.id}',${i})" class="seg-btn">
+                        <path d="${arc(cx, cy, r.ri, r.ro, sa, ea)}" fill="${sel ? '#000' : '#fff'}" stroke="#000" stroke-width="${layerActive && !sel ? '4' : '1'}" />
+                        <text x="${tp.x}" y="${tp.y}" transform="rotate(${rot},${tp.x},${tp.y})" text-anchor="middle" alignment-baseline="middle" fill="${sel ? '#fff' : '#000'}" font-size="${r.n > 18 ? '10' : '14'}" font-weight="bold" style="pointer-events:none">${r.id}${i}</text>
+                    </g>`;
+                }
+            });
+            document.getElementById('svg-data-rings').innerHTML = ringsHTML;
+        }
+
+        // ── MASTER RENDER ──
+        function render() {
+            renderScreen();
+            renderSVG();
+        }
+
+        // ── COPY TO CLIPBOARD ──
+        document.getElementById('copy-btn').addEventListener('click', () => {
+            const addr = getAddress();
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(addr).then(() => {
+                    state.copied = true; render();
+                    setTimeout(() => { state.copied = false; render(); }, 2000);
+                });
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = addr;
+                ta.style.position = 'fixed'; ta.style.top = '0'; ta.style.left = '0';
+                document.body.appendChild(ta); ta.select();
+                try { document.execCommand('copy'); state.copied = true; render(); setTimeout(() => { state.copied = false; render(); }, 2000); }
+                catch (e) { console.error(e); }
+                document.body.removeChild(ta);
+            }
+        });
+
+        // ── BOOT: CONNECT TO DATA BRIDGE ──
+        whBridge.boot(function (data) {
+            DB = data;
+            // Update max values based on actual data
+            config.maxValues.D = data.archiveTiers.length || 3;
+            config.maxValues.C = data.archiveClusters.length || 9;
+            config.maxValues.B = data.archiveBlocks.length || 18;
+            config.maxValues.A = data.leafTemplates.length || 36;
+
+            render();
+        });
+    </script>
+</body>
+
+</html>

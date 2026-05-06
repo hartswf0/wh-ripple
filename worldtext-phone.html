@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Freezer Phone</title>
+    <style>
+        :root {
+            --ink: #000;
+            --paper: #fff;
+            --cream: #eadacd;
+            --green: #789b78;
+            --field: #d4bb79;
+            --line: 2px solid var(--ink);
+            --thin: 1px solid var(--ink);
+            --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+            background: var(--green);
+            color: var(--ink);
+            font-family: var(--font);
+            -webkit-text-size-adjust: 100%
+        }
+
+        body {
+            display: grid;
+            place-items: start center
+        }
+
+        button {
+            font: inherit;
+            color: inherit;
+            border: 0;
+            background: none;
+            cursor: pointer;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent
+        }
+
+        .stage {
+            width: min(100%, 430px);
+            min-height: 100svh;
+            display: grid;
+            grid-template-columns: 1fr;
+            background: var(--green);
+        }
+
+        .phone {
+            min-height: 100svh;
+            padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
+            display: grid;
+            grid-template-rows: auto 1fr;
+            gap: 10px;
+            background: var(--green);
+        }
+
+        .freezer {
+            position: relative;
+            min-height: 104px;
+            border: var(--line);
+            background: var(--cream);
+            overflow: hidden;
+            display: grid;
+            align-items: stretch;
+        }
+
+        .freezer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 18px;
+            border-bottom: var(--thin);
+            background: linear-gradient(90deg, var(--cream) 0 19%, var(--paper) 19% 20%, var(--cream) 20% 39%, var(--paper) 39% 40%, var(--cream) 40% 59%, var(--paper) 59% 60%, var(--cream) 60% 79%, var(--paper) 79% 80%, var(--cream) 80% 100%);
+            pointer-events: none;
+        }
+
+        .freezer::after {
+            content: "";
+            position: absolute;
+            top: 18px;
+            left: 50%;
+            width: 64px;
+            height: 12px;
+            transform: translateX(-50%);
+            background: var(--green);
+            border: var(--thin);
+            border-top: 0;
+            border-radius: 0 0 999px 999px;
+            pointer-events: none;
+        }
+
+        .readout {
+            position: relative;
+            z-index: 1;
+            padding: 29px 10px 9px;
+            display: grid;
+            gap: 6px;
+            align-content: end;
+        }
+
+        .micro {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+            align-items: center;
+            font-size: 9px;
+            font-weight: 950;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            line-height: 1;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .micro span {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+            align-items: end
+        }
+
+        .name {
+            font-size: clamp(40px, 13vw, 62px);
+            font-weight: 950;
+            line-height: .76;
+            letter-spacing: -.1em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .keybox {
+            min-width: 42px;
+            min-height: 42px;
+            border: var(--line);
+            background: var(--paper);
+            display: grid;
+            place-items: center;
+            font-size: 28px;
+            font-weight: 950;
+            line-height: 1;
+            letter-spacing: -.08em
+        }
+
+        .statebar {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            border: var(--line);
+            background: var(--paper);
+            min-height: 26px;
+        }
+
+        .statebar span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 7px;
+            font-size: 9px;
+            font-weight: 950;
+            text-transform: uppercase;
+            letter-spacing: .065em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .statebar span:first-child {
+            background: var(--ink);
+            color: var(--paper);
+            border-right: var(--thin)
+        }
+
+        .pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 9px 12px;
+            align-self: start
+        }
+
+        .key {
+            aspect-ratio: 1;
+            border: var(--line);
+            background: var(--cream);
+            display: grid;
+            grid-template-rows: .78fr 1.22fr;
+            place-items: center;
+            line-height: 1;
+            font-weight: 950;
+            user-select: none;
+            position: relative;
+            transition: transform 90ms linear, background 120ms linear, color 120ms linear
+        }
+
+        .key.on {
+            background: var(--ink);
+            color: var(--paper);
+            transform: translateY(-2px)
+        }
+
+        .key:active,
+        .dot:active,
+        .hang:active,
+        .close:active,
+        .panel-action:active {
+            transform: translateY(2px)
+        }
+
+        .letters {
+            align-self: end;
+            min-height: 17px;
+            font-size: clamp(15px, 5vw, 22px);
+            letter-spacing: -.05em
+        }
+
+        .digit {
+            align-self: start;
+            font-size: clamp(42px, 13.5vw, 62px);
+            letter-spacing: -.085em
+        }
+
+        .key.symbol {
+            grid-template-rows: .78fr 1.22fr;
+            background: var(--paper)
+        }
+
+        .key.symbol .digit {
+            align-self: start
+        }
+
+        .key.operator .letters {
+            transform: rotate(-8deg);
+            letter-spacing: .08em;
+            font-size: clamp(15px, 4.8vw, 20px)
+        }
+
+        .key .hint {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 6px;
+            text-align: center;
+            font-size: 8px;
+            font-weight: 950;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            opacity: .8
+        }
+
+        .panel {
+            position: fixed;
+            inset: auto 0 0 0;
+            margin: auto;
+            width: min(100%, 430px);
+            max-height: 78svh;
+            background: var(--field);
+            border: var(--line);
+            border-bottom: 0;
+            z-index: 20;
+            display: none;
+            grid-template-rows: auto auto 1fr auto;
+            box-shadow: 0 -10px 0 var(--ink);
+        }
+
+        .panel.open {
+            display: grid
+        }
+
+        .panel-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            align-items: center;
+            padding: 12px;
+            border-bottom: var(--line);
+            background: var(--cream)
+        }
+
+        .panel-title {
+            font-size: 22px;
+            font-weight: 950;
+            line-height: .95;
+            letter-spacing: -.07em;
+            text-transform: uppercase;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .close {
+            width: 42px;
+            height: 42px;
+            border: var(--line);
+            background: var(--paper);
+            font-size: 24px;
+            font-weight: 950;
+            line-height: 1
+        }
+
+        .panel-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-bottom: var(--line);
+            background: var(--paper)
+        }
+
+        .panel-action {
+            min-height: 48px;
+            border-right: var(--thin);
+            font-size: 13px;
+            font-weight: 950;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            background: var(--paper)
+        }
+
+        .panel-action:last-child {
+            border-right: 0
+        }
+
+        .panel-action.on {
+            background: var(--ink);
+            color: var(--paper)
+        }
+
+        .panel-body {
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 14px;
+            background: var(--paper);
+            font-size: 16px;
+            font-weight: 780;
+            line-height: 1.35
+        }
+
+        .panel-body pre {
+            margin: 0;
+            padding: 12px;
+            border: var(--line);
+            background: var(--cream);
+            white-space: pre-wrap;
+            font-size: 12px;
+            line-height: 1.35
+        }
+
+        .visual {
+            height: 150px;
+            border: var(--line);
+            background: var(--cream);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            margin-bottom: 12px
+        }
+
+        .tile {
+            border-right: var(--thin);
+            border-bottom: var(--thin)
+        }
+
+        .call-card {
+            min-height: 260px;
+            background: var(--ink);
+            color: var(--paper);
+            display: grid;
+            place-items: center;
+            text-align: center;
+            padding: 22px;
+            border: var(--line)
+        }
+
+        .call-card-inner {
+            display: grid;
+            gap: 14px
+        }
+
+        .call-card .big {
+            font-size: clamp(42px, 13vw, 68px);
+            font-weight: 950;
+            letter-spacing: -.08em;
+            line-height: .9
+        }
+
+        .call-card .small {
+            font-size: 12px;
+            font-weight: 950;
+            text-transform: uppercase;
+            letter-spacing: .08em
+        }
+
+        .hang {
+            min-height: 48px;
+            border: 1px solid var(--paper);
+            color: var(--paper);
+            font-size: 12px;
+            font-weight: 950;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            padding: 0 18px
+        }
+
+        .dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+            border-top: var(--line);
+            background: var(--cream)
+        }
+
+        .dot {
+            width: 18px;
+            height: 18px;
+            border: var(--thin);
+            border-radius: 50%;
+            background: var(--paper)
+        }
+
+        .dot.on {
+            background: var(--ink)
+        }
+
+        .dots.calling {
+            display: none
+        }
+
+        @media (min-width:900px) {
+            body {
+                padding: 28px;
+                place-items: start center
+            }
+
+            .stage {
+                width: min(100%, 980px);
+                min-height: calc(100svh - 56px);
+                grid-template-columns: 430px minmax(420px, 1fr);
+                gap: 18px;
+                align-items: start;
+                background: transparent;
+            }
+
+            .phone {
+                min-height: calc(100svh - 56px);
+                border: var(--line);
+                box-shadow: 18px 18px 0 var(--ink)
+            }
+
+            .panel {
+                position: static;
+                width: 100%;
+                max-height: none;
+                min-height: calc(100svh - 56px);
+                border: var(--line);
+                box-shadow: 18px 18px 0 var(--ink);
+            }
+
+            .panel.open {
+                display: grid
+            }
+
+            .panel-body {
+                font-size: 18px;
+                padding: 18px
+            }
+
+            .visual {
+                height: 240px
+            }
+
+            .call-card {
+                min-height: 420px
+            }
+        }
+
+        @media (max-height:700px) {
+            .phone {
+                gap: 8px
+            }
+
+            .freezer {
+                min-height: 92px
+            }
+
+            .freezer::before,
+            .freezer::after {
+                display: none
+            }
+
+            .readout {
+                padding-top: 8px
+            }
+
+            .name {
+                font-size: clamp(34px, 11vw, 52px)
+            }
+
+            .pad {
+                gap: 8px 12px
+            }
+
+            .statebar {
+                display: none
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stage">
+        <main class="phone" aria-label="Freezer phone">
+            <section class="freezer" aria-live="polite">
+                <div class="readout">
+                    <div class="micro"><span>watsonhartsoe</span><span id="place">FREEZER</span></div>
+                    <div class="hero">
+                        <div class="name" id="name">INDEX</div>
+                        <div class="keybox" id="keyFact">1</div>
+                    </div>
+                    <div class="statebar"><span id="stateText">READY</span><span id="line">0 SEE · # CALL</span></div>
+                </div>
+            </section>
+
+            <section class="pad" id="pad" aria-label="Freezer context buttons"></section>
+        </main>
+
+        <aside class="panel" id="panel" aria-label="Expanded context panel">
+            <div class="panel-head">
+                <div class="panel-title" id="panelTitle">Title</div><button class="close" id="closePanel">×</button>
+            </div>
+            <div class="panel-actions">
+                <button class="panel-action" id="panelSee">see</button>
+                <button class="panel-action" id="panelCall">call</button>
+            </div>
+            <div class="panel-body" id="panelBody"></div>
+            <div class="dots" id="dots"></div>
+        </aside>
+    </div>
+
+    <script>
+    const STORAGE = 'freezer-phone-side-panel-v2';
+
+    const cards = [
+      {id:'1', letters:'', line:'1-223-4567', place:'FREEZER', name:'INDEX', state:'READY', calls:0, segments:[
+        {type:'text', title:'Freezer Index', body:'This is the home card. The keypad is not a dial into blank space. Each key is a callable and visible context.'},
+        {type:'visual', title:'Zone Shape', body:'A block-glyph freezer cap anchors the interface. The top displays the selected context. The grid chooses what the top means.'}
+      ]},
+      {id:'2', letters:'ABC', line:'2-226-0002', place:'FREEZER', name:'ASSEMBLY', state:'COLD', calls:0, segments:[
+        {type:'text', title:'Assembly', body:'A modular card. Call it to activate. See it to inspect. The freezer zone stays as the display chamber.'},
+        {type:'code', title:'Operation', body:`<key> [selects] <context>
+<#> [calls] <context>
+<0> [sees] <segments>
+<*> [returns] <previous>`}
+      ]},
+      {id:'3', letters:'DEF', line:'3-333-0003', place:'FREEZER', name:'DEFROST', state:'LOW', calls:0, segments:[{type:'text', title:'Defrost', body:'This card marks failure pressure: too much interface frost, not enough action.'}]},
+      {id:'4', letters:'GHI', line:'4-444-0004', place:'FRIDGE', name:'GRID', state:'LIVE', calls:0, segments:[
+        {type:'text', title:'Grid', body:'The grid is the button field. It must never become a decorative map. It chooses the active freezer display.'},
+        {type:'visual', title:'Grid View', body:'A compact field of blocks, not a dashboard.'}
+      ]},
+      {id:'5', letters:'JKL', line:'5-555-0005', place:'FRIDGE', name:'JUKEBOX', state:'HOLD', calls:0, segments:[{type:'text', title:'Jukebox', body:'A selected key can behave like a station. Calling starts the line. Seeing opens its contents.'}]},
+      {id:'6', letters:'MNO', line:'6-666-0006', place:'FRIDGE', name:'MODULE', state:'IN', calls:0, segments:[{type:'code', title:'Module', body:'const module = { key, line, place, name, state, segments };'}]},
+      {id:'7', letters:'PRS', line:'7-777-0007', place:'DRY', name:'PRESS', state:'OUT', calls:0, segments:[{type:'text', title:'Press', body:'Output card. Use this for statements, notices, or compact public-facing descriptions.'}]},
+      {id:'8', letters:'TUV', line:'8-888-0008', place:'DRY', name:'TUNNEL', state:'IN', calls:0, segments:[{type:'visual', title:'Tunnel', body:'The viewer enters through SEE, not by guessing what the keypad means.'}]},
+      {id:'9', letters:'WXY', line:'9-999-0009', place:'DRY', name:'WATSON', state:'LOW', calls:0, segments:[{type:'text', title:'Watson Hartsoe', body:'watsonhartsoe is the signature line. It is visible, spelled correctly, and tied to the freezer phone identity.'}]},
+      {id:'*', letters:'BACK', line:'*-BACK', place:'ACTION', name:'BACK', state:'BACK', calls:0, segments:[{type:'text', title:'Back', body:'Return to the previous context.'}]},
+      {id:'0', letters:'SEE', line:'0-SEE', place:'OPERATOR', name:'SEE', state:'OPEN', calls:0, segments:[{type:'text', title:'See', body:'Open the visible content for the selected context.'}]},
+      {id:'#', letters:'CALL', line:'#-CALL', place:'ACTION', name:'CALL', state:'CALL', calls:0, segments:[{type:'text', title:'Call', body:'Call the selected context.'}]}
+    ];
+
+    let data = cards.map(card => ({...card, segments: card.segments.map(seg => ({...seg}))}));
+    let selected = '1';
+    let previous = '1';
+    let segmentIndex = 0;
+    let panelMode = 'see';
+
+    const $ = id => document.getElementById(id);
+    const el = {
+      pad:$('pad'), line:$('line'), place:$('place'), name:$('name'), stateText:$('stateText'), keyFact:$('keyFact'),
+      panel:$('panel'), panelTitle:$('panelTitle'), panelBody:$('panelBody'), closePanel:$('closePanel'), panelSee:$('panelSee'), panelCall:$('panelCall'), dots:$('dots')
+    };
+
+    function save(){ localStorage.setItem(STORAGE, JSON.stringify({selected, previous, data})); }
+    function load(){ try{ const saved = JSON.parse(localStorage.getItem(STORAGE) || 'null'); if(saved && Array.isArray(saved.data)){ selected = saved.selected || '1'; previous = saved.previous || '1'; data = saved.data; } }catch{} }
+    function card(id = selected){ return data.find(item => item.id === id) || data[0]; }
+
+    function select(id){
+      if(id === '*') return goBack();
+      if(id === '0') return openPanel('see');
+      if(id === '#') return openPanel('call');
+      previous = selected;
+      selected = id;
+      segmentIndex = 0;
+      if(el.panel.classList.contains('open')) renderPanel();
+      save();
+      render();
+    }
+
+    function goBack(){ selected = previous || '1'; segmentIndex = 0; if(el.panel.classList.contains('open')) renderPanel(); save(); render(); }
+
+    function openPanel(mode){
+      panelMode = mode;
+      if(mode === 'call'){
+        const c = card();
+        c.calls = Number(c.calls || 0) + 1;
+        c.state = 'LIVE';
+      }
+      renderPanel();
+      el.panel.classList.add('open');
+      save();
+      render();
+    }
+
+    function renderPanel(){
+      const c = card();
+      el.panelSee.classList.toggle('on', panelMode === 'see');
+      el.panelCall.classList.toggle('on', panelMode === 'call');
+      el.dots.classList.toggle('calling', panelMode === 'call');
+
+      if(panelMode === 'call'){
+        el.panelTitle.textContent = `${c.id} · ${c.name} · CALL`;
+        el.panelBody.innerHTML = `
+          <div class="call-card">
+            <div class="call-card-inner">
+              <div class="small">${escapeHTML(c.line)} · ${escapeHTML(c.place)}</div>
+              <div class="big">${escapeHTML(c.name)}</div>
+              <div class="small">connected · call ${Number(c.calls || 0)}</div>
+              <button class="hang" id="hangBtn">hang up</button>
+            </div>
+          </div>
+        `;
+        const hang = document.getElementById('hangBtn');
+        if(hang) hang.onclick = () => el.panel.classList.remove('open');
+        el.dots.innerHTML = '';
+        return;
+      }
+
+      const seg = c.segments[segmentIndex] || c.segments[0];
+      el.panelTitle.textContent = `${c.id} · ${c.name} · ${seg.title}`;
+      if(seg.type === 'code') el.panelBody.innerHTML = `<pre>${escapeHTML(seg.body)}</pre>`;
+      else if(seg.type === 'visual') el.panelBody.innerHTML = `<div class="visual">${Array.from({length:16}).map((_,i)=>`<div class="tile" style="background:${i % 3 === 0 ? 'var(--green)' : 'var(--cream)'}"></div>`).join('')}</div><p>${escapeHTML(seg.body)}</p>`;
+      else el.panelBody.innerHTML = `<p>${escapeHTML(seg.body)}</p>`;
+      el.dots.innerHTML = c.segments.map((_,i) => `<button class="dot ${i === segmentIndex ? 'on' : ''}" data-i="${i}" aria-label="Segment ${i+1}"></button>`).join('');
+      el.dots.querySelectorAll('button').forEach(btn => btn.onclick = () => { segmentIndex = Number(btn.dataset.i); renderPanel(); });
+    }
+
+    function escapeHTML(str){ return String(str).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch])); }
+
+    function drawPad(){
+      el.pad.innerHTML = data.map(c => {
+        const symbol = c.id === '*' || c.id === '#';
+        const cls = `key${symbol ? ' symbol' : ''}${c.id === '0' ? ' operator' : ''}${c.id === selected ? ' on' : ''}`;
+        return `<button class="${cls}" data-id="${c.id}" aria-label="${c.name}">
+          <span class="letters">${c.letters}</span><span class="digit">${c.id}</span>
+          ${(c.id === '*' || c.id === '0' || c.id === '#') ? `<span class="hint">${c.name}</span>` : ''}
+        </button>`;
+      }).join('');
+      el.pad.querySelectorAll('button').forEach(btn => btn.onclick = () => select(btn.dataset.id));
+    }
+
+    function render(){
+      const c = card();
+      el.line.textContent = c.line;
+      el.place.textContent = c.place;
+      el.name.textContent = c.name;
+      el.stateText.textContent = c.state;
+      el.keyFact.textContent = c.id;
+      drawPad();
+    }
+
+    el.closePanel.onclick = () => el.panel.classList.remove('open');
+    el.panelSee.onclick = () => openPanel('see');
+    el.panelCall.onclick = () => openPanel('call');
+
+    window.addEventListener('keydown', e => {
+      if(/^[0-9*#]$/.test(e.key)) select(e.key);
+      if(e.key === 'Escape') el.panel.classList.remove('open');
+    });
+
+    load();
+    render();
+    </script>
+</body>
+
+</html>

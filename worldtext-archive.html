@@ -2,411 +2,371 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#050505"/>
 <title>Worldtext Practice Archive — Watson Franklin Hartsoe III</title>
 <meta name="description" content="Public archive of a worldtext practice: research, design, teaching, media experiments, interfaces, and prototypes studying how descriptions become environments."/>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23000'/><circle cx='16' cy='16' r='6' fill='none' stroke='%23fff' stroke-width='2'/></svg>"/>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23050505'/><circle cx='16' cy='16' r='6' fill='none' stroke='%23f1f1ea' stroke-width='2'/></svg>"/>
 <style>
 :root{
-  --paper:#fff;
-  --ink:#000;
-  --rule:#000;
-  --ghost:rgba(0,0,0,0.06);
-  --tier-bar:12px;
+  --paper:#f1f1ea;
+  --ink:#050505;
+  --muted:#686860;
+  --rule:#050505;
+  --surface:#ffffff;
+  --surface2:#f7f7f0;
+  --accent:#f27a45;
+  --font:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
   background:var(--paper);
   color:var(--ink);
-  font:14px/1.55 'EB Garamond',Georgia,serif;
+  font:13px/1.45 var(--font);
   -webkit-font-smoothing:antialiased;
 }
 
-/* ── HEADER ── */
+/* ── MASTHEAD ── */
 #masthead{
   position:sticky;top:0;z-index:100;
   background:var(--ink);color:var(--paper);
-  padding:10px 24px;
-  display:flex;align-items:center;gap:16px;
-  border-bottom:3px solid var(--ink);
-  flex-wrap:wrap;
+  padding:0 16px;
+  display:flex;align-items:center;
+  height:44px;gap:12px;
+  border-bottom:2px solid var(--rule);
 }
 #masthead h1{
-  font:700 15px/1 'JetBrains Mono',monospace;
-  letter-spacing:-0.3px;
-  flex-shrink:0;
+  font-size:clamp(16px,3.5vw,28px);
+  line-height:.88;letter-spacing:-.07em;
+  text-transform:uppercase;
+  white-space:nowrap;
 }
-#masthead .links{
-  display:flex;gap:6px;flex-wrap:wrap;
+.nav-links{
+  display:flex;gap:5px;flex-wrap:wrap;
   margin-left:auto;
 }
-#masthead .links a{
-  font:600 8px/1 'JetBrains Mono',monospace;
-  letter-spacing:0.5px;
+.nav-links a{
+  font:900 8px/1 var(--font);
+  letter-spacing:.06em;
   text-transform:uppercase;
-  padding:3px 8px;
-  border:1px solid rgba(255,255,255,0.4);
-  color:var(--paper);
-  text-decoration:none;
-  transition:all 0.15s;
+  padding:5px 10px;
+  border:2px solid rgba(255,255,255,.3);
+  color:var(--paper);text-decoration:none;
+  transition:all .12s;
 }
-#masthead .links a:hover{
+.nav-links a:hover{
   background:var(--paper);color:var(--ink);
   border-color:var(--paper);
+}
+.nav-links a.hl{
+  border-color:var(--accent);color:var(--accent);
+}
+.nav-links a.hl:hover{
+  background:var(--accent);color:var(--ink);
 }
 
 /* ── TIER NAV ── */
 #tier-nav{
-  position:sticky;top:42px;z-index:90;
+  position:sticky;top:44px;z-index:90;
   background:var(--paper);
-  border-bottom:1px solid var(--ink);
-  padding:6px 24px;
+  border-bottom:2px solid var(--rule);
+  padding:0 16px;
   display:flex;gap:0;
   overflow-x:auto;
-  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
 }
+#tier-nav::-webkit-scrollbar{display:none}
 .tier-tab{
-  font:700 7px/1 'JetBrains Mono',monospace;
-  letter-spacing:0.6px;
+  font:900 8px/1 var(--font);
+  letter-spacing:.06em;
   text-transform:uppercase;
-  padding:5px 10px;
-  border:none;
-  background:none;
-  cursor:pointer;
+  padding:10px 12px;
+  border:none;background:none;cursor:pointer;
   color:var(--ink);
-  opacity:0.5;
-  transition:all 0.15s;
+  transition:all .12s;
   white-space:nowrap;
-  border-bottom:2px solid transparent;
-  position:relative;
+  border-bottom:3px solid transparent;
 }
-.tier-tab:hover{opacity:1}
-.tier-tab.active{
-  opacity:1;
-  border-bottom-color:var(--ink);
-}
+.tier-tab:hover{background:var(--surface2)}
+.tier-tab.active{border-bottom-color:var(--accent)}
 .tier-tab::before{
-  content:'';
-  display:inline-block;
-  width:6px;height:6px;
-  border-radius:50%;
-  margin-right:5px;
-  vertical-align:1px;
+  content:'';display:inline-block;
+  width:8px;height:8px;border-radius:50%;
+  margin-right:5px;vertical-align:0;
 }
 
-/* ── THESIS BLOCK ── */
+/* ── THESIS ── */
 #thesis{
-  padding:40px 24px 30px;
-  max-width:680px;
-  border-bottom:2px solid var(--ink);
+  padding:32px 24px 28px;
+  border-bottom:2px solid var(--rule);
+  background:var(--surface);
 }
 #thesis h2{
-  font:700 28px/1.15 'EB Garamond',Georgia,serif;
-  letter-spacing:-0.5px;
+  font-size:clamp(18px,3.2vw,32px);
+  line-height:1.05;letter-spacing:-.06em;
+  text-transform:uppercase;
   margin-bottom:12px;
 }
 #thesis .claim{
-  font:400 16px/1.55 'EB Garamond',Georgia,serif;
-  color:var(--ink);
+  font-size:13px;line-height:1.5;
+  max-width:680px;
+  color:#333;
 }
 #thesis .sub{
-  font:400 11px/1.4 'JetBrains Mono',monospace;
-  margin-top:10px;
-  opacity:0.5;
+  font-size:9px;
+  margin-top:12px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--muted);
 }
 
 /* ── TIER SECTIONS ── */
 .tier-section{
-  border-bottom:1px solid var(--ink);
-  scroll-margin-top:90px;
+  border-bottom:2px solid var(--rule);
+  scroll-margin-top:80px;
 }
 .tier-header{
-  display:flex;
-  align-items:stretch;
-  border-bottom:1px solid var(--ghost);
+  display:flex;align-items:stretch;
+  position:sticky;top:78px;z-index:10;
+  background:var(--ink);color:var(--paper);
+  border-bottom:2px solid var(--rule);
 }
 .tier-color-bar{
-  width:var(--tier-bar);
-  flex-shrink:0;
+  width:10px;flex-shrink:0;
 }
 .tier-title-block{
-  padding:14px 20px;
-  flex:1;
+  padding:12px 20px;flex:1;
+}
+.tier-row{
+  display:flex;align-items:baseline;gap:8px;
 }
 .tier-name{
-  font:700 9px/1 'JetBrains Mono',monospace;
-  letter-spacing:1px;
+  font:900 11px/1 var(--font);
+  letter-spacing:.06em;
   text-transform:uppercase;
 }
 .tier-count{
-  font:400 9px/1 'JetBrains Mono',monospace;
-  opacity:0.4;
-  margin-left:8px;
+  font:400 10px/1 var(--font);
+  color:rgba(255,255,255,.5);
+}
+.tier-desc{
+  font:400 11px/1.4 var(--font);
+  color:rgba(255,255,255,.72);
+  margin-top:4px;
+  max-width:640px;
 }
 
 /* ── NODE CARDS ── */
-.node-list{
-  display:flex;
-  flex-direction:column;
-}
+.node-list{display:flex;flex-direction:column}
 .node-card{
   display:grid;
-  grid-template-columns:var(--tier-bar) 1fr;
-  border-bottom:1px solid var(--ghost);
-  cursor:pointer;
-  transition:background 0.1s;
+  grid-template-columns:10px 1fr;
+  border-bottom:1px solid rgba(0,0,0,.1);
+  background:var(--surface);
+  transition:background .08s;
 }
-.node-card:hover{
-  background:var(--ghost);
+.node-card:hover{background:var(--surface2)}
+.node-bar{}
+.node-body{padding:16px 20px}
+.node-kicker{
+  font:900 8px/1 var(--font);
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:4px;
 }
-.node-card.selected{
-  background:var(--ink);
-  color:var(--paper);
-}
-.node-bar{
-  opacity:0.15;
-}
-.node-card.selected .node-bar{
-  opacity:1;
-}
-.node-body{
-  padding:12px 20px;
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:8px;
-  align-items:start;
+.node-title-row{
+  display:flex;align-items:baseline;
+  gap:10px;flex-wrap:wrap;
+  margin-bottom:6px;
 }
 .node-title{
-  font:700 15px/1.2 'EB Garamond',Georgia,serif;
-}
-.node-kicker{
-  font:600 7px/1 'JetBrains Mono',monospace;
-  letter-spacing:0.8px;
+  font:900 clamp(14px,2vw,20px)/1.1 var(--font);
+  letter-spacing:-.05em;
   text-transform:uppercase;
-  opacity:0.4;
-  margin-bottom:3px;
 }
-.node-card.selected .node-kicker{opacity:0.6}
-.node-thesis{
-  font:400 12.5px/1.45 'EB Garamond',Georgia,serif;
-  margin-top:4px;
-  max-width:560px;
+.node-title a{
+  color:inherit;text-decoration:none;
+  border-bottom:2px solid transparent;
+  transition:border-color .12s;
 }
+.node-title a:hover{border-bottom-color:var(--accent)}
 .node-density{
-  font:600 8px/1 'JetBrains Mono',monospace;
-  text-align:right;
-  opacity:0.35;
+  font:900 9px/1 var(--font);
+  color:var(--muted);
   white-space:nowrap;
+  margin-left:auto;
 }
-.node-card.selected .node-density{opacity:0.6}
+.node-thesis{
+  font:400 12px/1.5 var(--font);
+  max-width:640px;
+  color:#333;
+  margin-bottom:6px;
+}
 .node-bridge{
-  display:none;
-  font:italic 400 12px/1.45 'EB Garamond',Georgia,serif;
-  margin-top:6px;
+  font:400 11px/1.45 var(--font);
+  max-width:640px;
+  color:var(--muted);
   padding-top:6px;
-  border-top:1px solid rgba(0,0,0,0.1);
+  border-top:1px solid rgba(0,0,0,.08);
 }
-.node-card.selected .node-bridge{
-  display:block;
-  border-top-color:rgba(255,255,255,0.15);
+.node-actions{
+  display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;
 }
-
-/* ── DETAIL PANEL (right split on desktop) ── */
-#detail{
-  position:fixed;
-  top:42px;bottom:0;right:0;
-  width:0;
+.node-actions a{
+  font:900 8px/1 var(--font);
+  letter-spacing:.04em;text-transform:uppercase;
+  padding:6px 12px;
+  border:2px solid var(--rule);
+  color:var(--ink);text-decoration:none;
+  transition:all .12s;
+}
+.node-actions a:hover{
   background:var(--ink);color:var(--paper);
-  overflow-y:auto;
-  transition:width 0.25s cubic-bezier(0.4,0,0.2,1);
-  z-index:80;
-  border-left:3px solid var(--ink);
 }
-#detail.open{
-  width:min(480px, 100vw);
+.node-elements{
+  margin-top:8px;
+  display:flex;gap:4px;flex-wrap:wrap;
 }
-#detail-inner{
-  padding:24px;
-}
-#detail-close{
-  position:absolute;top:12px;right:12px;
-  background:none;border:1px solid rgba(255,255,255,0.3);
-  color:var(--paper);font:700 10px/1 'JetBrains Mono',monospace;
-  padding:4px 8px;cursor:pointer;
-}
-#detail-close:hover{background:var(--paper);color:var(--ink)}
-.detail-kicker{
-  font:600 8px/1 'JetBrains Mono',monospace;
-  letter-spacing:1px;text-transform:uppercase;
-  opacity:0.5;margin-bottom:6px;
-}
-.detail-title{
-  font:700 22px/1.15 'EB Garamond',Georgia,serif;
-  margin-bottom:12px;
-}
-.detail-thesis{
-  font:400 14px/1.55 'EB Garamond',Georgia,serif;
-  margin-bottom:14px;
-}
-.detail-bridge{
-  font:italic 400 13px/1.5 'EB Garamond',Georgia,serif;
-  padding:10px 0;
-  border-top:1px solid rgba(255,255,255,0.15);
-  border-bottom:1px solid rgba(255,255,255,0.15);
-  margin-bottom:14px;
-}
-.detail-meta{
-  font:400 9px/1.6 'JetBrains Mono',monospace;
-  opacity:0.5;
-}
-.detail-meta a{color:var(--paper);text-underline-offset:2px}
-.detail-meta a:hover{opacity:1}
-
-.detail-elements{
-  margin-top:16px;
-}
-.detail-elements h4{
-  font:700 8px/1 'JetBrains Mono',monospace;
-  letter-spacing:1px;text-transform:uppercase;
-  opacity:0.4;margin-bottom:8px;
-  margin-top:14px;
-}
-.detail-elements .tag{
+.node-elements .tag{
+  font:900 8px/1 var(--font);
+  padding:3px 7px;
+  border:1px solid var(--rule);
+  background:var(--surface2);
+  text-transform:uppercase;
   display:inline-block;
-  font:400 9px/1 'JetBrains Mono',monospace;
-  padding:2px 6px;
-  border:1px solid rgba(255,255,255,0.2);
-  margin:2px 3px 2px 0;
 }
-.detail-elements a.tag{
-  color:var(--paper);text-decoration:none;
+.node-elements a.tag{
+  color:var(--ink);text-decoration:none;
 }
-.detail-elements a.tag:hover{
-  background:var(--paper);color:var(--ink);
-  border-color:var(--paper);
+.node-elements a.tag:hover{
+  background:var(--ink);color:var(--paper);
+  border-color:var(--ink);
 }
 
-.detail-actions{
-  margin-top:20px;
-  display:flex;gap:8px;flex-wrap:wrap;
-}
-.detail-actions a{
-  font:700 9px/1 'JetBrains Mono',monospace;
-  letter-spacing:0.5px;text-transform:uppercase;
-  padding:8px 14px;
-  border:1px solid var(--paper);
-  color:var(--paper);text-decoration:none;
-  transition:all 0.15s;
-}
-.detail-actions a:hover{
-  background:var(--paper);color:var(--ink);
-}
-
-/* ── STATS FOOTER ── */
-#stats{
-  padding:20px 24px;
-  border-top:2px solid var(--ink);
-  display:flex;gap:24px;flex-wrap:wrap;
-  font:400 9px/1.4 'JetBrains Mono',monospace;
-  opacity:0.4;
+/* ── FOOTER ── */
+#stats-footer{
+  padding:16px 24px;
+  border-top:2px solid var(--rule);
+  display:flex;gap:16px;flex-wrap:wrap;
+  font:900 9px/1.4 var(--font);
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:var(--muted);
 }
 
 /* ── RESPONSIVE ── */
 @media(max-width:640px){
-  #masthead{padding:8px 12px}
-  #masthead h1{font-size:12px}
-  #thesis{padding:24px 16px}
-  #thesis h2{font-size:22px}
-  .node-body{padding:10px 14px}
+  #masthead{height:38px;padding:0 10px}
+  #masthead h1{font-size:16px}
+  #tier-nav{padding:0 10px;top:38px}
+  .tier-tab{padding:8px 8px;font-size:7px}
+  #thesis{padding:20px 14px 18px}
+  .node-body{padding:12px 14px}
+  .node-title{font-size:14px}
   .tier-title-block{padding:10px 14px}
-  #detail.open{width:100vw}
-  #detail-inner{padding:16px}
+  .tier-header{top:70px}
+  #stats-footer{padding:12px 14px}
+  .nav-links a{font-size:7px;padding:4px 6px}
+}
+
+@media(min-width:1200px){
+  #thesis{padding-left:40px}
+  .tier-title-block{padding-left:40px}
+  .node-body{padding-left:40px}
+  #stats-footer{padding-left:40px}
 }
 
 @media print{
-  #masthead,#tier-nav,#detail{display:none}
+  #masthead,#tier-nav{display:none}
   .tier-section{break-inside:avoid}
-  .node-bridge{display:block!important}
+  .node-actions{display:none}
 }
 </style>
 </head>
 <body>
 
 <header id="masthead">
-  <h1>WORLDTEXT PRACTICE ARCHIVE</h1>
-  <div class="links">
-    <a href="orange-grid-viewer.html">311 REPOS</a>
+  <h1>Worldtext Practice Archive</h1>
+  <nav class="nav-links">
+    <a class="hl" href="orange-grid-viewer.html">311 Repos</a>
     <a href="cv-progress-2026.html">CV</a>
-    <a href="https://watson-hartsoe.webflow.io/">LEGACY</a>
-    <a href="https://github.com/hartswf0">GITHUB</a>
-    <a href="https://medium.com/@Wfh.iii">MEDIUM</a>
-    <a href="mailto:whartsoe3@gatech.edu">CONTACT</a>
-  </div>
+    <a href="https://github.com/hartswf0">GitHub</a>
+    <a href="mailto:whartsoe3@gatech.edu">Contact</a>
+  </nav>
 </header>
 
 <nav id="tier-nav"></nav>
 
 <section id="thesis">
   <h2>Watson Hartsoe researches how language, media, and computation become worlds.</h2>
-  <p class="claim">This site is the public archive of a worldtext practice: a body of research, design, teaching, media experiments, interfaces, essays, simulations, and prototypes studying how descriptions become environments, how communities become world-builders, and how virtual, material, narrative, and computational systems shape what people can imagine together.</p>
-  <p class="sub">PhD Candidate, Digital Media — Georgia Institute of Technology — Advisor: Jay David Bolter</p>
+  <p class="claim">This is the public archive of a worldtext practice: a body of research, design, teaching, media experiments, interfaces, essays, simulations, and prototypes studying how descriptions become environments, how communities become world-builders, and how virtual, material, narrative, and computational systems shape what people can imagine together.</p>
+  <p class="sub">PhD Candidate, Digital Media · Georgia Institute of Technology · Advisor: Jay David Bolter</p>
 </section>
 
 <main id="archive"></main>
-
-<footer id="stats"></footer>
-
-<aside id="detail">
-  <button id="detail-close">CLOSE ×</button>
-  <div id="detail-inner"></div>
-</aside>
+<footer id="stats-footer"></footer>
 
 <script>
 (()=>{
   'use strict';
-
   let DATA = null;
-  let selectedId = null;
+
+  const tierDescs = {
+    current_research:'The central engine of the dissertation. Ekphrasis, thick description, and generative AI converge here into a single operative theory.',
+    synthetic_culture:'Myth is not content — it is computation. These projects treat cultural narratives as adaptive systems, operating archives, and root processes.',
+    operative_pedagogy:'How worldtext becomes teachable. Media ecology, prompt architecture, and production bus infrastructure for classrooms and studios.',
+    operative_instruments:'Functional tools built to test the theory. Each instrument is a working proof that description operates inside digital systems.',
+    research_lineage:'The academic backbone. Spatial compilation, browser motion, narrative grammar, ethics infrastructure, and collaborative scholarship.',
+    cultural_interfaces:'Theory made navigable. Cultural models, archive viewers, and philosophical interfaces that let users inhabit arguments.',
+    legacy_worldmaking:'Earlier work in participatory design, social VR, youth media, and community worldbuilding. Retained as lineage evidence.',
+    public_theory:'Public-facing arguments on AI, media, and culture. Theory entering conflict outside the academy.',
+    external_proof:'External collaborations that validate the practice. Work with studios, artists, and researchers outside the home institution.',
+  };
 
   async function boot(){
-    try{
-      const resp = await fetch('worldtext-program-theory.json');
-      DATA = await resp.json();
-    } catch(e){
-      document.getElementById('archive').innerHTML =
-        '<p style="padding:40px 24px;font:400 14px/1.5 JetBrains Mono,monospace;opacity:0.5">Serve via HTTP to load data: python3 -m http.server 8080</p>';
-      return;
+    if(window.__PT_DATA){
+      DATA = window.__PT_DATA;
+    } else {
+      try{
+        const resp = await fetch('worldtext-program-theory.json');
+        DATA = await resp.json();
+      } catch(e){
+        document.getElementById('archive').innerHTML =
+          '<p style="padding:40px 24px;font-size:12px;color:var(--muted)">Serve via HTTP: python3 -m http.server 8080</p>';
+        return;
+      }
     }
     renderNav();
     renderArchive();
     renderStats();
     if(location.hash){
       const id = location.hash.slice(1);
-      setTimeout(()=> selectNode(id), 300);
+      setTimeout(()=>{
+        const el = document.getElementById('node-'+id);
+        if(el) el.scrollIntoView({behavior:'smooth',block:'center'});
+      }, 300);
     }
   }
 
   function renderNav(){
     const nav = document.getElementById('tier-nav');
-    DATA.archive_tiers.forEach((tier, idx) =>{
+    DATA.archive_tiers.forEach((tier, idx)=>{
       const btn = document.createElement('button');
       btn.className = 'tier-tab';
       btn.textContent = tier.tier_name;
       btn.addEventListener('click', ()=>{
         document.getElementById('tier-'+tier.tier_id)?.scrollIntoView({behavior:'smooth'});
       });
-      // Inline the dot color
       const style = document.createElement('style');
       style.textContent = `#tier-nav .tier-tab:nth-child(${idx+1})::before{background:${tier.color}}`;
       document.head.appendChild(style);
       nav.appendChild(btn);
     });
 
-    // Intersection observer for active tab
-    const observer = new IntersectionObserver(entries =>{
-      entries.forEach(e =>{
+    const observer = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
         if(e.isIntersecting){
           const id = e.target.id.replace('tier-','');
           document.querySelectorAll('.tier-tab').forEach((t,i)=>{
@@ -416,202 +376,121 @@ body{
       });
     }, {rootMargin:'-100px 0px -60% 0px', threshold:0});
 
-    // Observe after render
     requestAnimationFrame(()=>{
-      document.querySelectorAll('.tier-section').forEach(s => observer.observe(s));
+      document.querySelectorAll('.tier-section').forEach(s=>observer.observe(s));
     });
   }
 
   function renderArchive(){
     const main = document.getElementById('archive');
-    DATA.archive_tiers.forEach(tier =>{
+    DATA.archive_tiers.forEach(tier=>{
       const section = document.createElement('section');
       section.className = 'tier-section';
       section.id = 'tier-' + tier.tier_id;
+      const desc = tierDescs[tier.tier_id] || '';
 
-      // Header
-      const header = document.createElement('div');
-      header.className = 'tier-header';
-      header.innerHTML = `
-        <div class="tier-color-bar" style="background:${tier.color}"></div>
-        <div class="tier-title-block">
-          <span class="tier-name">${tier.tier_name}</span>
-          <span class="tier-count">${tier.nodes.length} node${tier.nodes.length!==1?'s':''}</span>
+      section.innerHTML = `
+        <div class="tier-header">
+          <div class="tier-color-bar" style="background:${tier.color}"></div>
+          <div class="tier-title-block">
+            <div class="tier-row">
+              <span class="tier-name">${tier.tier_name}</span>
+              <span class="tier-count">${tier.nodes.length}</span>
+            </div>
+            ${desc ? `<div class="tier-desc">${desc}</div>` : ''}
+          </div>
         </div>
       `;
-      section.appendChild(header);
 
-      // Nodes
       const list = document.createElement('div');
       list.className = 'node-list';
-      tier.nodes.forEach(node =>{
+
+      tier.nodes.forEach(node=>{
         const card = document.createElement('div');
         card.className = 'node-card';
         card.id = 'node-' + node.id;
-        card.dataset.nodeId = node.id;
 
-        // Density string
         let densityStr = '';
         if(node.density){
-          const parts = [];
-          if(node.density.touches) parts.push(node.density.touches + 't');
-          if(node.density.size_kb) parts.push(formatSize(node.density.size_kb));
-          if(node.density.maturity) parts.push(node.density.maturity);
-          densityStr = parts.join(' · ');
+          const p = [];
+          if(node.density.touches) p.push(node.density.touches+'t');
+          if(node.density.size_kb) p.push(fmtSize(node.density.size_kb));
+          if(node.density.maturity) p.push(node.density.maturity);
+          densityStr = p.join(' · ');
+        }
+
+        let elemHtml = '';
+        if(node.elements){
+          elemHtml = '<div class="node-elements">';
+          for(const [key, val] of Object.entries(node.elements)){
+            if(Array.isArray(val)){
+              val.forEach(item=>{
+                if(typeof item === 'object' && item.url){
+                  elemHtml += `<a class="tag" href="${item.url}" target="_blank">${item.label||item.title||''}</a>`;
+                } else if(typeof item === 'string'){
+                  elemHtml += `<span class="tag">${item}</span>`;
+                }
+              });
+            } else if(typeof val === 'object'){
+              for(const [k,v] of Object.entries(val)){
+                elemHtml += `<span class="tag">${k}: ${v}</span>`;
+              }
+            }
+          }
+          elemHtml += '</div>';
         }
 
         card.innerHTML = `
           <div class="node-bar" style="background:${tier.color}"></div>
           <div class="node-body">
-            <div>
-              <div class="node-kicker">${node.kicker || ''}</div>
-              <div class="node-title">${node.title}</div>
-              <div class="node-thesis">${node.thesis || ''}</div>
-              <div class="node-bridge">${node.bridge || ''}</div>
+            <div class="node-kicker">${node.kicker || ''}</div>
+            <div class="node-title-row">
+              <div class="node-title">${node.url ? `<a href="${node.url}" target="_blank">${node.title}</a>` : node.title}</div>
+              <div class="node-density">${densityStr}</div>
             </div>
-            <div class="node-density">${densityStr}</div>
+            <div class="node-thesis">${node.thesis || ''}</div>
+            ${node.bridge ? `<div class="node-bridge">${node.bridge}</div>` : ''}
+            ${elemHtml}
+            <div class="node-actions">
+              ${node.url ? `<a href="${node.url}" target="_blank">Open ↗</a>` : ''}
+              ${node.repo ? `<a href="${node.repo}" target="_blank">Repo ↗</a>` : ''}
+            </div>
           </div>
         `;
-
-        card.addEventListener('click', ()=> selectNode(node.id));
         list.appendChild(card);
       });
+
       section.appendChild(list);
       main.appendChild(section);
     });
   }
 
-  function selectNode(id){
-    // Deselect previous
-    document.querySelectorAll('.node-card.selected').forEach(c => c.classList.remove('selected'));
-
-    // Find node data
-    let nodeData = null;
-    let tierData = null;
-    for(const tier of DATA.archive_tiers){
-      for(const node of tier.nodes){
-        if(node.id === id){
-          nodeData = node;
-          tierData = tier;
-          break;
-        }
-      }
-      if(nodeData) break;
-    }
-    if(!nodeData) return;
-
-    selectedId = id;
-    location.hash = id;
-
-    // Highlight card
-    const card = document.getElementById('node-' + id);
-    if(card){
-      card.classList.add('selected');
-      card.scrollIntoView({behavior:'smooth', block:'center'});
-    }
-
-    // Build detail panel
-    const inner = document.getElementById('detail-inner');
-    let html = `
-      <div class="detail-kicker" style="color:${tierData.color}">${nodeData.kicker || tierData.tier_name}</div>
-      <div class="detail-title">${nodeData.title}</div>
-      <div class="detail-thesis">${nodeData.thesis || ''}</div>
-    `;
-
-    if(nodeData.bridge){
-      html += `<div class="detail-bridge">${nodeData.bridge}</div>`;
-    }
-
-    // Meta
-    let metaParts = [];
-    if(nodeData.role) metaParts.push('ROLE: ' + nodeData.role);
-    if(nodeData.density){
-      if(nodeData.density.touches) metaParts.push('TOUCHES: ' + nodeData.density.touches);
-      if(nodeData.density.size_kb) metaParts.push('SIZE: ' + formatSize(nodeData.density.size_kb));
-      if(nodeData.density.maturity) metaParts.push('MATURITY: ' + nodeData.density.maturity);
-    }
-    if(metaParts.length){
-      html += `<div class="detail-meta">${metaParts.join('<br>')}</div>`;
-    }
-
-    // Elements
-    if(nodeData.elements){
-      html += '<div class="detail-elements">';
-      for(const [key, val] of Object.entries(nodeData.elements)){
-        const label = key.replace(/_/g,' ').toUpperCase();
-        html += `<h4>${label}</h4>`;
-        if(Array.isArray(val)){
-          val.forEach(item =>{
-            if(typeof item === 'object' && item.url){
-              html += `<a class="tag" href="${item.url}" target="_blank">${item.label || item.title || item.url}</a>`;
-            } else if(typeof item === 'string'){
-              html += `<span class="tag">${item}</span>`;
-            }
-          });
-        } else if(typeof val === 'object'){
-          for(const [k,v] of Object.entries(val)){
-            html += `<span class="tag">${k}: ${v}</span>`;
-          }
-        }
-      }
-      html += '</div>';
-    }
-
-    // Actions
-    html += '<div class="detail-actions">';
-    if(nodeData.url) html += `<a href="${nodeData.url}" target="_blank">OPEN LIVE ↗</a>`;
-    if(nodeData.repo) html += `<a href="${nodeData.repo}" target="_blank">REPO ↗</a>`;
-    html += '</div>';
-
-    inner.innerHTML = html;
-    document.getElementById('detail').classList.add('open');
-  }
-
-  function closeDetail(){
-    document.getElementById('detail').classList.remove('open');
-    document.querySelectorAll('.node-card.selected').forEach(c => c.classList.remove('selected'));
-    selectedId = null;
-    history.replaceState(null, '', location.pathname);
-  }
-
-  document.getElementById('detail-close').addEventListener('click', closeDetail);
-
-  // ESC to close
-  document.addEventListener('keydown', e =>{
-    if(e.key === 'Escape') closeDetail();
-  });
-
   function renderStats(){
-    const stats = document.getElementById('stats');
-    const totalNodes = DATA.archive_tiers.reduce((s,t)=> s + t.nodes.length, 0);
-    const totalTiers = DATA.archive_tiers.length;
-
-    let totalTouches = 0;
-    let totalSize = 0;
-    let instruments = 0;
-    DATA.archive_tiers.forEach(t => t.nodes.forEach(n =>{
+    const el = document.getElementById('stats-footer');
+    const totalNodes = DATA.archive_tiers.reduce((s,t)=>s+t.nodes.length,0);
+    let touches=0, size=0, instruments=0;
+    DATA.archive_tiers.forEach(t=>t.nodes.forEach(n=>{
       if(n.density){
-        totalTouches += n.density.touches || 0;
-        totalSize += n.density.size_kb || 0;
-        if(n.density.maturity === 'instrument') instruments++;
+        touches += n.density.touches||0;
+        size += n.density.size_kb||0;
+        if(n.density.maturity==='instrument') instruments++;
       }
     }));
-
-    stats.innerHTML = `
-      <span>${totalTiers} TIERS</span>
-      <span>${totalNodes} NODES</span>
-      <span>${totalTouches.toLocaleString()} TOUCHES</span>
-      <span>${formatSize(totalSize)} TOTAL</span>
-      <span>${instruments} INSTRUMENTS</span>
-      <span>WATSON FRANKLIN HARTSOE III</span>
-      <span>GEORGIA INSTITUTE OF TECHNOLOGY</span>
+    el.innerHTML = `
+      <span>${DATA.archive_tiers.length} Tiers</span>
+      <span>${totalNodes} Nodes</span>
+      <span>${touches.toLocaleString()} Touches</span>
+      <span>${fmtSize(size)} Total</span>
+      <span>${instruments} Instruments</span>
+      <span>Watson Franklin Hartsoe III</span>
+      <span>Georgia Institute of Technology</span>
     `;
   }
 
-  function formatSize(kb){
-    if(kb >= 1000000) return (kb/1000000).toFixed(1) + 'GB';
-    if(kb >= 1000) return (kb/1000).toFixed(0) + 'MB';
-    return kb + 'KB';
+  function fmtSize(kb){
+    if(kb>=1000000) return (kb/1000000).toFixed(1)+'GB';
+    if(kb>=1000) return (kb/1000).toFixed(0)+'MB';
+    return kb+'KB';
   }
 
   boot();

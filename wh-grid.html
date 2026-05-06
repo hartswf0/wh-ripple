@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Orange Assembly Payload Index</title>
+    <style>
+        :root {
+            --ink: #000;
+            --bg: #f47a45;
+            --cream: #fff6df;
+            --paper: #fff;
+            --muted: rgba(0, 0, 0, .56);
+            --active: #000;
+            --activeText: #fff6df;
+            --line: 3px solid var(--ink);
+            --thin: 2px solid var(--ink);
+            --gap: 7px;
+            --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--font);
+            -webkit-text-size-adjust: 100%;
+        }
+
+        button,
+        a {
+            font: inherit;
+            color: inherit;
+            border: 0;
+            background: none;
+            text-decoration: none;
+            cursor: pointer;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .app {
+            width: 100vw;
+            height: 100vh;
+            height: 100svh;
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr);
+            overflow: hidden;
+            background: var(--bg);
+        }
+
+        .topbar {
+            min-height: 64px;
+            padding: 7px 8px;
+            display: grid;
+            grid-template-columns: 44px minmax(0, 1fr) 44px;
+            gap: 8px;
+            align-items: center;
+            border-bottom: var(--line);
+            background: var(--bg);
+        }
+
+        .topDisc {
+            width: 44px;
+            height: 44px;
+            border: var(--line);
+            background: var(--cream);
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+        }
+
+        .topDisc svg {
+            width: 34px;
+            height: 34px;
+            display: block;
+            animation: spinDisc 12s linear infinite;
+            transform-origin: 50% 50%;
+        }
+
+        @keyframes spinDisc {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .topTitleWrap {
+            min-width: 0;
+            display: grid;
+            align-content: center;
+            gap: 2px;
+        }
+
+        .topMeta {
+            min-width: 0;
+            font-size: 9px;
+            line-height: 1;
+            font-weight: 1000;
+            letter-spacing: .075em;
+            text-transform: uppercase;
+            color: rgba(0, 0, 0, .62);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .topName {
+            min-width: 0;
+            font-size: clamp(16px, 2.1vw, 24px);
+            line-height: 1.02;
+            font-weight: 820;
+            letter-spacing: -.035em;
+            text-transform: uppercase;
+            white-space: normal;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .openTop {
+            width: 44px;
+            height: 44px;
+            border: var(--line);
+            background: var(--cream);
+            display: grid;
+            place-items: center;
+            font-size: 18px;
+            line-height: 1;
+            font-weight: 1000;
+        }
+
+        .stage {
+            min-height: 0;
+            display: grid;
+            grid-template-columns: .7fr .58fr .48fr .42fr 2.25fr;
+            gap: var(--gap);
+            padding: var(--gap);
+            overflow: hidden;
+        }
+
+        .rail {
+            min-width: 0;
+            min-height: 0;
+            display: grid;
+            grid-template-rows: minmax(0, 1fr);
+            overflow: hidden;
+        }
+
+        .track {
+            position: relative;
+            min-height: 0;
+            height: 100%;
+            border-left: var(--line);
+            border-right: var(--line);
+            border-top: var(--line);
+            display: grid;
+            overflow: hidden;
+            background: var(--bg);
+        }
+
+        .track::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: .2;
+            background:
+                linear-gradient(to bottom, transparent calc(33.333% - 1px), rgba(0, 0, 0, .32) calc(33.333% - 1px) calc(33.333% + 2px), transparent calc(33.333% + 2px)),
+                linear-gradient(to bottom, transparent calc(66.666% - 1px), rgba(0, 0, 0, .32) calc(66.666% - 1px) calc(66.666% + 2px), transparent calc(66.666% + 2px));
+        }
+
+        #railC::before {
+            opacity: .34
+        }
+
+        #railB::before {
+            opacity: .25
+        }
+
+        #railL::before {
+            opacity: .18
+        }
+
+        .cell {
+            min-width: 0;
+            min-height: 0;
+            position: relative;
+            z-index: 1;
+            border-bottom: var(--thin);
+            background: var(--bg);
+            display: grid;
+            place-items: center;
+            text-align: center;
+            overflow: hidden;
+            padding: 1px;
+            line-height: .88;
+            font-weight: 1000;
+            transition:
+                background .12s linear,
+                color .12s linear,
+                font-size .12s linear,
+                opacity .12s linear,
+                box-shadow .12s linear;
+        }
+
+        .cell:hover {
+            background: rgba(255, 255, 255, .12)
+        }
+
+        .cell.muted {
+            opacity: .28
+        }
+
+        .cell.near {
+            opacity: .72
+        }
+
+        .cell.inPath {
+            box-shadow: inset 0 0 0 3px rgba(255, 246, 223, .72)
+        }
+
+        .cell.groupStart {
+            border-top: var(--line)
+        }
+
+        .cell.pairStart {
+            border-top: var(--thin)
+        }
+
+        .cell.active {
+            background: var(--active);
+            color: var(--activeText);
+            outline: 3px solid var(--cream);
+            outline-offset: -7px;
+            z-index: 3;
+            opacity: 1;
+        }
+
+        .dCell {
+            font-size: clamp(22px, 4vw, 42px);
+            letter-spacing: -.07em
+        }
+
+        .cCell {
+            font-size: clamp(15px, 2.55vw, 26px);
+            letter-spacing: -.06em
+        }
+
+        .bCell {
+            font-size: clamp(10px, 1.65vw, 17px);
+            letter-spacing: -.03em
+        }
+
+        .leafCell {
+            font-size: clamp(7px, 1vw, 12px);
+            letter-spacing: -.02em
+        }
+
+        .dCell.active {
+            font-size: clamp(34px, 5.4vw, 58px)
+        }
+
+        .cCell.active {
+            font-size: clamp(25px, 4vw, 42px)
+        }
+
+        .bCell.active {
+            font-size: clamp(18px, 2.85vw, 30px)
+        }
+
+        .leafCell.active {
+            font-size: clamp(16px, 2.25vw, 26px)
+        }
+
+        .detail {
+            min-width: 0;
+            min-height: 0;
+            display: grid;
+            grid-template-rows: minmax(0, 1fr) auto;
+            gap: var(--gap);
+            overflow: hidden;
+        }
+
+        .payloadShell {
+            display: contents
+        }
+
+        .payloadFrame {
+            min-width: 0;
+            min-height: 0;
+            border: var(--line);
+            padding: 10px;
+            display: grid;
+            overflow: hidden;
+            background: var(--cream);
+        }
+
+        .payloadFrame[data-mode="iframe"],
+        .payloadFrame[data-mode="media"] {
+            padding: 8px
+        }
+
+        .payloadFrame[data-mode="text"] {
+            padding: 10px
+        }
+
+        .emptyVessel { display:flex; flex-direction:column; flex:1;
+            min-width: 0;
+            min-height: 0;
+            background: var(--paper);
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .emptyVessel.empty::after {
+            content: "";
+            position: absolute;
+            inset: 22px;
+            border: var(--thin);
+            opacity: .22;
+            pointer-events: none;
+        }
+
+        .payloadText {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            display: grid;
+            align-content: start;
+            gap: 10px;
+            font-size: clamp(24px, 2.8vw, 40px);
+            line-height: 1.08;
+            font-weight: 820;
+            overflow: hidden;
+        }
+
+        .payloadText .line {
+            display: grid;
+            grid-template-columns: 3.25ch minmax(0, 1fr);
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .payloadText .lineNo {
+            color: var(--muted);
+            font-size: .72em;
+            font-weight: 1000;
+            line-height: 1.2;
+        }
+
+        .payloadText .lineText {
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .mediaSlot {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            place-items: center;
+            padding: 18px;
+        }
+
+        .mediaSlot svg {
+            width: min(100%, 380px);
+            height: min(100%, 260px);
+            display: block;
+        }
+
+        .iframeSlot {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            background: var(--paper);
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            border: var(--line);
+            background: var(--cream);
+        }
+
+        .control {
+            min-height: 48px;
+            border-right: var(--thin);
+            font-size: 13px;
+            font-weight: 1000;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+
+        .control.modeControl {
+            background: var(--active);
+            color: var(--activeText);
+            letter-spacing: .04em;
+        }
+
+        .control:last-child {
+            border-right: 0
+        }
+
+        .control:active,
+        .openTop:active {
+            transform: translateY(2px)
+        }
+
+        @media (max-width:760px) {
+            :root {
+                --gap: 5px
+            }
+
+            .topbar {
+                min-height: 56px;
+                padding: 6px;
+                grid-template-columns: 36px minmax(0, 1fr) 36px;
+                gap: 6px;
+                align-items: center;
+            }
+
+            .topDisc {
+                width: 36px;
+                height: 36px
+            }
+
+            .topDisc svg {
+                width: 28px;
+                height: 28px
+            }
+
+            .topTitleWrap {
+                gap: 1px
+            }
+
+            .topMeta {
+                font-size: 8px;
+                letter-spacing: .06em
+            }
+
+            .topName {
+                font-size: clamp(13px, 4.2vw, 18px);
+                line-height: 1.04;
+                font-weight: 820;
+                letter-spacing: -.025em;
+                -webkit-line-clamp: 2;
+            }
+
+            .openTop {
+                width: 36px;
+                height: 36px;
+                font-size: 16px
+            }
+
+            .stage {
+                grid-template-columns: .55fr .5fr .44fr .62fr;
+                grid-template-rows: minmax(224px, 42svh) minmax(0, 1fr);
+                gap: var(--gap);
+                padding: var(--gap);
+            }
+
+            .detail {
+                grid-column: 1 / -1;
+                grid-row: 1;
+                grid-template-rows: minmax(0, 1fr) 38px;
+                gap: var(--gap);
+            }
+
+            .rail {
+                grid-row: 2;
+                min-height: 0
+            }
+
+            .rail:nth-of-type(1) {
+                grid-column: 1
+            }
+
+            .rail:nth-of-type(2) {
+                grid-column: 2
+            }
+
+            .rail:nth-of-type(3) {
+                grid-column: 3
+            }
+
+            .rail:nth-of-type(4) {
+                grid-column: 4
+            }
+
+            .control {
+                min-height: 38px;
+                font-size: 11px;
+                letter-spacing: .045em
+            }
+
+            .payloadFrame {
+                padding: 6px
+            }
+
+            .payloadText {
+                padding: 12px;
+                font-size: clamp(19px, 5.8vw, 28px);
+                gap: 8px;
+                line-height: 1.08
+            }
+
+            .payloadText .line {
+                grid-template-columns: 3.2ch minmax(0, 1fr);
+                gap: 8px
+            }
+
+            .payloadText .lineNo {
+                font-size: .76em
+            }
+
+            .payloadText .lineText {
+                white-space: normal;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical
+            }
+
+            .dCell {
+                font-size: clamp(18px, 5.6vw, 27px)
+            }
+
+            .cCell {
+                font-size: clamp(12px, 3.9vw, 18px)
+            }
+
+            .bCell {
+                font-size: clamp(8px, 2.55vw, 13px)
+            }
+
+            .leafCell {
+                font-size: clamp(6px, 1.85vw, 10px)
+            }
+
+            .dCell.active {
+                font-size: clamp(28px, 8.6vw, 40px)
+            }
+
+            .cCell.active {
+                font-size: clamp(21px, 6.3vw, 30px)
+            }
+
+            .bCell.active {
+                font-size: clamp(15px, 4.4vw, 22px)
+            }
+
+            .leafCell.active {
+                font-size: clamp(15px, 4.4vw, 22px);
+                outline: 2px solid var(--cream);
+                outline-offset: -5px
+            }
+        }
+
+        @media (max-height:690px) {
+            .topbar {
+                min-height: 50px
+            }
+
+            .topDisc {
+                width: 32px;
+                height: 32px
+            }
+
+            .topDisc svg {
+                width: 25px;
+                height: 25px
+            }
+
+            .topMeta {
+                font-size: 7px
+            }
+
+            .topName {
+                font-size: clamp(12px, 3.8vw, 16px)
+            }
+
+            .openTop {
+                width: 32px;
+                height: 32px;
+                font-size: 15px
+            }
+
+            .stage {
+                grid-template-rows: minmax(196px, 40svh) minmax(0, 1fr)
+            }
+
+            .detail {
+                grid-template-rows: minmax(0, 1fr) 34px
+            }
+
+            .payloadText {
+                font-size: clamp(17px, 4.8vw, 22px)
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <script src="wh-grid-data-bridge.js"></script>
+    <main class="app" aria-label="Orange Assembly Payload Index">
+        <header class="topbar">
+            <div class="topDisc" id="topDisc" aria-hidden="true"></div>
+            <div class="topTitleWrap">
+                <div class="topMeta" id="topMeta">Research / Worldtext / Theory</div>
+                <div class="topName" id="topPayloadTitle">From Imagetext to Worldtext</div>
+            </div>
+            <button class="openTop" id="openBtn" type="button" aria-label="Open payload in new window">↗</button>
+        </header>
+
+        <section class="stage">
+            <section class="rail" aria-label="D rail">
+                <div class="track" id="railD"></div>
+            </section>
+            <section class="rail" aria-label="C rail">
+                <div class="track" id="railC"></div>
+            </section>
+            <section class="rail" aria-label="B rail">
+                <div class="track" id="railB"></div>
+            </section>
+            <section class="rail" aria-label="Leaf rail">
+                <div class="track" id="railL"></div>
+            </section>
+
+            <section class="detail" aria-label="Selected payload">
+                <article class="payloadShell">
+                    <div class="payloadFrame" id="payloadFrame"></div>
+                </article>
+
+                <div class="controls">
+                    <button class="control" id="prevBtn" type="button">prev</button>
+                    <button class="control modeControl" id="flipBtn" type="button">text</button>
+                    <button class="control" id="nextBtn" type="button">next</button>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <script>
+        'use strict';
+
+        const SVG_NS = 'http://www.w3.org/2000/svg';
+        const modes = ['text', 'media', 'iframe', 'empty'];
+
+                // ═══ LIVE DATA FROM wh-grid-data-bridge.js ═══
+        // Data fetched from worldtext-program-theory.json + github-ripple-index.json
+        var __bridgeData = null;
+        var archiveTiers, archiveClusters, archiveBlocks, leafTemplates;
+        var blocks, leaves;
+        var domains, clusters, blocks, leaves;
+
+
+        const state = { d: 'D1', c: 'C1', b: 'B1', l: '01', mode: 'text' };
+        const el = {};
+
+        ['railD', 'railC', 'railB', 'railL', 'topDisc', 'topMeta', 'topPayloadTitle', 'openBtn', 'payloadFrame', 'prevBtn', 'flipBtn', 'nextBtn'].forEach(function (id) {
+            el[id] = document.getElementById(id);
+        });
+
+        function byId(list, id) { return list.find(function (x) { return x.id === id; }) || list[0]; }
+        function domain() { return byId(domains, state.d); }
+        function cluster() { return byId(clusters, state.c); }
+        function block() { return byId(blocks, state.b); }
+        function leaf() { return byId(leaves, state.l); }
+        function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+        function svgEl(tag, attrs) {
+            const node = document.createElementNS(SVG_NS, tag);
+            Object.keys(attrs || {}).forEach(function (key) { node.setAttribute(key, attrs[key]); });
+            return node;
+        }
+        function pulse() {
+            if (window.navigator && typeof window.navigator.vibrate === 'function') {
+                window.navigator.vibrate(8);
+            }
+        }
+
+        function clampState() {
+            const d = domain();
+            if (!d.clusters.includes(state.c)) state.c = d.clusters[0];
+            const c = cluster();
+            if (!c.blocks.includes(state.b)) state.b = c.blocks[0];
+            const b = block();
+            if (!b.leaves.includes(state.l)) state.l = b.leaves[0];
+        }
+
+        function selectD(id) {
+            pulse();
+            state.d = id;
+            state.c = domain().clusters[0];
+            state.b = cluster().blocks[0];
+            state.l = block().leaves[0];
+            render();
+        }
+
+        function selectC(id) {
+            pulse();
+            state.c = id;
+            state.d = cluster().domain;
+            state.b = cluster().blocks[0];
+            state.l = block().leaves[0];
+            render();
+        }
+
+        function selectB(id) {
+            pulse();
+            state.b = id;
+            state.c = block().cluster;
+            state.d = cluster().domain;
+            state.l = block().leaves[0];
+            render();
+        }
+
+        function selectL(id) {
+            pulse();
+            state.l = id;
+            state.b = leaf().block;
+            state.c = block().cluster;
+            state.d = cluster().domain;
+            render();
+        }
+
+        function flipMode() {
+            pulse();
+            state.mode = modes[(modes.indexOf(state.mode) + 1) % modes.length];
+            render();
+        }
+
+        function nextLeaf(delta) {
+            pulse();
+            const index = leaves.findIndex(function (x) { return x.id === state.l; });
+            const next = leaves[(index + delta + leaves.length) % leaves.length];
+            selectL(next.id);
+        }
+
+        function makeCell(label, cls, active, muted, marker, handler, near, inPath) {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'cell ' + cls + (active ? ' active' : '') + (muted ? ' muted' : '') + (near ? ' near' : '') + (inPath ? ' inPath' : '') + (marker ? ' ' + marker : '');
+            button.textContent = label;
+            button.addEventListener('click', handler);
+            return button;
+        }
+
+        function proportionalWeights(length, activeIndex, pathPredicate) {
+            return Array.from({ length }, function (_, index) {
+                if (index === activeIndex) return 3.2;
+                if (typeof pathPredicate === 'function' && pathPredicate(index)) return 1.75;
+                if (Math.abs(index - activeIndex) === 1) return 1.35;
+                return 1;
+            });
+        }
+
+        function applyGridRows(target, weights) {
+            target.style.gridTemplateRows = weights.map(function (weight) { return 'minmax(0,' + weight + 'fr)'; }).join(' ');
+        }
+
+        function renderRail(target, items, weights, make) {
+            clear(target);
+            applyGridRows(target, weights);
+            items.forEach(function (item, index) { target.appendChild(make(item, index)); });
+        }
+
+        function renderRails() {
+            const activeDIndex = domains.findIndex(function (d) { return d.id === state.d; });
+            renderRail(el.railD, domains, proportionalWeights(domains.length, activeDIndex), function (d, index) {
+                return makeCell(d.id, 'dCell', d.id === state.d, false, '', function () { selectD(d.id); }, Math.abs(index - activeDIndex) === 1, d.id === state.d);
+            });
+
+            const activeCIndex = clusters.findIndex(function (c) { return c.id === state.c; });
+            renderRail(el.railC, clusters, proportionalWeights(clusters.length, activeCIndex, function (index) { return clusters[index].domain === state.d; }), function (c, index) {
+                return makeCell(c.id, 'cCell', c.id === state.c, c.domain !== state.d, index % 3 === 0 ? 'groupStart' : '', function () { selectC(c.id); }, Math.abs(index - activeCIndex) === 1, c.domain === state.d);
+            });
+
+            const activeBIndex = blocks.findIndex(function (b) { return b.id === state.b; });
+            renderRail(el.railB, blocks, proportionalWeights(blocks.length, activeBIndex, function (index) { return blocks[index].cluster === state.c; }), function (b, index) {
+                return makeCell(b.id, 'bCell', b.id === state.b, b.cluster !== state.c, index % 2 === 0 ? 'groupStart' : '', function () { selectB(b.id); }, Math.abs(index - activeBIndex) === 1, b.cluster === state.c);
+            });
+
+            const activeLIndex = leaves.findIndex(function (l) { return l.id === state.l; });
+            renderRail(el.railL, leaves, proportionalWeights(leaves.length, activeLIndex, function (index) { return leaves[index].block === state.b; }), function (l, index) {
+                return makeCell(String(Number(l.id)), 'leafCell', l.id === state.l, l.block !== state.b, index % 2 === 0 ? 'pairStart' : '', function () { selectL(l.id); }, Math.abs(index - activeLIndex) <= 1, l.block === state.b);
+            });
+        }
+
+        function renderDetail() {
+            const l = leaf();
+            const b = block();
+            const c = cluster();
+            const d = domain();
+            el.topMeta.textContent = d.name + ' / ' + c.name + ' / ' + b.name;
+            el.topPayloadTitle.textContent = b.title || l.title;
+            el.flipBtn.textContent = state.mode;
+            clear(el.topDisc);
+            el.topDisc.appendChild(createOrangeSvg(Number(l.id) - 1));
+            renderPayload();
+        }
+
+        function pathLine() {
+            const d = domain();
+            const c = cluster();
+            const b = block();
+            const l = leaf();
+            return d.id + ' ' + d.name + ' / ' + c.id + ' ' + c.name + ' / ' + b.id + ' ' + b.name + ' / ' + String(Number(l.id));
+        }
+
+        function renderPayload() {
+            const l = leaf();
+            clear(el.payloadFrame);
+            el.payloadFrame.dataset.mode = state.mode;
+            const vessel = document.createElement('div');
+            vessel.className = 'emptyVessel';
+
+            if (state.mode === 'empty') {
+                vessel.classList.add('empty');
+                el.payloadFrame.appendChild(vessel);
+                return;
+            }
+
+            if (state.mode === 'text') {
+                const text = document.createElement('div');
+                text.className = 'payloadText';
+                [pathLine()].concat(l.lines).forEach(function (line, index) {
+                    const row = document.createElement('div');
+                    row.className = 'line';
+                    const no = document.createElement('span');
+                    no.className = 'lineNo';
+                    no.textContent = index === 0 ? 'LOC' : String(index).padStart(2, '0');
+                    const body = document.createElement('span');
+                    body.className = 'lineText';
+                    body.textContent = line;
+                    row.appendChild(no);
+                    row.appendChild(body);
+                    text.appendChild(row);
+                });
+                vessel.appendChild(text);
+                // Inline iframe below text — always show the live instrument
+                var b = currentBlock();
+                if (b && b.url && b.url !== '#') {
+                    var frame = document.createElement('iframe');
+                    frame.className = 'iframeSlot';
+                    frame.title = l.title;
+                    frame.style.cssText = 'flex:1;min-height:200px;border:0;border-top:3px solid #000;width:100%';
+                    if (b.url.startsWith('http')) frame.src = b.url;
+                    else frame.srcdoc = iframeDocument(l);
+                    vessel.appendChild(frame);
+                }
+                el.payloadFrame.appendChild(vessel);
+                return;
+            }
+
+            if (state.mode === 'media') {
+                const media = document.createElement('div');
+                media.className = 'mediaSlot';
+                media.appendChild(createMiniArt(l.art));
+                vessel.appendChild(media);
+                el.payloadFrame.appendChild(vessel);
+                return;
+            }
+
+            if (state.mode === 'iframe') {
+                const frame = document.createElement('iframe');
+                frame.className = 'iframeSlot';
+                frame.title = l.title;
+                var b2 = currentBlock();
+                if (b2 && b2.url && b2.url.startsWith('http')) frame.src = b2.url;
+                else frame.srcdoc = iframeDocument(l);
+                vessel.appendChild(frame);
+                el.payloadFrame.appendChild(vessel);
+            }
+        }
+
+        function iframeDocument(l) {
+            const safeTitle = escapeHtml(l.title);
+            const safePath = escapeHtml(pathLine());
+            return '<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>html,body{margin:0;height:100%;font-family:Inter,system-ui,sans-serif;background:#fff6df;color:#000}body{display:grid;place-items:center;padding:18px}.box{width:100%;height:100%;border:3px solid #000;background:#fff;display:grid;place-items:center;text-align:center;padding:18px}h1{margin:0;font-size:clamp(34px,8vw,80px);line-height:.82;letter-spacing:-.08em;text-transform:uppercase}.path{margin-top:12px;font-weight:900;text-transform:uppercase;font-size:12px;letter-spacing:.05em;color:rgba(0,0,0,.55)}</style></head><body><main class="box"><div><h1>' + safeTitle + '</h1><div class="path">' + safePath + '</div></div></main></body></html>';
+        }
+
+        function escapeHtml(value) {
+            return String(value).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c]; });
+        }
+
+        function currentBlock() {
+            return block();
+        }
+
+        function openPayload() {
+            const l = leaf();
+            const b = currentBlock();
+            if (b && b.url && b.url !== '#') {
+                window.open(b.url, '_blank', 'noopener,noreferrer');
+                return;
+            }
+            const opened = window.open('', '_blank', 'noopener,noreferrer');
+            if (!opened) return;
+            const title = escapeHtml(l.title);
+            const lines = [pathLine()].concat(l.lines).map(function (line, index) {
+                const label = index === 0 ? 'LOC' : String(index).padStart(2, '0');
+                return '<div style="display:grid;grid-template-columns:4ch 1fr;gap:12px;margin:8px 0"><b>' + label + '</b><span>' + escapeHtml(line) + '</span></div>';
+            }).join('');
+            opened.document.write('<!doctype html><html><head><title>' + title + '</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;padding:24px;background:#fff6df;color:#000;font-family:Inter,system-ui,sans-serif}h1{font-size:clamp(42px,8vw,96px);line-height:.8;letter-spacing:-.09em;text-transform:uppercase}main{border:2px solid #000;padding:18px;min-height:70vh;background:#fff}</style></head><body><h1>' + title + '</h1><main>' + lines + '</main></body></html>');
+            opened.document.close();
+        }
+
+        function render() {
+            clampState();
+            renderRails();
+            renderDetail();
+        }
+
+        function createOrangeSvg(activeIndex) {
+            const svg = svgEl('svg', { viewBox: '0 0 100 100', 'aria-hidden': 'true' });
+            svg.appendChild(svgEl('circle', { cx: '50', cy: '50', r: '42', fill: 'var(--cream)', stroke: 'black', 'stroke-width': '3' }));
+            for (let i = 0; i < 6; i++) {
+                const a0 = (i * 60 - 90) * Math.PI / 180;
+                const a1 = ((i + 1) * 60 - 90) * Math.PI / 180;
+                const r = 39;
+                const x0 = 50 + r * Math.cos(a0);
+                const y0 = 50 + r * Math.sin(a0);
+                const x1 = 50 + r * Math.cos(a1);
+                const y1 = 50 + r * Math.sin(a1);
+                svg.appendChild(svgEl('path', {
+                    d: 'M50 50 L' + x0.toFixed(1) + ' ' + y0.toFixed(1) + ' A39 39 0 0 1 ' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' Z',
+                    fill: (activeIndex % 6) === i ? 'var(--bg)' : 'var(--cream)',
+                    stroke: 'black', 'stroke-width': '1'
+                }));
+            }
+            svg.appendChild(svgEl('circle', { cx: '50', cy: '50', r: '10', fill: 'var(--bg)', stroke: 'black', 'stroke-width': '2' }));
+            return svg;
+        }
+
+        function createMiniArt(kind) {
+            const svg = svgEl('svg', { viewBox: '0 0 220 140', 'aria-hidden': 'true' });
+            svg.appendChild(svgEl('rect', { width: '220', height: '140', fill: 'var(--bg)' }));
+            if (kind === 'grid') {
+                svg.appendChild(svgEl('rect', { x: '40', y: '25', width: '140', height: '90', fill: 'none', stroke: 'black', 'stroke-width': '3' }));
+                svg.appendChild(svgEl('path', { d: 'M40 25 L180 115 M180 25 L40 115', fill: 'none', stroke: 'black', 'stroke-width': '3' }));
+                svg.appendChild(svgEl('circle', { cx: '110', cy: '70', r: '20', fill: 'var(--cream)', stroke: 'black', 'stroke-width': '3' }));
+            } else if (kind === 'synth') {
+                svg.appendChild(svgEl('circle', { cx: '70', cy: '55', r: '22', fill: 'var(--cream)', stroke: 'black', 'stroke-width': '3' }));
+                svg.appendChild(svgEl('circle', { cx: '150', cy: '55', r: '22', fill: 'var(--cream)', stroke: 'black', 'stroke-width': '3' }));
+                svg.appendChild(svgEl('rect', { x: '62', y: '92', width: '96', height: '24', fill: 'var(--cream)', stroke: 'black', 'stroke-width': '3' }));
+            } else if (kind === 'poster') {
+                svg.appendChild(svgEl('rect', { x: '42', y: '24', width: '136', height: '92', fill: 'none', stroke: 'black', 'stroke-width': '3' }));
+                svg.appendChild(svgEl('path', { d: 'M110 24 L110 116 M42 70 L178 70', stroke: 'black', 'stroke-width': '2' }));
+                svg.appendChild(svgEl('rect', { x: '58', y: '38', width: '42', height: '28', fill: 'var(--cream)', stroke: 'black', 'stroke-width': '2' }));
+                svg.appendChild(svgEl('rect', { x: '120', y: '76', width: '42', height: '28', fill: 'var(--cream)', stroke: 'black', 'stroke-width': '2' }));
+            } else if (kind === 'curve') {
+                svg.appendChild(svgEl('path', { d: 'M26 108 Q110 18 194 108', fill: 'none', stroke: 'black', 'stroke-width': '5' }));
+                svg.appendChild(svgEl('circle', { cx: '26', cy: '108', r: '6', fill: 'black' }));
+                svg.appendChild(svgEl('circle', { cx: '110', cy: '36', r: '6', fill: 'black' }));
+                svg.appendChild(svgEl('circle', { cx: '194', cy: '108', r: '6', fill: 'black' }));
+            } else if (kind === 'type') {
+                svg.appendChild(svgEl('rect', { x: '44', y: '24', width: '132', height: '92', fill: 'none', stroke: 'black', 'stroke-width': '3' }));
+                const text = svgEl('text', { x: '110', y: '94', 'text-anchor': 'middle', 'font-size': '76', 'font-weight': '950', fill: 'black', 'font-family': 'system-ui' });
+                text.textContent = 'T';
+                svg.appendChild(text);
+            } else if (kind === 'color') {
+                [36, 72, 108, 144].forEach(function (x) { svg.appendChild(svgEl('rect', { x: String(x), y: '24', width: '28', height: '92', fill: 'var(--cream)', stroke: 'black', 'stroke-width': '2' })); });
+            }
+            return svg;
+        }
+
+        function runTests() {
+            const failures = [];
+            function assert(name, condition) { if (!condition) failures.push(name); }
+            assert('D rail has 3 domains', domains.length === 3);
+            assert('C rail has 9 clusters', clusters.length === 9);
+            assert('B rail has 18 blocks', blocks.length === 18);
+            assert('leaf rail has 36 leaves', leaves.length === 36);
+            assert('C rail is 3x D rail', clusters.length === domains.length * 3);
+            assert('B rail is 2x C rail', blocks.length === clusters.length * 2);
+            assert('leaf rail is 2x B rail', leaves.length === blocks.length * 2);
+            assert('payload frame exists', !!el.payloadFrame);
+            assert('open button exists', !!el.openBtn);
+            assert('top meta exists', !!el.topMeta);
+            assert('no duplicate leaf number badge in header', !document.getElementById('topLeafNumber'));
+            assert('rails preserve visible scale grid', getComputedStyle(el.railL).display === 'grid');
+            assert('top title allows wrapping', getComputedStyle(el.topPayloadTitle).whiteSpace !== 'nowrap');
+            assert('svg factory uses SVG namespace', createOrangeSvg(0).namespaceURI === SVG_NS);
+            assert('proportional weights expands active cell', proportionalWeights(3, 1)[1] > proportionalWeights(3, 1)[0]);
+            assert('leaf data has titles', leaves.every(function (item) { return typeof item.title === 'string' && item.title.length > 0; }));
+            assert('archive blocks have titles', blocks.every(function (item) { return typeof item.title === 'string' && item.title.length > 0; }));
+            assert('each block owns two leaves', blocks.every(function (item) { return item.leaves.length === 2; }));
+            if (failures.length) {
+                console.warn('Payload Index tests failed:', failures);
+            } else {
+                console.info('Payload Index tests passed.');
+            }
+        }
+
+        el.prevBtn.addEventListener('click', function () { nextLeaf(-1); });
+        el.nextBtn.addEventListener('click', function () { nextLeaf(1); });
+        el.flipBtn.addEventListener('click', flipMode);
+        el.openBtn.addEventListener('click', openPayload);
+
+        window.addEventListener('keydown', function (e) {
+            if (e.key === 'ArrowLeft') nextLeaf(-1);
+            if (e.key === 'ArrowRight') nextLeaf(1);
+            if (e.key.toLowerCase() === 'm' || e.key.toLowerCase() === 'f') flipMode();
+            if (e.key.toLowerCase() === 'o') openPayload();
+            if (/^[1-9]$/.test(e.key)) selectC('C' + e.key);
+        });
+
+        runTests();
+        whBridge.boot(function(data) {
+            __bridgeData = data;
+            archiveTiers = data.archiveTiers;
+            archiveClusters = data.archiveClusters;
+            archiveBlocks = data.archiveBlocks;
+            leafTemplates = data.leafTemplates;
+            if (typeof domains !== 'undefined' || true) { try { domains = archiveTiers; } catch(e){} }
+            if (typeof clusters !== 'undefined' || true) { try { clusters = archiveClusters; } catch(e){} }
+            if (typeof blocks !== 'undefined' || true) { try { blocks = archiveBlocks; } catch(e){} }
+            if (typeof works !== 'undefined' || true) {
+                try { works = archiveBlocks.map(function(b){ return b.name; }); } catch(e){}
+            }
+            if (typeof repos !== 'undefined' || true) { try { repos = data.repos || []; } catch(e){} }
+            if (typeof leaves !== 'undefined' || true) {
+                try {
+                    leaves = leafTemplates.map(function(pair, i) {
+                        var id = String(i + 1).padStart(2, '0');
+                        var owner = archiveBlocks.find(function(bl) { return bl.leaves && bl.leaves.includes(id); });
+                        return { id: id, block: owner ? owner.id : 'B1', b: owner ? owner.id : 'B1', title: pair[0] + ' · ' + (owner ? owner.title : 'Worldtext'), art: ['grid','synth','poster','curve','type','color'][i % 6], url: owner && owner.url ? owner.url : '#', date: '2026-01-' + id, lines: [pair[1], owner ? owner.title : 'Worldtext Practice Archive', owner && owner.url ? owner.url : 'payload://local', 'Mode button cycles text, media, iframe, empty.'] };
+                    });
+                } catch(e){}
+            }
+            render();
+        });
+    </script>
+</body>
+
+</html>

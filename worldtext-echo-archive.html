@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#050505" />
+    <title>Worldtext Practice Archive — Watson Franklin Hartsoe III</title>
+    <meta name="description"
+        content="Public archive of a worldtext practice: research, design, teaching, media experiments, interfaces, and prototypes studying how descriptions become environments." />
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23050505'/><circle cx='16' cy='16' r='6' fill='none' stroke='%23f1f1ea' stroke-width='2'/></svg>" />
+    <style>
+        :root {
+            --paper: #f1f1ea;
+            --ink: #050505;
+            --muted: #686860;
+            --rule: #050505;
+            --surface: #ffffff;
+            --surface2: #f7f7f0;
+            --accent: #f27a45;
+            --font: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font: 13px/1.45 var(--font);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── MASTHEAD ── */
+        #masthead {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--ink);
+            color: var(--paper);
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            height: 44px;
+            gap: 12px;
+            border-bottom: 2px solid var(--rule);
+        }
+
+        #masthead h1 {
+            font-size: clamp(16px, 3.5vw, 28px);
+            line-height: .88;
+            letter-spacing: -.07em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-left: auto;
+        }
+
+        .nav-links a {
+            font: 900 8px/1 var(--font);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            padding: 5px 10px;
+            border: 2px solid rgba(255, 255, 255, .3);
+            color: var(--paper);
+            text-decoration: none;
+            transition: all .12s;
+        }
+
+        .nav-links a:hover {
+            background: var(--paper);
+            color: var(--ink);
+            border-color: var(--paper);
+        }
+
+        .nav-links a.hl {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .nav-links a.hl:hover {
+            background: var(--accent);
+            color: var(--ink);
+        }
+
+        /* ── TIER NAV ── */
+        #tier-nav {
+            position: sticky;
+            top: 44px;
+            z-index: 90;
+            background: var(--paper);
+            border-bottom: 2px solid var(--rule);
+            padding: 0 16px;
+            display: flex;
+            gap: 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        #tier-nav::-webkit-scrollbar {
+            display: none
+        }
+
+        .tier-tab {
+            font: 900 8px/1 var(--font);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            padding: 10px 12px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: var(--ink);
+            transition: all .12s;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tier-tab:hover {
+            background: var(--surface2)
+        }
+
+        .tier-tab.active {
+            border-bottom-color: var(--accent)
+        }
+
+        .tier-tab::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+            vertical-align: 0;
+        }
+
+        /* ── THESIS ── */
+        #thesis {
+            padding: 32px 24px 28px;
+            border-bottom: 2px solid var(--rule);
+            background: var(--surface);
+        }
+
+        #thesis h2 {
+            font-size: clamp(18px, 3.2vw, 32px);
+            line-height: 1.05;
+            letter-spacing: -.06em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        #thesis .claim {
+            font-size: 13px;
+            line-height: 1.5;
+            max-width: 680px;
+            color: #333;
+        }
+
+        #thesis .sub {
+            font-size: 9px;
+            margin-top: 12px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--muted);
+        }
+
+        /* ── TIER SECTIONS ── */
+        .tier-section {
+            border-bottom: 2px solid var(--rule);
+            scroll-margin-top: 80px;
+        }
+
+        .tier-header {
+            display: flex;
+            align-items: stretch;
+            position: sticky;
+            top: 78px;
+            z-index: 10;
+            background: var(--ink);
+            color: var(--paper);
+            border-bottom: 2px solid var(--rule);
+        }
+
+        .tier-color-bar {
+            width: 10px;
+            flex-shrink: 0;
+        }
+
+        .tier-title-block {
+            padding: 12px 20px;
+            flex: 1;
+        }
+
+        .tier-row {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .tier-name {
+            font: 900 11px/1 var(--font);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+        }
+
+        .tier-count {
+            font: 400 10px/1 var(--font);
+            color: rgba(255, 255, 255, .5);
+        }
+
+        .tier-desc {
+            font: 400 11px/1.4 var(--font);
+            color: rgba(255, 255, 255, .72);
+            margin-top: 4px;
+            max-width: 640px;
+        }
+
+        /* ── NODE CARDS ── */
+        .node-list {
+            display: flex;
+            flex-direction: column
+        }
+
+        .node-card {
+            display: grid;
+            grid-template-columns: 10px 1fr;
+            border-bottom: 1px solid rgba(0, 0, 0, .1);
+            background: var(--surface);
+            transition: background .08s;
+        }
+
+        .node-card:hover {
+            background: var(--surface2)
+        }
+
+        .node-bar {}
+
+        .node-body {
+            padding: 16px 20px
+        }
+
+        .node-kicker {
+            font: 900 8px/1 var(--font);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .node-title-row {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 6px;
+        }
+
+        .node-title {
+            font: 900 clamp(14px, 2vw, 20px)/1.1 var(--font);
+            letter-spacing: -.05em;
+            text-transform: uppercase;
+        }
+
+        .node-title a {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: border-color .12s;
+        }
+
+        .node-title a:hover {
+            border-bottom-color: var(--accent)
+        }
+
+        .node-density {
+            font: 900 9px/1 var(--font);
+            color: var(--muted);
+            white-space: nowrap;
+            margin-left: auto;
+        }
+
+        .node-thesis {
+            font: 400 12px/1.5 var(--font);
+            max-width: 640px;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .node-bridge {
+            font: 400 11px/1.45 var(--font);
+            max-width: 640px;
+            color: var(--muted);
+            padding-top: 6px;
+            border-top: 1px solid rgba(0, 0, 0, .08);
+        }
+
+        .node-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .node-actions a {
+            font: 900 8px/1 var(--font);
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            padding: 6px 12px;
+            border: 2px solid var(--rule);
+            color: var(--ink);
+            text-decoration: none;
+            transition: all .12s;
+        }
+
+        .node-actions a:hover {
+            background: var(--ink);
+            color: var(--paper);
+        }
+
+        .node-elements {
+            margin-top: 8px;
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .node-elements .tag {
+            font: 900 8px/1 var(--font);
+            padding: 3px 7px;
+            border: 1px solid var(--rule);
+            background: var(--surface2);
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .node-elements a.tag {
+            color: var(--ink);
+            text-decoration: none;
+        }
+
+        .node-elements a.tag:hover {
+            background: var(--ink);
+            color: var(--paper);
+            border-color: var(--ink);
+        }
+
+        /* ── FOOTER ── */
+        #stats-footer {
+            padding: 16px 24px;
+            border-top: 2px solid var(--rule);
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            font: 900 9px/1.4 var(--font);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: var(--muted);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media(max-width:640px) {
+            #masthead {
+                height: 38px;
+                padding: 0 10px
+            }
+
+            #masthead h1 {
+                font-size: 16px
+            }
+
+            #tier-nav {
+                padding: 0 10px;
+                top: 38px
+            }
+
+            .tier-tab {
+                padding: 8px 8px;
+                font-size: 7px
+            }
+
+            #thesis {
+                padding: 20px 14px 18px
+            }
+
+            .node-body {
+                padding: 12px 14px
+            }
+
+            .node-title {
+                font-size: 14px
+            }
+
+            .tier-title-block {
+                padding: 10px 14px
+            }
+
+            .tier-header {
+                top: 70px
+            }
+
+            #stats-footer {
+                padding: 12px 14px
+            }
+
+            .nav-links a {
+                font-size: 7px;
+                padding: 4px 6px
+            }
+        }
+
+        @media(min-width:1200px) {
+            #thesis {
+                padding-left: 40px
+            }
+
+            .tier-title-block {
+                padding-left: 40px
+            }
+
+            .node-body {
+                padding-left: 40px
+            }
+
+            #stats-footer {
+                padding-left: 40px
+            }
+        }
+
+        @media print {
+
+            #masthead,
+            #tier-nav {
+                display: none
+            }
+
+            .tier-section {
+                break-inside: avoid
+            }
+
+            .node-actions {
+                display: none
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header id="masthead">
+        <h1>Worldtext Practice Archive</h1>
+        <nav class="nav-links">
+            <a class="hl" href="orange-grid-viewer.html">311 Repos</a>
+            <a href="cv-progress-2026.html">CV</a>
+            <a href="https://github.com/hartswf0">GitHub</a>
+            <a href="mailto:whartsoe3@gatech.edu">Contact</a>
+        </nav>
+    </header>
+
+    <nav id="tier-nav"></nav>
+
+    <section id="thesis">
+        <h2>Watson Hartsoe researches how language, media, and computation become worlds.</h2>
+        <p class="claim">This is the public archive of a worldtext practice: a body of research, design, teaching, media
+            experiments, interfaces, essays, simulations, and prototypes studying how descriptions become environments,
+            how communities become world-builders, and how virtual, material, narrative, and computational systems shape
+            what people can imagine together.</p>
+        <p class="sub">PhD Candidate, Digital Media · Georgia Institute of Technology · Advisor: Jay David Bolter</p>
+    </section>
+
+    <main id="archive"></main>
+    <footer id="stats-footer"></footer>
+
+    <script>
+        (() => {
+            'use strict';
+            let DATA = null;
+
+            const tierDescs = {
+                current_research: 'The central engine of the dissertation. Ekphrasis, thick description, and generative AI converge here into a single operative theory.',
+                synthetic_culture: 'Myth is not content — it is computation. These projects treat cultural narratives as adaptive systems, operating archives, and root processes.',
+                operative_pedagogy: 'How worldtext becomes teachable. Media ecology, prompt architecture, and production bus infrastructure for classrooms and studios.',
+                operative_instruments: 'Functional tools built to test the theory. Each instrument is a working proof that description operates inside digital systems.',
+                research_lineage: 'The academic backbone. Spatial compilation, browser motion, narrative grammar, ethics infrastructure, and collaborative scholarship.',
+                cultural_interfaces: 'Theory made navigable. Cultural models, archive viewers, and philosophical interfaces that let users inhabit arguments.',
+                legacy_worldmaking: 'Earlier work in participatory design, social VR, youth media, and community worldbuilding. Retained as lineage evidence.',
+                public_theory: 'Public-facing arguments on AI, media, and culture. Theory entering conflict outside the academy.',
+                external_proof: 'External collaborations that validate the practice. Work with studios, artists, and researchers outside the home institution.',
+            };
+
+            async function boot() {
+                if (window.__PT_DATA) {
+                    DATA = window.__PT_DATA;
+                } else {
+                    try {
+                        const resp = await fetch('worldtext-program-theory.json');
+                        DATA = await resp.json();
+                    } catch (e) {
+                        document.getElementById('archive').innerHTML =
+                            '<p style="padding:40px 24px;font-size:12px;color:var(--muted)">Serve via HTTP: python3 -m http.server 8080</p>';
+                        return;
+                    }
+                }
+                renderNav();
+                renderArchive();
+                renderStats();
+                if (location.hash) {
+                    const id = location.hash.slice(1);
+                    setTimeout(() => {
+                        const el = document.getElementById('node-' + id);
+                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 300);
+                }
+            }
+
+            function renderNav() {
+                const nav = document.getElementById('tier-nav');
+                DATA.archive_tiers.forEach((tier, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'tier-tab';
+                    btn.textContent = tier.tier_name;
+                    btn.addEventListener('click', () => {
+                        document.getElementById('tier-' + tier.tier_id)?.scrollIntoView({ behavior: 'smooth' });
+                    });
+                    const style = document.createElement('style');
+                    style.textContent = `#tier-nav .tier-tab:nth-child(${idx + 1})::before{background:${tier.color}}`;
+                    document.head.appendChild(style);
+                    nav.appendChild(btn);
+                });
+
+                const observer = new IntersectionObserver(entries => {
+                    entries.forEach(e => {
+                        if (e.isIntersecting) {
+                            const id = e.target.id.replace('tier-', '');
+                            document.querySelectorAll('.tier-tab').forEach((t, i) => {
+                                t.classList.toggle('active', DATA.archive_tiers[i]?.tier_id === id);
+                            });
+                        }
+                    });
+                }, { rootMargin: '-100px 0px -60% 0px', threshold: 0 });
+
+                requestAnimationFrame(() => {
+                    document.querySelectorAll('.tier-section').forEach(s => observer.observe(s));
+                });
+            }
+
+            function renderArchive() {
+                const main = document.getElementById('archive');
+                DATA.archive_tiers.forEach(tier => {
+                    const section = document.createElement('section');
+                    section.className = 'tier-section';
+                    section.id = 'tier-' + tier.tier_id;
+                    const desc = tierDescs[tier.tier_id] || '';
+
+                    section.innerHTML = `
+        <div class="tier-header">
+          <div class="tier-color-bar" style="background:${tier.color}"></div>
+          <div class="tier-title-block">
+            <div class="tier-row">
+              <span class="tier-name">${tier.tier_name}</span>
+              <span class="tier-count">${tier.nodes.length}</span>
+            </div>
+            ${desc ? `<div class="tier-desc">${desc}</div>` : ''}
+          </div>
+        </div>
+      `;
+
+                    const list = document.createElement('div');
+                    list.className = 'node-list';
+
+                    tier.nodes.forEach(node => {
+                        const card = document.createElement('div');
+                        card.className = 'node-card';
+                        card.id = 'node-' + node.id;
+
+                        let densityStr = '';
+                        if (node.density) {
+                            const p = [];
+                            if (node.density.touches) p.push(node.density.touches + 't');
+                            if (node.density.size_kb) p.push(fmtSize(node.density.size_kb));
+                            if (node.density.maturity) p.push(node.density.maturity);
+                            densityStr = p.join(' · ');
+                        }
+
+                        let elemHtml = '';
+                        if (node.elements) {
+                            elemHtml = '<div class="node-elements">';
+                            for (const [key, val] of Object.entries(node.elements)) {
+                                if (Array.isArray(val)) {
+                                    val.forEach(item => {
+                                        if (typeof item === 'object' && item.url) {
+                                            elemHtml += `<a class="tag" href="${item.url}" target="_blank">${item.label || item.title || ''}</a>`;
+                                        } else if (typeof item === 'string') {
+                                            elemHtml += `<span class="tag">${item}</span>`;
+                                        }
+                                    });
+                                } else if (typeof val === 'object') {
+                                    for (const [k, v] of Object.entries(val)) {
+                                        elemHtml += `<span class="tag">${k}: ${v}</span>`;
+                                    }
+                                }
+                            }
+                            elemHtml += '</div>';
+                        }
+
+                        card.innerHTML = `
+          <div class="node-bar" style="background:${tier.color}"></div>
+          <div class="node-body">
+            <div class="node-kicker">${node.kicker || ''}</div>
+            <div class="node-title-row">
+              <div class="node-title">${node.url ? `<a href="${node.url}" target="_blank">${node.title}</a>` : node.title}</div>
+              <div class="node-density">${densityStr}</div>
+            </div>
+            <div class="node-thesis">${node.thesis || ''}</div>
+            ${node.bridge ? `<div class="node-bridge">${node.bridge}</div>` : ''}
+            ${elemHtml}
+            <div class="node-actions">
+              ${node.url ? `<a href="${node.url}" target="_blank">Open ↗</a>` : ''}
+              ${node.repo ? `<a href="${node.repo}" target="_blank">Repo ↗</a>` : ''}
+            </div>
+          </div>
+        `;
+                        list.appendChild(card);
+                    });
+
+                    section.appendChild(list);
+                    main.appendChild(section);
+                });
+            }
+
+            function renderStats() {
+                const el = document.getElementById('stats-footer');
+                const totalNodes = DATA.archive_tiers.reduce((s, t) => s + t.nodes.length, 0);
+                let touches = 0, size = 0, instruments = 0;
+                DATA.archive_tiers.forEach(t => t.nodes.forEach(n => {
+                    if (n.density) {
+                        touches += n.density.touches || 0;
+                        size += n.density.size_kb || 0;
+                        if (n.density.maturity === 'instrument') instruments++;
+                    }
+                }));
+                el.innerHTML = `
+      <span>${DATA.archive_tiers.length} Tiers</span>
+      <span>${totalNodes} Nodes</span>
+      <span>${touches.toLocaleString()} Touches</span>
+      <span>${fmtSize(size)} Total</span>
+      <span>${instruments} Instruments</span>
+      <span>Watson Franklin Hartsoe III</span>
+      <span>Georgia Institute of Technology</span>
+    `;
+            }
+
+            function fmtSize(kb) {
+                if (kb >= 1000000) return (kb / 1000000).toFixed(1) + 'GB';
+                if (kb >= 1000) return (kb / 1000).toFixed(0) + 'MB';
+                return kb + 'KB';
+            }
+
+            boot();
+        })();
+    </script>
+</body>
+
+</html>

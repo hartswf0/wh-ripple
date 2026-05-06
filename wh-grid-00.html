@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#f47a45" />
+    <title>Worldtext Payload Index</title>
+    <style>
+        :root {
+            --ink: #000;
+            --bg: #f47a45;
+            --cream: #fff6df;
+            --paper: #fff;
+            --muted: rgba(0, 0, 0, .56);
+            --faint: rgba(0, 0, 0, .16);
+            --active: #000;
+            --activeText: #fff6df;
+            --line: 3px solid var(--ink);
+            --thin: 2px solid var(--ink);
+            --gap: 7px;
+            --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--font);
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        button,
+        a,
+        input {
+            font: inherit;
+            color: inherit;
+            border: 0;
+            background: none;
+            text-decoration: none;
+            cursor: pointer;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .app {
+            width: 100vw;
+            height: 100vh;
+            height: 100svh;
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr);
+            overflow: hidden;
+            background: var(--bg);
+        }
+
+        /* IDENTITY BAR */
+        .topbar {
+            min-height: 62px;
+            padding: 7px 8px;
+            display: grid;
+            grid-template-columns: 50px minmax(0, 1fr) 54px;
+            gap: 8px;
+            align-items: center;
+            border-bottom: var(--line);
+            background: var(--bg);
+        }
+
+        .topDisc {
+            width: 50px;
+            height: 50px;
+            border: var(--line);
+            background: var(--cream);
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+        }
+
+        .topDisc svg {
+            width: 40px;
+            height: 40px;
+            display: block;
+            animation: spinDisc 14s linear infinite;
+            transform-origin: 50% 50%
+        }
+
+        @keyframes spinDisc {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .topName {
+            min-width: 0;
+            font-size: clamp(34px, 7.2vw, 76px);
+            line-height: .76;
+            font-weight: 1000;
+            letter-spacing: -.092em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .openTop {
+            height: 50px;
+            border: var(--line);
+            background: var(--cream);
+            display: grid;
+            place-items: center;
+            font-size: 24px;
+            line-height: 1;
+            font-weight: 1000;
+        }
+
+        .openTop:active {
+            transform: translateY(2px);
+            background: var(--ink);
+            color: var(--cream)
+        }
+
+        /* MAIN MACHINE */
+        .machine {
+            min-height: 0;
+            display: grid;
+            grid-template-rows: minmax(0, 1fr) auto auto;
+            gap: var(--gap);
+            padding: var(--gap);
+            overflow: hidden;
+        }
+
+        /* PAYLOAD VESSEL */
+        .payloadFrame {
+            min-width: 0;
+            min-height: 0;
+            border: var(--line);
+            padding: 10px;
+            display: grid;
+            overflow: hidden;
+            background: var(--cream);
+        }
+
+        .payloadInner {
+            min-width: 0;
+            min-height: 0;
+            background: var(--paper);
+            overflow: hidden;
+            display: grid;
+            position: relative;
+        }
+
+        .payloadText {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            display: grid;
+            align-content: start;
+            gap: 10px;
+            font-size: clamp(23px, 2.8vw, 40px);
+            line-height: 1.08;
+            font-weight: 850;
+            overflow: hidden;
+        }
+
+        .payloadText .line {
+            display: grid;
+            grid-template-columns: 3.35ch minmax(0, 1fr);
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .lineNo {
+            color: var(--muted);
+            font-size: .72em;
+            font-weight: 1000;
+            line-height: 1.2;
+        }
+
+        .lineText {
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .codeText {
+            font: 800 clamp(13px, 1.55vw, 22px)/1.35 var(--mono);
+            white-space: pre-wrap;
+            align-content: start;
+        }
+
+        .emptyVessel {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            place-items: center;
+            background: var(--paper);
+            padding: 18px;
+        }
+
+        .emptyBox {
+            width: 100%;
+            height: 100%;
+            border: var(--thin);
+            border-style: dashed;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            font-weight: 1000;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            color: var(--muted);
+        }
+
+        .mediaSlot {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            place-items: center;
+            padding: 18px;
+            background: var(--paper)
+        }
+
+        .mediaSlot svg {
+            width: min(100%, 420px);
+            height: min(100%, 290px)
+        }
+
+        .iframeSlot {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            background: var(--paper)
+        }
+
+        /* MODE STRIP */
+        .modeStrip {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            border: var(--line);
+            background: var(--cream);
+        }
+
+        .stripBtn {
+            min-height: 48px;
+            border-right: var(--thin);
+            font-size: 13px;
+            font-weight: 1000;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+
+        .stripBtn:last-child {
+            border-right: 0
+        }
+
+        .stripBtn.active {
+            background: var(--active);
+            color: var(--activeText)
+        }
+
+        .stripBtn:active {
+            transform: translateY(2px)
+        }
+
+        /* SELECTOR MODE BAR */
+        .selectorBar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            border: var(--line);
+            background: var(--cream);
+        }
+
+        .selectorBtn {
+            min-height: 40px;
+            border-right: var(--thin);
+            font-size: 11px;
+            font-weight: 1000;
+            text-transform: uppercase;
+            letter-spacing: .055em;
+        }
+
+        .selectorBtn:last-child {
+            border-right: 0
+        }
+
+        .selectorBtn.active {
+            background: var(--active);
+            color: var(--activeText)
+        }
+
+        /* SELECTOR DRAWER */
+        .selector {
+            min-height: 0;
+            border-left: var(--line);
+            border-right: var(--line);
+            border-bottom: var(--line);
+            background: var(--bg);
+            overflow: hidden;
+            display: grid;
+        }
+
+        /* RAIL SELECTOR */
+        .railStage {
+            min-height: 0;
+            display: grid;
+            grid-template-columns: .72fr .58fr .48fr .42fr;
+            gap: var(--gap);
+            padding: var(--gap);
+            overflow: hidden;
+        }
+
+        .rail {
+            min-width: 0;
+            min-height: 0;
+            overflow: hidden;
+            display: grid
+        }
+
+        .track {
+            position: relative;
+            min-height: 0;
+            height: 100%;
+            border-left: var(--line);
+            border-right: var(--line);
+            border-top: var(--line);
+            display: grid;
+            overflow: hidden;
+            background: var(--bg);
+        }
+
+        .cell {
+            min-width: 0;
+            min-height: 0;
+            position: relative;
+            z-index: 1;
+            border-bottom: var(--thin);
+            background: var(--bg);
+            display: grid;
+            place-items: center;
+            text-align: center;
+            overflow: hidden;
+            padding: 1px;
+            line-height: .88;
+            font-weight: 1000;
+            transition: background .12s linear, color .12s linear, font-size .12s linear, opacity .12s linear, box-shadow .12s linear;
+        }
+
+        .cell:hover {
+            background: rgba(255, 255, 255, .12)
+        }
+
+        .cell.muted {
+            opacity: .28
+        }
+
+        .cell.near {
+            opacity: .72
+        }
+
+        .cell.inPath {
+            box-shadow: inset 0 0 0 3px rgba(255, 246, 223, .72)
+        }
+
+        .cell.groupStart {
+            border-top: var(--line)
+        }
+
+        .cell.pairStart {
+            border-top: var(--thin)
+        }
+
+        .cell.active {
+            background: var(--active);
+            color: var(--activeText);
+            outline: 3px solid var(--cream);
+            outline-offset: -7px;
+            z-index: 3;
+            opacity: 1;
+        }
+
+        .dCell {
+            font-size: clamp(21px, 4vw, 42px);
+            letter-spacing: -.07em
+        }
+
+        .cCell {
+            font-size: clamp(14px, 2.55vw, 26px);
+            letter-spacing: -.06em
+        }
+
+        .bCell {
+            font-size: clamp(10px, 1.65vw, 17px);
+            letter-spacing: -.03em
+        }
+
+        .leafCell {
+            font-size: clamp(7px, 1vw, 12px);
+            letter-spacing: -.02em
+        }
+
+        .dCell.active {
+            font-size: clamp(33px, 5.4vw, 58px)
+        }
+
+        .cCell.active {
+            font-size: clamp(24px, 4vw, 42px)
+        }
+
+        .bCell.active {
+            font-size: clamp(18px, 2.85vw, 30px)
+        }
+
+        .leafCell.active {
+            font-size: clamp(16px, 2.25vw, 26px)
+        }
+
+        /* GRID SELECTOR */
+        .gridSelector {
+            min-height: 0;
+            overflow: auto;
+            padding: 12px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
+            gap: 10px;
+        }
+
+        .nodeOrb {
+            aspect-ratio: 1;
+            border-radius: 50%;
+            border: var(--thin);
+            background:
+                radial-gradient(circle at 32% 24%, rgba(255, 255, 255, .28) 0 12%, transparent 13%),
+                radial-gradient(circle at 44% 42%, var(--bg), #d9572e 78%);
+            display: grid;
+            place-items: center;
+            text-align: center;
+            padding: 9px;
+            font-weight: 1000;
+            line-height: .9;
+            position: relative;
+        }
+
+        .nodeOrb.active {
+            background: var(--ink);
+            color: var(--cream);
+            outline: 3px solid var(--cream);
+            outline-offset: 3px
+        }
+
+        .nodeOrb small {
+            display: block;
+            font-size: 9px;
+            margin-top: 5px;
+            opacity: .75
+        }
+
+        /* TIMELINE SELECTOR */
+        .timelineSelector {
+            min-height: 0;
+            overflow: auto;
+            padding: 10px;
+            display: grid;
+            gap: 7px;
+            align-content: start;
+        }
+
+        .eventRow {
+            display: grid;
+            grid-template-columns: 5.5ch minmax(0, 1fr);
+            gap: 8px;
+            min-height: 44px;
+            border: var(--thin);
+            background: rgba(255, 246, 223, .08);
+            align-items: stretch;
+        }
+
+        .eventDate {
+            display: grid;
+            place-items: center;
+            background: var(--ink);
+            color: var(--cream);
+            font-size: 10px;
+            font-weight: 1000;
+        }
+
+        .eventBody {
+            min-width: 0;
+            padding: 8px 9px;
+            display: grid;
+            align-content: center;
+            font-size: 12px;
+            font-weight: 1000;
+            text-transform: uppercase;
+        }
+
+        .eventBody span {
+            display: block;
+            font-size: 9px;
+            color: rgba(0, 0, 0, .62);
+            margin-top: 2px;
+            text-transform: none;
+            font-weight: 800
+        }
+
+        .eventRow.active {
+            background: var(--cream);
+            outline: 2px solid var(--ink);
+            outline-offset: -5px
+        }
+
+        /* RIPPLE SELECTOR */
+        .rippleSelector {
+            min-height: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 7px;
+            padding: 10px;
+            overflow: auto;
+        }
+
+        .relCard {
+            min-height: 70px;
+            border: var(--thin);
+            background: rgba(255, 246, 223, .08);
+            display: grid;
+            grid-template-columns: 52px minmax(0, 1fr);
+            align-items: center;
+        }
+
+        .relDot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--cream);
+            margin: auto;
+            border: var(--thin);
+        }
+
+        .relCard.active .relDot {
+            background: var(--ink)
+        }
+
+        .relInfo {
+            min-width: 0;
+            padding: 8px 8px 8px 0;
+            font-weight: 1000;
+            text-transform: uppercase;
+            font-size: 12px;
+            line-height: 1.05
+        }
+
+        .relInfo span {
+            display: block;
+            font-size: 9px;
+            color: rgba(0, 0, 0, .62);
+            margin-top: 4px;
+            text-transform: none
+        }
+
+        /* DESKTOP */
+        @media(min-width:900px) {
+            .machine {
+                grid-template-columns: minmax(0, 1.85fr) minmax(330px, .9fr);
+                grid-template-rows: minmax(0, 1fr) auto;
+            }
+
+            .payloadFrame {
+                grid-column: 1;
+                grid-row: 1 / span 2
+            }
+
+            .modeStrip {
+                grid-column: 2;
+                grid-row: 1;
+                align-self: end
+            }
+
+            .selectorBar {
+                grid-column: 2;
+                grid-row: 2
+            }
+
+            .selector {
+                grid-column: 2;
+                grid-row: 1;
+                margin-bottom: calc(48px + var(--gap));
+                border-top: var(--line);
+            }
+        }
+
+        /* MOBILE */
+        @media(max-width:760px) {
+            :root {
+                --gap: 5px
+            }
+
+            .topbar {
+                min-height: 60px;
+                padding: 6px;
+                grid-template-columns: 38px minmax(0, 1fr) 42px;
+                gap: 6px;
+            }
+
+            .topDisc {
+                width: 38px;
+                height: 38px
+            }
+
+            .topDisc svg {
+                width: 30px;
+                height: 30px
+            }
+
+            .topName {
+                font-size: clamp(25px, 9.2vw, 40px);
+                line-height: .82;
+                letter-spacing: -.075em;
+                white-space: normal;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                text-overflow: clip;
+            }
+
+            .openTop {
+                height: 38px;
+                font-size: 21px
+            }
+
+            .machine {
+                grid-template-rows: minmax(222px, 42svh) 38px 36px minmax(0, 1fr);
+            }
+
+            .payloadFrame {
+                padding: 6px
+            }
+
+            .payloadText {
+                padding: 12px;
+                font-size: clamp(18px, 5.6vw, 28px);
+                gap: 8px
+            }
+
+            .payloadText .line {
+                grid-template-columns: 3.2ch minmax(0, 1fr);
+                gap: 8px
+            }
+
+            .payloadText .lineNo {
+                font-size: .76em
+            }
+
+            .lineText {
+                white-space: normal;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical
+            }
+
+            .stripBtn {
+                min-height: 38px;
+                font-size: 11px
+            }
+
+            .selectorBtn {
+                min-height: 36px;
+                font-size: 9px
+            }
+
+            .railStage {
+                grid-template-columns: .55fr .5fr .44fr .62fr
+            }
+
+            .dCell {
+                font-size: clamp(18px, 5.6vw, 27px)
+            }
+
+            .cCell {
+                font-size: clamp(12px, 3.9vw, 18px)
+            }
+
+            .bCell {
+                font-size: clamp(8px, 2.55vw, 13px)
+            }
+
+            .leafCell {
+                font-size: clamp(6px, 1.85vw, 10px)
+            }
+
+            .dCell.active {
+                font-size: clamp(28px, 8.6vw, 40px)
+            }
+
+            .cCell.active {
+                font-size: clamp(21px, 6.3vw, 30px)
+            }
+
+            .bCell.active {
+                font-size: clamp(15px, 4.4vw, 22px)
+            }
+
+            .leafCell.active {
+                font-size: clamp(15px, 4.4vw, 22px);
+                outline: 2px solid var(--cream);
+                outline-offset: -5px
+            }
+
+            .gridSelector {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 7px;
+                padding: 8px
+            }
+
+            .rippleSelector {
+                grid-template-columns: 1fr;
+                gap: 6px;
+                padding: 8px
+            }
+        }
+
+        @media(max-height:690px) {
+            .topbar {
+                min-height: 52px
+            }
+
+            .topDisc {
+                width: 34px;
+                height: 34px
+            }
+
+            .topDisc svg {
+                width: 27px;
+                height: 27px
+            }
+
+            .topName {
+                font-size: clamp(23px, 8vw, 34px)
+            }
+
+            .openTop {
+                height: 34px;
+                font-size: 19px
+            }
+
+            .machine {
+                grid-template-rows: minmax(190px, 39svh) 34px 34px minmax(0, 1fr)
+            }
+
+            .stripBtn {
+                min-height: 34px
+            }
+
+            .payloadText {
+                font-size: clamp(17px, 4.8vw, 22px)
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <script src="wh-grid-data-bridge.js"></script>
+    <main class="app" aria-label="Worldtext Payload Index">
+        <header class="topbar">
+            <div class="topDisc" id="topDisc" aria-hidden="true"></div>
+            <div class="topName" id="topPayloadTitle">Worldtext Payload Index</div>
+            <button class="openTop" id="openBtn" type="button" aria-label="Open current payload">↗</button>
+        </header>
+
+        <section class="machine">
+            <article class="payloadFrame" id="payloadFrame" aria-label="Current payload"></article>
+
+            <div class="selector" id="selector" aria-label="Address selector"></div>
+
+            <div class="modeStrip">
+                <button class="stripBtn" id="prevBtn" type="button">prev</button>
+                <button class="stripBtn active" id="modeBtn" type="button">text</button>
+                <button class="stripBtn" id="nextBtn" type="button">next</button>
+            </div>
+
+            <nav class="selectorBar" aria-label="Selector modes">
+                <button class="selectorBtn active" data-selector="rail">rail</button>
+                <button class="selectorBtn" data-selector="grid">grid</button>
+                <button class="selectorBtn" data-selector="time">time</button>
+                <button class="selectorBtn" data-selector="ripple">ripple</button>
+            </nav>
+        </section>
+    </main>
+
+    <script>
+        'use strict';
+
+        const SVG_NS = 'http://www.w3.org/2000/svg';
+        const payloadModes = ['text', 'media', 'iframe', 'code', 'empty'];
+        const selectorModes = ['rail', 'grid', 'time', 'ripple'];
+
+                // ═══ LIVE DATA FROM wh-grid-data-bridge.js ═══
+        // Data fetched from worldtext-program-theory.json + github-ripple-index.json
+        var __bridgeData = null;
+        var archiveTiers, archiveClusters, archiveBlocks, leafTemplates;
+        var blocks, leaves, payloads;
+        var domains, clusters, blocks, leaves;
+
+
+        const state = {
+            d: 'D1',
+            c: 'C1',
+            b: 'B1',
+            l: '01',
+            payloadMode: 'text',
+            selectorMode: 'rail'
+        };
+
+        const el = {};
+        ['topDisc', 'topPayloadTitle', 'openBtn', 'payloadFrame', 'selector', 'prevBtn', 'modeBtn', 'nextBtn'].forEach(id => el[id] = document.getElementById(id));
+
+        function byId(list, id) { return list.find(x => x.id === id) || list[0]; }
+        function domain() { return byId(domains, state.d); }
+        function cluster() { return byId(clusters, state.c); }
+        function block() { return byId(blocks, state.b); }
+        function payload() { return byId(payloads, state.l); }
+        function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+        function pulse() { if (navigator.vibrate) navigator.vibrate(8); }
+
+        function clampState() {
+            const d = domain();
+            if (!d.clusters.includes(state.c)) state.c = d.clusters[0];
+            const c = cluster();
+            if (!c.blocks.includes(state.b)) state.b = c.blocks[0];
+            const b = block();
+            if (!b.leaves.includes(state.l)) state.l = b.leaves[0];
+        }
+        function selectD(id) {
+            pulse();
+            state.d = id;
+            state.c = domain().clusters[0];
+            state.b = cluster().blocks[0];
+            state.l = block().leaves[0];
+            render();
+        }
+        function selectC(id) {
+            pulse();
+            state.c = id;
+            state.d = cluster().domain;
+            state.b = cluster().blocks[0];
+            state.l = block().leaves[0];
+            render();
+        }
+        function selectB(id) {
+            pulse();
+            state.b = id;
+            state.c = block().cluster;
+            state.d = cluster().domain;
+            state.l = block().leaves[0];
+            render();
+        }
+        function selectL(id) {
+            pulse();
+            const p = byId(payloads, id);
+            state.l = p.id;
+            state.b = p.b;
+            state.c = p.c;
+            state.d = p.d;
+            render();
+        }
+        function setSelectorMode(mode) {
+            pulse();
+            state.selectorMode = mode;
+            render();
+        }
+        function flipPayloadMode() {
+            pulse();
+            const idx = payloadModes.indexOf(state.payloadMode);
+            state.payloadMode = payloadModes[(idx + 1) % payloadModes.length];
+            render();
+        }
+        function nextPayload(delta) {
+            pulse();
+            const index = payloads.findIndex(p => p.id === state.l);
+            const next = payloads[(index + delta + payloads.length) % payloads.length];
+            selectL(next.id);
+        }
+        function pathLine() {
+            const d = domain(), c = cluster(), b = block(), p = payload();
+            return d.id + ' ' + d.name + ' / ' + c.id + ' ' + c.name + ' / ' + b.id + ' ' + b.name + ' / ' + String(Number(p.id));
+        }
+        function openPayload() {
+            const p = payload();
+            if (p.openTarget && p.openTarget !== '#') {
+                window.open(p.openTarget, '_blank', 'noopener,noreferrer');
+                return;
+            }
+            const opened = window.open('', '_blank', 'noopener,noreferrer');
+            if (!opened) return;
+            const lines = [pathLine()].concat(p.lines).map((line, index) => {
+                const label = index === 0 ? 'LOC' : String(index).padStart(2, '0');
+                return '<div style="display:grid;grid-template-columns:4ch 1fr;gap:12px;margin:8px 0"><b>' + label + '</b><span>' + escapeHtml(line) + '</span></div>';
+            }).join('');
+            opened.document.write('<!doctype html><html><head><title>' + escapeHtml(p.title) + '</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;padding:24px;background:#fff6df;color:#000;font-family:Inter,system-ui,sans-serif}h1{font-size:clamp(42px,8vw,96px);line-height:.8;letter-spacing:-.09em;text-transform:uppercase}main{border:2px solid #000;padding:18px;min-height:70vh;background:#fff}</style></head><body><h1>' + escapeHtml(p.title) + '</h1><main>' + lines + '</main></body></html>');
+            opened.document.close();
+        }
+        function escapeHtml(value) {
+            return String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c]));
+        }
+
+        function renderPayload() {
+            const p = payload();
+            clear(el.payloadFrame);
+            el.payloadFrame.dataset.mode = state.payloadMode;
+            el.topPayloadTitle.textContent = p.title;
+            clear(el.topDisc);
+            el.topDisc.appendChild(createOrangeSvg(Number(p.id) - 1));
+            el.modeBtn.textContent = state.payloadMode;
+
+            const inner = document.createElement('div');
+            inner.className = 'payloadInner';
+
+            if (state.payloadMode === 'empty') {
+                inner.innerHTML = '<div class="emptyVessel"><div class="emptyBox">Drop media here<br><br>Payload address remains fixed.</div></div>';
+                el.payloadFrame.appendChild(inner);
+                return;
+            }
+
+            if (state.payloadMode === 'text') {
+                const rows = [pathLine()].concat(p.lines);
+                inner.innerHTML = '<div class="payloadText" style="flex-shrink:0">' + rows.map((line, index) => `
+      <div class="line"><span class="lineNo">${index === 0 ? 'LOC' : String(index).padStart(2, '0')}</span><span class="lineText">${escapeHtml(line)}</span></div>
+    `).join('') + '</div>';
+                // Inline iframe below text
+                var b = block();
+                if (b && b.url && b.url !== '#' && b.url.startsWith('http')) {
+                    var frame = document.createElement('iframe');
+                    frame.className = 'iframeSlot';
+                    frame.src = b.url;
+                    frame.style.cssText = 'flex:1;min-height:200px;border:0;border-top:3px solid #000;width:100%';
+                    inner.appendChild(frame);
+                }
+                inner.style.cssText = 'display:flex;flex-direction:column;flex:1;min-height:0';
+                el.payloadFrame.appendChild(inner);
+                return;
+            }
+
+            if (state.payloadMode === 'code') {
+                inner.innerHTML = `<div class="payloadText codeText"><div class="line"><span class="lineNo">JS</span><span class="lineText">const payloadAddress = ${escapeHtml(JSON.stringify({
+                    id: p.id, coordinate: { d: p.d, c: p.c, b: p.b, l: p.id }, mode: state.payloadMode, title: p.title, openTarget: p.openTarget
+                }, null, 2))};</span></div></div>`;
+                el.payloadFrame.appendChild(inner);
+                return;
+            }
+
+            if (state.payloadMode === 'media') {
+                const media = document.createElement('div');
+                media.className = 'mediaSlot';
+                media.appendChild(createMiniArt(p.art));
+                inner.appendChild(media);
+                el.payloadFrame.appendChild(inner);
+                return;
+            }
+
+            if (state.payloadMode === 'iframe') {
+                const frame = document.createElement('iframe');
+                frame.className = 'iframeSlot';
+                frame.title = p.title;
+                frame.srcdoc = iframeDoc(p);
+                inner.appendChild(frame);
+                el.payloadFrame.appendChild(inner);
+            }
+        }
+
+        function iframeDoc(p) {
+            return '<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>html,body{margin:0;height:100%;background:#fff6df;color:#000;font-family:Inter,system-ui,sans-serif}body{display:grid;place-items:center;padding:18px}.box{width:100%;height:100%;border:3px solid #000;background:#fff;display:grid;place-items:center;text-align:center;padding:18px}h1{margin:0;font-size:clamp(34px,8vw,80px);line-height:.82;letter-spacing:-.08em;text-transform:uppercase}.path{margin-top:12px;font-weight:900;text-transform:uppercase;font-size:12px;letter-spacing:.05em;color:rgba(0,0,0,.55)}</style></head><body><main class="box"><div><h1>' + escapeHtml(p.title) + '</h1><div class="path">' + escapeHtml(pathLine()) + '</div></div></main></body></html>';
+        }
+
+        /* SELECTORS */
+        function renderSelector() {
+            document.querySelectorAll('.selectorBtn').forEach(btn => btn.classList.toggle('active', btn.dataset.selector === state.selectorMode));
+            if (state.selectorMode === 'rail') renderRailSelector();
+            if (state.selectorMode === 'grid') renderGridSelector();
+            if (state.selectorMode === 'time') renderTimeSelector();
+            if (state.selectorMode === 'ripple') renderRippleSelector();
+        }
+
+        function makeCell(label, cls, active, muted, marker, handler, near, inPath) {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'cell ' + cls + (active ? ' active' : '') + (muted ? ' muted' : '') + (near ? ' near' : '') + (inPath ? ' inPath' : '') + (marker ? ' ' + marker : '');
+            button.textContent = label;
+            button.addEventListener('click', handler);
+            return button;
+        }
+        function proportionalWeights(length, activeIndex, pathPredicate) {
+            return Array.from({ length }, function (_, index) {
+                if (index === activeIndex) return 3.2;
+                if (typeof pathPredicate === 'function' && pathPredicate(index)) return 1.75;
+                if (Math.abs(index - activeIndex) === 1) return 1.35;
+                return 1;
+            });
+        }
+        function renderRail(target, items, weights, make) {
+            clear(target);
+            target.style.gridTemplateRows = weights.map(w => 'minmax(0,' + w + 'fr)').join(' ');
+            items.forEach((item, index) => target.appendChild(make(item, index)));
+        }
+        function renderRailSelector() {
+            el.selector.innerHTML = `
+    <section class="railStage">
+      <section class="rail"><div class="track" id="railD"></div></section>
+      <section class="rail"><div class="track" id="railC"></div></section>
+      <section class="rail"><div class="track" id="railB"></div></section>
+      <section class="rail"><div class="track" id="railL"></div></section>
+    </section>`;
+            const railD = document.getElementById('railD');
+            const railC = document.getElementById('railC');
+            const railB = document.getElementById('railB');
+            const railL = document.getElementById('railL');
+
+            const activeDIndex = domains.findIndex(d => d.id === state.d);
+            renderRail(railD, domains, proportionalWeights(domains.length, activeDIndex), (d, index) =>
+                makeCell(d.id, 'dCell', d.id === state.d, false, '', () => selectD(d.id), Math.abs(index - activeDIndex) === 1, d.id === state.d)
+            );
+
+            const activeCIndex = clusters.findIndex(c => c.id === state.c);
+            renderRail(railC, clusters, proportionalWeights(clusters.length, activeCIndex, index => clusters[index].domain === state.d), (c, index) =>
+                makeCell(c.id, 'cCell', c.id === state.c, c.domain !== state.d, index % 3 === 0 ? 'groupStart' : '', () => selectC(c.id), Math.abs(index - activeCIndex) === 1, c.domain === state.d)
+            );
+
+            const activeBIndex = blocks.findIndex(b => b.id === state.b);
+            renderRail(railB, blocks, proportionalWeights(blocks.length, activeBIndex, index => blocks[index].cluster === state.c), (b, index) =>
+                makeCell(b.id, 'bCell', b.id === state.b, b.cluster !== state.c, index % 2 === 0 ? 'groupStart' : '', () => selectB(b.id), Math.abs(index - activeBIndex) === 1, b.cluster === state.c)
+            );
+
+            const activeLIndex = payloads.findIndex(p => p.id === state.l);
+            renderRail(railL, payloads, proportionalWeights(payloads.length, activeLIndex, index => payloads[index].b === state.b), (p, index) =>
+                makeCell(String(Number(p.id)), 'leafCell', p.id === state.l, p.b !== state.b, index % 2 === 0 ? 'pairStart' : '', () => selectL(p.id), Math.abs(index - activeLIndex) <= 1, p.b === state.b)
+            );
+        }
+
+        function renderGridSelector() {
+            el.selector.innerHTML = `<div class="gridSelector">
+    ${payloads.map(p => `<button class="nodeOrb ${p.id === state.l ? 'active' : ''}" data-id="${p.id}">
+      ${Number(p.id)}<small>${escapeHtml(p.kind)}</small>
+    </button>`).join('')}
+  </div>`;
+            el.selector.querySelectorAll('[data-id]').forEach(btn => btn.onclick = () => selectL(btn.dataset.id));
+        }
+
+        function renderTimeSelector() {
+            const sorted = [...payloads].sort((a, b) => new Date(b.date) - new Date(a.date));
+            el.selector.innerHTML = `<div class="timelineSelector">
+    ${sorted.map(p => `<button class="eventRow ${p.id === state.l ? 'active' : ''}" data-id="${p.id}">
+      <div class="eventDate">${dateShort(p.date)}</div>
+      <div class="eventBody">${escapeHtml(p.title)}<span>${escapeHtml(p.d + ' / ' + p.c + ' / ' + p.b + ' / ' + p.id)}</span></div>
+    </button>`).join('')}
+  </div>`;
+            el.selector.querySelectorAll('[data-id]').forEach(btn => btn.onclick = () => selectL(btn.dataset.id));
+        }
+
+        function renderRippleSelector() {
+            const p = payload();
+            const ids = [p.id].concat(p.relations || []);
+            el.selector.innerHTML = `<div class="rippleSelector">
+    ${ids.map((id, index) => {
+                const q = byId(payloads, id);
+                return `<button class="relCard ${q.id === state.l ? 'active' : ''}" data-id="${q.id}">
+        <div class="relDot"></div>
+        <div class="relInfo">${escapeHtml(q.title)}<span>${index === 0 ? 'current payload' : 'related payload'} · ${escapeHtml(q.d + '/' + q.c + '/' + q.b + '/' + q.id)}</span></div>
+      </button>`;
+            }).join('')}
+  </div>`;
+            el.selector.querySelectorAll('[data-id]').forEach(btn => btn.onclick = () => selectL(btn.dataset.id));
+        }
+
+        function dateShort(date) {
+            const d = new Date(date + 'T00:00:00');
+            return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }).replace(' ', '');
+        }
+
+        /* SVG */
+        function svgEl(tag, attrs) {
+            const node = document.createElementNS(SVG_NS, tag);
+            Object.keys(attrs || {}).forEach(key => node.setAttribute(key, attrs[key]));
+            return node;
+        }
+        function createOrangeSvg(activeIndex) {
+            const svg = svgEl('svg', { viewBox: '0 0 100 100', 'aria-hidden': 'true' });
+            svg.appendChild(svgEl('circle', { cx: '50', cy: '50', r: '42', fill: 'var(--cream)', stroke: 'black', 'stroke-width': '3' }));
+            for (let i = 0; i < 6; i++) {
+                const a0 = (i * 60 - 90) * Math.PI / 180;
+                const a1 = ((i + 1) * 60 - 90) * Math.PI / 180;
+                const r = 39;
+                const x0 = 50 + r * Math.cos(a0);
+                const y0 = 50 + r * Math.sin(a0);
+                const x1 = 50 + r * Math.cos(a1);
+                const y1 = 50 + r * Math.sin(a1);
+                svg.appendChild(svgEl('path', {
+                    d: 'M50 50 L' + x0.toFixed(1) + ' ' + y0.toFixed(1) + ' A39 39 0 0 1 ' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' Z',
+                    fill: (activeIndex % 6) === i ? 'var(--bg)' : 'var(--cream)',
+                    stroke: 'black', 'stroke-width': '1'
+                }));
+            }
+            svg.appendChild(svgEl('circle', { cx: '50', cy: '50', r: '10', fill: 'var(--bg)', stroke: 'black', 'stroke-width': '2' }));
+            return svg;
+        }
+        function createMiniArt(kind) {
+            const svg = svgEl('svg', { viewBox: '0 0 220 140', 'aria-hidden': 'true' });
+            svg.appendChild(svgEl('rect', { width: '220', height: '140', fill: 'var(--bg)' }));
+            if (kind === 'grid') {
+                svg.appendChild(svgEl('rect', { x: '40', y: '25', width: '140', height: '90', fill: 'none', stroke: 'black', 'stroke-width': '3' }));
+                svg.appendChild(svgEl('path', { d: 'M40 25 L180 115 M180 25 L40 115', fill: 'none', stroke: 'black', 'stroke-width': '3' }));
+                svg.appendChild(svgEl('circle', { cx: '110', cy: '70', r: '20', fill: 'var(--cream)', stroke: 'black', 'stroke-width': '3' }));
+            } else if (kind === 'synth') {
+                svg.appendChild(svgEl('circle', { cx: '70', cy: '55', r: '22', fill: 'var(--cream)', stroke: 'black', 'stroke-width': '3' }));
+                svg.appendChild(svgEl('circle', { cx: '150', cy: '55', r: '22', fill: 'var(--cream)', stroke: 'black', 'stroke-width': '3' }));
+                svg.appendChild(svgEl('rect', { x: '62', y: '92', width: '96', height: '24', fill: 'var(--cream)', stroke: 'black', 'stroke-width': '3' }));
+            } else if (kind === 'poster') {
+                svg.appendChild(svgEl('rect', { x: '42', y: '24', width: '136', height: '92', fill: 'none', stroke: 'black', 'stroke-width': '3' }));
+                svg.appendChild(svgEl('path', { d: 'M110 24 L110 116 M42 70 L178 70', stroke: 'black', 'stroke-width': '2' }));
+                svg.appendChild(svgEl('rect', { x: '58', y: '38', width: '42', height: '28', fill: 'var(--cream)', stroke: 'black', 'stroke-width': '2' }));
+                svg.appendChild(svgEl('rect', { x: '120', y: '76', width: '42', height: '28', fill: 'var(--cream)', stroke: 'black', 'stroke-width': '2' }));
+            } else if (kind === 'curve') {
+                svg.appendChild(svgEl('path', { d: 'M26 108 Q110 18 194 108', fill: 'none', stroke: 'black', 'stroke-width': '5' }));
+                svg.appendChild(svgEl('circle', { cx: '26', cy: '108', r: '6', fill: 'black' }));
+                svg.appendChild(svgEl('circle', { cx: '110', cy: '36', r: '6', fill: 'black' }));
+                svg.appendChild(svgEl('circle', { cx: '194', cy: '108', r: '6', fill: 'black' }));
+            } else if (kind === 'type') {
+                svg.appendChild(svgEl('rect', { x: '44', y: '24', width: '132', height: '92', fill: 'none', stroke: 'black', 'stroke-width': '3' }));
+                const text = svgEl('text', { x: '110', y: '94', 'text-anchor': 'middle', 'font-size': '76', 'font-weight': '950', fill: 'black', 'font-family': 'system-ui' });
+                text.textContent = 'T';
+                svg.appendChild(text);
+            } else {
+                [36, 72, 108, 144].forEach(x => svg.appendChild(svgEl('rect', { x: String(x), y: '24', width: '28', height: '92', fill: 'var(--cream)', stroke: 'black', 'stroke-width': '2' })));
+            }
+            return svg;
+        }
+
+        function render() {
+            clampState();
+            renderPayload();
+            renderSelector();
+        }
+
+        document.querySelectorAll('.selectorBtn').forEach(btn => btn.addEventListener('click', () => setSelectorMode(btn.dataset.selector)));
+        el.prevBtn.addEventListener('click', () => nextPayload(-1));
+        el.nextBtn.addEventListener('click', () => nextPayload(1));
+        el.modeBtn.addEventListener('click', flipPayloadMode);
+        el.openBtn.addEventListener('click', openPayload);
+        window.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft') nextPayload(-1);
+            if (e.key === 'ArrowRight') nextPayload(1);
+            if (e.key.toLowerCase() === 'm') flipPayloadMode();
+            if (e.key.toLowerCase() === 'o') openPayload();
+            if (e.key === '1') setSelectorMode('rail');
+            if (e.key === '2') setSelectorMode('grid');
+            if (e.key === '3') setSelectorMode('time');
+            if (e.key === '4') setSelectorMode('ripple');
+        });
+
+        whBridge.boot(function(data) {
+            __bridgeData = data;
+            archiveTiers = data.archiveTiers;
+            archiveClusters = data.archiveClusters;
+            archiveBlocks = data.archiveBlocks;
+            leafTemplates = data.leafTemplates;
+            if (typeof domains !== 'undefined' || true) { try { domains = archiveTiers; } catch(e){} }
+            if (typeof clusters !== 'undefined' || true) { try { clusters = archiveClusters; } catch(e){} }
+            if (typeof blocks !== 'undefined' || true) { try { blocks = archiveBlocks; } catch(e){} }
+            if (typeof works !== 'undefined' || true) {
+                try { works = archiveBlocks.map(function(b){ return b.name; }); } catch(e){}
+            }
+            if (typeof repos !== 'undefined' || true) { try { repos = data.repos || []; } catch(e){} }
+            if (typeof leaves !== 'undefined' || true) {
+                try {
+                    leaves = leafTemplates.map(function(pair, i) {
+                        var id = String(i + 1).padStart(2, '0');
+                        var owner = archiveBlocks.find(function(bl) { return bl.leaves && bl.leaves.includes(id); });
+                        return { id: id, block: owner ? owner.id : 'B1', b: owner ? owner.id : 'B1', title: pair[0] + ' · ' + (owner ? owner.title : 'Worldtext'), art: ['grid','synth','poster','curve','type','color'][i % 6], url: owner && owner.url ? owner.url : '#', date: '2026-01-' + id, lines: [pair[1], owner ? owner.title : 'Worldtext Practice Archive', owner && owner.url ? owner.url : 'payload://local', 'Mode button cycles text, media, iframe, empty.'] };
+                    });
+                } catch(e){}
+            }
+            if (typeof payloads !== 'undefined' || true) { try { payloads = leaves; } catch(e){} }
+            render();
+        });
+    </script>
+</body>
+
+</html>

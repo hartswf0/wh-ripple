@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Orange Surfaces</title>
+    <style>
+        :root {
+            --bg: #FFE15D;
+            --orange: #FF6A00;
+            --slice: #F99F2A;
+            --ink: #000;
+            --paper: #FFF4A8;
+            --white: #fff;
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+            --shadow: 3px 3px 0 #000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            min-width: 320px;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--mono);
+            overflow-x: hidden
+        }
+
+        button {
+            font: inherit;
+            color: inherit;
+            -webkit-tap-highlight-color: transparent;
+            cursor: pointer
+        }
+
+        button:focus-visible,
+        iframe:focus-visible {
+            outline: 3px solid var(--ink);
+            outline-offset: 3px
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--bg);
+            border-bottom: 3px solid var(--ink);
+            padding: .7rem
+        }
+
+        h1 {
+            font-size: clamp(1.4rem, 7vw, 3rem);
+            line-height: .85;
+            letter-spacing: -.09em;
+            text-transform: uppercase;
+            margin-bottom: .55rem
+        }
+
+        .filters {
+            display: flex;
+            gap: .4rem;
+            overflow: auto;
+            scrollbar-width: none
+        }
+
+        .filters::-webkit-scrollbar {
+            display: none
+        }
+
+        .filter {
+            flex: 0 0 auto;
+            min-height: 36px;
+            border: 2px solid var(--ink);
+            border-radius: 999px;
+            background: var(--paper);
+            padding: .4rem .65rem;
+            font-size: .7rem;
+            font-weight: 950;
+            text-transform: uppercase
+        }
+
+        .filter.active {
+            background: var(--orange);
+            box-shadow: var(--shadow)
+        }
+
+        .grove {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.8rem .65rem;
+            width: min(1080px, 100%);
+            margin: 0 auto;
+            padding: 1rem .7rem 2rem
+        }
+
+        .project {
+            display: grid;
+            justify-items: center;
+            gap: .55rem;
+            min-height: 198px
+        }
+
+        .project.hide {
+            display: none
+        }
+
+        .project.open .whole,
+        .project:hover .whole,
+        .project:focus-within .whole {
+            opacity: 0
+        }
+
+        .project.open .cut,
+        .project.open .segs,
+        .project:hover .cut,
+        .project:hover .segs,
+        .project:focus-within .cut,
+        .project:focus-within .segs {
+            opacity: 1
+        }
+
+        .orange {
+            position: relative;
+            width: 144px;
+            height: 144px
+        }
+
+        .orange svg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%
+        }
+
+        .whole,
+        .cut,
+        .segs {
+            transition: opacity .14s ease
+        }
+
+        .cut,
+        .segs {
+            opacity: 0
+        }
+
+        .fruit {
+            fill: var(--orange);
+            stroke: var(--ink);
+            stroke-width: 4
+        }
+
+        .flesh {
+            fill: var(--slice);
+            stroke: var(--ink);
+            stroke-width: 4
+        }
+
+        .line {
+            stroke: var(--ink);
+            stroke-width: 3
+        }
+
+        .core {
+            fill: var(--orange);
+            stroke: var(--ink);
+            stroke-width: 3
+        }
+
+        .peel {
+            position: absolute;
+            inset: 0;
+            border: 0;
+            background: transparent;
+            border-radius: 50%;
+            z-index: 2
+        }
+
+        .segs {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none
+        }
+
+        .seg {
+            position: absolute;
+            width: 46px;
+            height: 46px;
+            border: 2px solid var(--ink);
+            border-radius: 50%;
+            background: var(--orange);
+            display: grid;
+            place-items: center;
+            font-size: .58rem;
+            font-weight: 950;
+            text-transform: uppercase;
+            box-shadow: 2px 2px 0 rgba(0, 0, 0, .25);
+            pointer-events: auto
+        }
+
+        .seg:hover {
+            background: var(--paper);
+            box-shadow: var(--shadow)
+        }
+
+        .seg:nth-child(1) {
+            left: 50%;
+            top: 14%;
+            transform: translate(-50%, -50%)
+        }
+
+        .seg:nth-child(2) {
+            left: 22%;
+            top: 70%;
+            transform: translate(-50%, -50%)
+        }
+
+        .seg:nth-child(3) {
+            left: 78%;
+            top: 70%;
+            transform: translate(-50%, -50%)
+        }
+
+        .label {
+            width: 150px;
+            text-align: center;
+            font-size: .62rem;
+            line-height: 1.12;
+            text-transform: uppercase;
+            font-weight: 950;
+            overflow-wrap: anywhere
+        }
+
+        .tag {
+            display: inline-block;
+            margin-top: .22rem;
+            border: 2px solid var(--ink);
+            border-radius: 999px;
+            background: var(--paper);
+            padding: .18rem .38rem;
+            font-size: .52rem
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: grid;
+            place-items: center;
+            background: rgba(255, 225, 93, .96);
+            opacity: 0;
+            pointer-events: none;
+            padding: .65rem
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto
+        }
+
+        .sheet {
+            position: relative;
+            width: min(980px, 100%);
+            height: min(88vh, 720px);
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr) auto;
+            gap: .6rem;
+            overflow: hidden;
+            background: var(--bg);
+            border: 3px solid var(--ink);
+            border-radius: 20px;
+            box-shadow: 4px 4px 0 var(--ink);
+            padding: .75rem
+        }
+
+        .close {
+            position: absolute;
+            right: .55rem;
+            top: .55rem;
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--ink);
+            border-radius: 50%;
+            background: var(--orange);
+            font-size: 1.3rem;
+            z-index: 2
+        }
+
+        .title {
+            padding-right: 3rem;
+            font-size: clamp(1.1rem, 4.5vw, 2.4rem);
+            line-height: .9;
+            letter-spacing: -.08em;
+            text-transform: uppercase
+        }
+
+        .content {
+            min-height: 0;
+            overflow: auto;
+            background: var(--paper);
+            border: 2px solid var(--ink);
+            border-radius: 15px;
+            padding: .7rem;
+            display: grid;
+            gap: .65rem;
+            align-content: start;
+            scrollbar-width: thin
+        }
+
+        .kicker {
+            width: max-content;
+            max-width: 100%;
+            border: 2px solid var(--ink);
+            border-radius: 999px;
+            background: var(--orange);
+            padding: .32rem .52rem;
+            font-size: .65rem;
+            font-weight: 950;
+            text-transform: uppercase
+        }
+
+        p,
+        .slip {
+            font-size: .88rem;
+            line-height: 1.42;
+            font-weight: 780
+        }
+
+        .slip {
+            display: block;
+            border: 2px solid var(--ink);
+            border-radius: 13px;
+            background: var(--white);
+            padding: .6rem
+        }
+
+        .slip strong {
+            display: block;
+            text-transform: uppercase;
+            margin-bottom: .22rem
+        }
+
+        .surface {
+            min-height: 0;
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr);
+            gap: .55rem
+        }
+
+        .surface strong {
+            font-size: .7rem;
+            text-transform: uppercase
+        }
+
+        .frame {
+            min-height: 0;
+            border: 3px solid var(--ink);
+            border-radius: 13px;
+            overflow: hidden;
+            background: var(--white)
+        }
+
+        iframe {
+            display: block;
+            width: 100%;
+            height: 100%;
+            min-height: 440px;
+            border: 0;
+            background: var(--white)
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: .45rem;
+            border-top: 2px solid rgba(0, 0, 0, .2);
+            padding-top: .55rem
+        }
+
+        .nav button {
+            min-width: 70px;
+            min-height: 36px;
+            border: 2px solid var(--ink);
+            border-radius: 999px;
+            background: var(--orange);
+            font-size: .66rem;
+            font-weight: 950;
+            text-transform: uppercase
+        }
+
+        .nav button.active {
+            background: var(--paper);
+            box-shadow: var(--shadow)
+        }
+
+        @media(max-width:760px) {
+            .grove {
+                grid-template-columns: repeat(2, minmax(136px, 1fr));
+                gap: 1.5rem .35rem;
+                padding: .85rem .45rem
+            }
+
+            .orange {
+                width: 128px;
+                height: 128px
+            }
+
+            .seg {
+                width: 40px;
+                height: 40px;
+                font-size: .48rem
+            }
+
+            .label {
+                width: 136px;
+                font-size: .57rem
+            }
+
+            .sheet {
+                height: calc(100dvh - 1rem);
+                border-radius: 17px;
+                padding: .6rem
+            }
+
+            iframe {
+                min-height: 520px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Orange Surfaces</h1>
+        <nav class="filters" id="filters" aria-label="Project filters"></nav>
+    </header>
+
+    <main class="grove" id="grove" aria-label="Project grove"></main>
+
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="title">
+        <section class="sheet">
+            <button class="close" id="close" type="button" aria-label="Close">×</button>
+            <h2 class="title" id="title"></h2>
+            <article class="content" id="content"></article>
+            <nav class="nav" id="nav" aria-label="Slice navigation"></nav>
+        </section>
+    </div>
+
+    <script>
+        const families = { all: 'All', yellow: 'Worlds', green: 'Practice', orange: 'Ritual', red: 'Critique', tan: 'Ethics' };
+        const attractors = {
+            'generative-systems': { title: 'Generative Systems', claim: 'World-building, data dignity, generative systems, and speculative infrastructure.' },
+            'creative-ai-practice': { title: 'Creative AI Practice', claim: 'Prompt practice, machine learning community, and applied creative workflows.' },
+            'interaction-ritual': { title: 'Interaction Ritual', claim: 'Ritual chains, media evolution, emotional interfaces, and contextual flow.' },
+            'multi-agent-alignment': { title: 'Multi-Agent Alignment', claim: 'Safety, alignment, governance, agency, and institutional constraints.' },
+            'prompt-craft': { title: 'Prompt Craft', claim: 'Prompt craft as media evolution under pressure.' }
+        };
+        const projects = [
+            { id: 'gradient-dissent', title: 'Gradient Dissent / Invisible Spectrum', short: 'Gradient Dissent', family: 'tan', type: 'essay / diagnostic', status: 'prototype', description: 'A critique engine for surfacing hidden gradients, invisible positions, and suppressed dissent in technical systems.', claim: 'Dissent is not noise; it is a signal path for ethical system redesign.', connections: [['multi-agent-alignment', 'surfaces dissent as an alignment signal'], ['generative-systems', 'treats invisible gradients as world-building constraints']] },
+            { id: 'dreamkast', title: 'DreamKast', short: 'DreamKast', family: 'yellow', type: 'world prototype', status: 'concept', description: 'A world-casting system for turning dreams, fragments, and symbolic material into navigable media environments.', claim: 'Dream material can become a structured interface without losing its symbolic pressure.', connections: [['generative-systems', 'casts private image fragments into world structures'], ['interaction-ritual', 'uses recurring symbolic rituals to stabilize navigation']] },
+            { id: 'prompt-battles', title: 'Prompt Battles', short: 'Prompt Battles', family: 'green', type: 'practice game', status: 'prototype', description: 'A competitive prompt-testing arena where strategies, constraints, and outcomes become visible.', claim: 'Prompting becomes legible when it is tested under adversarial, playful, and social conditions.', connections: [['creative-ai-practice', 'turns prompt work into a visible practice'], ['prompt-craft', 'frames prompts as media tactics']] },
+            { id: 'way-of-worden', title: 'Way of Worden', short: 'Way of Worden', family: 'green', type: 'method system', status: 'active', description: 'A disciplined language-practice system for turning words into operational constraints and repeatable procedures.', claim: 'Words matter because they do things inside systems.', connections: [['creative-ai-practice', 'disciplines creative practice through language operations'], ['generative-systems', 'treats text as a world-building control surface']] },
+            { id: 'centaur-school', title: 'CENTAUR SCHOOL', short: 'CENTAUR SCHOOL', family: 'green', type: 'learning system', status: 'active', description: 'A school model for human-machine practice where the human remains responsible for judgment, constraint, and taste.', claim: 'Human-AI collaboration needs pedagogy, not worship.', connections: [['creative-ai-practice', 'teaches AI use as situated craft'], ['multi-agent-alignment', 'keeps agency and accountability explicit']] },
+            { id: 'metaverse-park-service', title: 'Metaverse Park Service', short: 'Metaverse Park', family: 'orange', type: 'speculative institution', status: 'concept', description: 'A public-service model for stewardship, signage, maintenance, and access inside digital worlds.', claim: 'Virtual worlds need civic maintenance, not just spectacle.', connections: [['generative-systems', 'treats worlds as public landscapes'], ['interaction-ritual', 'designs rituals of access, orientation, and care']] },
+            { id: 'okai', title: 'OKAI', short: 'OKAI', family: 'yellow', type: 'framework', status: 'active', description: 'A comparative modeling framework for reading AI systems through world models, media forms, and operative descriptions.', claim: 'AI systems can be studied by asking what worlds they make actionable.', connections: [['generative-systems', 'provides a framework for world-model comparison'], ['creative-ai-practice', 'turns abstract AI theory into usable analytic practice']] },
+            { id: 'promptsmith', title: 'PromptSmith', short: 'PromptSmith', family: 'green', type: 'tool / method', status: 'active', description: 'A prompt-forging practice that treats prompting as constraint design, testing, and repair.', claim: 'Prompt craft is a design discipline when it names its constraints and failure modes.', connections: [['creative-ai-practice', 'makes prompting into visible craft'], ['prompt-craft', 'frames prompt work as media evolution'], ['multi-agent-alignment', 'uses constraints to reduce hidden failure']] },
+            { id: 'sankofai', title: 'SankofAI', short: 'SankofAI', family: 'yellow', type: 'archive / memory system', status: 'active', description: 'A memory-forward AI concept that retrieves historical knowledge as a living constraint on future-making.', claim: 'Generative futures must return to the archive without flattening it.', connections: [['generative-systems', 'connects world-building to memory and return'], ['interaction-ritual', 'frames historical retrieval as relational practice']] },
+            { id: 'living-library', title: 'Living Library', short: 'Living Library', family: 'red', type: 'archive interface', status: 'active', description: 'An archive model where texts, memories, and artifacts remain active participants rather than stored objects.', claim: 'A library lives when retrieval changes the present practice.', connections: [['prompt-craft', 'uses archival material as media engine'], ['generative-systems', 'treats archive as world-building substrate']] },
+            { id: 'agent-alphabet', title: 'Agent Alphabet', short: 'Agent Alphabet', family: 'tan', type: 'taxonomy', status: 'draft', description: 'A naming system for agent roles, capacities, constraints, and interaction patterns.', claim: 'Agents become governable when their roles and behaviors can be named precisely.', connections: [['multi-agent-alignment', 'names agent roles for safety and coordination'], ['prompt-craft', 'turns agent naming into media grammar']] }
+        ];
+        const slices = ['CLM', 'PTH', 'SUR'];
+        const state = { filter: 'all', open: null };
+        const $ = id => document.getElementById(id);
+        const el = { filters: $('filters'), grove: $('grove'), modal: $('modal'), close: $('close'), title: $('title'), content: $('content'), nav: $('nav') };
+        const esc = v => String(v).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+        const get = id => projects.find(p => p.id === id);
+
+        function orangeSvg() { return '<svg viewBox="0 0 200 200" aria-hidden="true"><g class="whole"><circle cx="100" cy="100" r="80" class="fruit"/></g><g class="cut"><circle cx="100" cy="100" r="80" class="flesh"/><circle cx="100" cy="100" r="20" class="core"/><line x1="100" y1="20" x2="100" y2="80" class="line"/><line x1="31" y1="140" x2="83" y2="111" class="line"/><line x1="169" y1="140" x2="117" y2="111" class="line"/></g></svg>' }
+        function card(p, i) {
+            const node = document.createElement('article');
+            node.className = 'project'; node.dataset.family = p.family; node.dataset.id = p.id;
+            node.innerHTML = '<div class="orange"><svg viewBox="0 0 200 200" aria-hidden="true"><g class="whole"><circle cx="100" cy="100" r="80" class="fruit"/></g><g class="cut"><circle cx="100" cy="100" r="80" class="flesh"/><circle cx="100" cy="100" r="20" class="core"/><line x1="100" y1="20" x2="100" y2="80" class="line"/><line x1="31" y1="140" x2="83" y2="111" class="line"/><line x1="169" y1="140" x2="117" y2="111" class="line"/></g></svg><button class="peel" type="button" data-peel="' + p.id + '" aria-label="Peel ' + esc(p.title) + '"></button><div class="segs">' + slices.map((s, idx) => '<button class="seg" type="button" data-project="' + p.id + '" data-slice="' + idx + '">' + s + '</button>').join('') + '</div></div><div class="label">' + String(i + 1).padStart(2, '0') + ' — ' + esc(p.short) + '<span class="tag">' + esc(families[p.family]) + '</span></div>';
+            return node;
+        }
+        function renderFilters() { el.filters.innerHTML = ''; Object.entries(families).forEach(([key, label]) => { const b = document.createElement('button'); b.className = 'filter'; b.type = 'button'; b.textContent = label; b.classList.toggle('active', state.filter === key); b.onclick = () => { state.filter = key; state.open = null; renderFilters(); apply() }; el.filters.appendChild(b) }) }
+        function apply() { document.querySelectorAll('.project').forEach(n => { n.classList.toggle('hide', !(state.filter === 'all' || n.dataset.family === state.filter)); n.classList.toggle('open', n.dataset.id === state.open) }) }
+        function renderGrove() { el.grove.innerHTML = ''; projects.forEach((p, i) => el.grove.appendChild(card(p, i))); apply() }
+        function surface(p) { const paths = p.connections.map(([id, r]) => { const a = attractors[id] || { title: id, claim: 'No claim' }; return '<section><b>' + esc(a.title) + '</b><p>' + esc(r) + '.</p><small>' + esc(a.claim) + '</small></section>' }).join(''); return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#FFE15D;color:#000;padding:10px;display:grid;gap:10px}header,.claim,section{border:3px solid #000;border-radius:14px;background:#FFF4A8;padding:10px;box-shadow:3px 3px 0 #000}h1{font-size:clamp(26px,8vw,54px);line-height:.86;letter-spacing:-.08em;text-transform:uppercase}.claim{background:#fff;font-weight:850;line-height:1.3}b{text-transform:uppercase}p{font-size:13px;font-weight:800;line-height:1.3;margin-top:6px}small{display:block;margin-top:6px;font-size:11px;line-height:1.25}</style></head><body><header><small>' + esc(p.type) + ' / ' + esc(p.status) + '</small><h1>' + esc(p.short) + '</h1></header><div class="claim">' + esc(p.claim) + '</div>' + paths + '<section><b>Operation</b><p>' + esc(p.description) + '</p></section></body></html>' }
+        function htmlFor(p, i) { if (i === 0) return '<span class="kicker">CLM / Claim</span><p>' + esc(p.claim) + '</p><span class="slip"><strong>Type</strong>' + esc(p.type) + ' / ' + esc(p.status) + ' / ' + esc(families[p.family]) + '</span>'; if (i === 1) return '<span class="kicker">PTH / Paths</span>' + p.connections.map(([id, r]) => '<span class="slip"><strong>' + esc(p.short) + ' → ' + esc(attractors[id]?.title || id) + '</strong>' + esc(r) + '.</span>').join(''); return '<div class="surface"><strong>' + esc(p.short) + ' / surface</strong><div class="frame"><iframe title="' + esc(p.short) + ' surface" sandbox="allow-forms allow-popups" srcdoc="' + esc(surface(p)) + '"></iframe></div></div>' }
+        function open(id, i) { const p = get(id); if (!p) return; state.open = id; apply(); el.title.textContent = p.title; el.content.innerHTML = htmlFor(p, i); el.nav.innerHTML = ''; slices.forEach((s, idx) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = s; b.classList.toggle('active', idx === i); b.onclick = () => open(id, idx); el.nav.appendChild(b) }); el.modal.classList.add('active') }
+        function bind() { el.grove.addEventListener('click', e => { const seg = e.target.closest('[data-slice]'); const peel = e.target.closest('[data-peel]'); if (seg) { open(seg.dataset.project, Number(seg.dataset.slice)); return } if (peel) { state.open = state.open === peel.dataset.peel ? null : peel.dataset.peel; apply() } }); el.close.onclick = () => el.modal.classList.remove('active'); el.modal.onclick = e => { if (e.target === el.modal) el.modal.classList.remove('active') }; document.addEventListener('keydown', e => { if (e.key === 'Escape') el.modal.classList.remove('active') }) }
+        renderFilters(); renderGrove(); bind();
+    </script>
+</body>
+
+</html>
